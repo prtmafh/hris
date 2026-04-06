@@ -17,7 +17,7 @@
 
                 {{-- Dashboard --}}
                 <a class="nav-link {{ request()->is('admin/dashboard*') ? 'active' : '' }}"
-                    href="{{ route('dashboard') }}">
+                    href="{{ route('admin.dashboard') }}">
                     <div class="nav-link-icon">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
                             <rect x="2" y="2" width="9" height="9" rx="2" fill="currentColor" />
@@ -52,8 +52,9 @@
                         <a class="nav-link {{ request()->is('admin/daftar_admin*') ? 'active' : '' }}" href="#">Daftar
                             Admin</a>
                         <a class="nav-link {{ request()->is('admin/daftar_karyawan*') ? 'active' : '' }}"
-                            href="#">Daftar Karyawan</a>
-                        <a class="nav-link {{ request()->is('admin/jabatan*') ? 'active' : '' }}" href="#">Jabatan</a>
+                            href="{{route('admin.daftar_karyawan')}}">Daftar Karyawan</a>
+                        <a class="nav-link {{ request()->is('admin/jabatan*') ? 'active' : '' }}"
+                            href="{{route('admin.jabatan')}}">Jabatan</a>
                     </nav>
                 </div>
 
