@@ -16,72 +16,109 @@
                         </h1>
                         <div class="page-header-subtitle">Kelola data jabatan karyawan</div>
                     </div>
-                    <div class="col-auto mt-4">
+                    {{-- <div class="col-auto mt-4">
                         <button class="btn btn-white btn-sm" data-bs-toggle="modal" data-bs-target="#modalTambah">
                             <i data-feather="plus" class="me-1"></i> Tambah Jabatan
                         </button>
-                    </div>
+                    </div> --}}
                 </div>
             </div>
         </div>
     </header>
 
     <div class="container-xl px-4 mt-n10">
-        <div class="card mb-4">
-            <div class="card-header">Daftar Jabatan</div>
-            <div class="card-body">
-                <table id="datatablesSimple">
-                    <thead>
-                        <tr>
-                            <th>No.</th>
-                            <th>Nama Jabatan</th>
-                            <th>Aksi</th>
-                        </tr>
-                    </thead>
-                    {{-- <tfoot>
-                        <tr>
-                            <th>No.</th>
-                            <th>Nama Jabatan</th>
-                            <th>Aksi</th>
-                        </tr>
-                    </tfoot> --}}
-                    <tbody>
-                        @foreach($jabatan as $index => $j)
-                        <tr>
-                            <td>{{ $index + 1 }}</td>
-                            <td class="fw-bold text-capitalize">{{ $j->nama_jabatan }}</td>
-                            <td>
-                                <!-- Edit -->
-                                <button class="btn btn-datatable btn-icon btn-success me-2" data-bs-toggle="modal"
-                                    data-bs-target="#modalEdit" data-id="{{ $j->id}}" data-nama="{{ $j->nama_jabatan }}"
-                                    title="Edit">
-                                    <i data-feather="edit"></i>
-                                </button>
-                                <!-- Hapus -->
-                                <button class="btn btn-datatable btn-icon btn-danger"
-                                    onclick="confirmDelete({{ $j->id }})" title="Hapus">
-                                    <i data-feather="trash-2"></i>
+        <div class="row">
+            <div class="col-lg-4">
+                <div class="card mb-4">
+                    <div class="card-header">Tambah Jabatan</div>
+                    <div class="card-body">
+
+                        <form action="{{ route('admin.jabatan.store') }}" method="POST">
+                            @csrf
+
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">
+                                    Nama Jabatan <span class="text-danger">*</span>
+                                </label>
+
+                                <input type="text" class="form-control" name="nama_jabatan"
+                                    placeholder="Masukkan nama jabatan" required>
+                            </div>
+
+                            <div class="d-flex justify-content-end gap-2">
+                                <button type="reset" class="btn btn-light">
+                                    Reset
                                 </button>
 
-                                <!-- Form hidden untuk delete -->
-                                <form id="delete-form-{{ $j->id }}"
-                                    action="{{ route('admin.jabatan.destroy', $j->id) }}" method="POST"
-                                    style="display: none;">
-                                    @csrf
-                                    @method('DELETE')
-                                </form>
-                            </td>
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+                                <button type="submit" class="btn btn-primary">
+                                    Simpan
+                                </button>
+                            </div>
+
+                        </form>
+
+                    </div>
+                </div>
             </div>
+            <div class="col-lg-8">
+                <div class="card mb-4">
+                    <div class="card-header">Daftar Jabatan</div>
+                    <div class="card-body">
+                        <table id="datatablesSimple">
+                            <thead>
+                                <tr>
+                                    <th>No.</th>
+                                    <th>Nama Jabatan</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            {{-- <tfoot>
+                                <tr>
+                                    <th>No.</th>
+                                    <th>Nama Jabatan</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </tfoot> --}}
+                            <tbody>
+                                @foreach($jabatan as $index => $j)
+                                <tr>
+                                    <td>{{ $index + 1 }}</td>
+                                    <td class="fw-bold text-capitalize">{{ $j->nama_jabatan }}</td>
+                                    <td>
+                                        <!-- Edit -->
+                                        <button class="btn btn-datatable btn-icon btn-success me-2"
+                                            data-bs-toggle="modal" data-bs-target="#modalEdit" data-id="{{ $j->id}}"
+                                            data-nama="{{ $j->nama_jabatan }}" title="Edit">
+                                            <i data-feather="edit"></i>
+                                        </button>
+                                        <!-- Hapus -->
+                                        <button class="btn btn-datatable btn-icon btn-danger"
+                                            onclick="confirmDelete({{ $j->id }})" title="Hapus">
+                                            <i data-feather="trash-2"></i>
+                                        </button>
+
+                                        <!-- Form hidden untuk delete -->
+                                        <form id="delete-form-{{ $j->id }}"
+                                            action="{{ route('admin.jabatan.destroy', $j->id) }}" method="POST"
+                                            style="display: none;">
+                                            @csrf
+                                            @method('DELETE')
+                                        </form>
+                                    </td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 </main>
 
 {{-- Modal Tambah --}}
-<div class="modal fade" id="modalTambah" tabindex="-1" aria-hidden="true">
+{{-- <div class="modal fade" id="modalTambah" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
@@ -104,7 +141,7 @@
             </div>
         </div>
     </div>
-</div>
+</div> --}}
 
 {{-- Modal Edit --}}
 <div class="modal fade" id="modalEdit" tabindex="-1" aria-hidden="true">

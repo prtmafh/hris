@@ -15,7 +15,7 @@ class UserSeeder extends Seeder
     {
         DB::table('users')->insert([
             [
-                'username' => 'admin',
+                'nik' => '0001',
                 'password' => Hash::make('password123'),
                 'role' => 'admin',
                 'status' => 'aktif',
@@ -23,7 +23,7 @@ class UserSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'username' => 'karyawan1',
+                'nik' => '1001',
                 'password' => Hash::make('password123'),
                 'role' => 'karyawan',
                 'status' => 'aktif',
@@ -31,7 +31,7 @@ class UserSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'username' => 'karyawan2',
+                'nik' => '1002',
                 'password' => Hash::make('password123'),
                 'role' => 'karyawan',
                 'status' => 'nonaktif',

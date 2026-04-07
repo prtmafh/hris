@@ -20,6 +20,7 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/admin/jabatan/{id}', [JabatanController::class, 'destroyJabatan'])->name('admin.jabatan.destroy');
 
     Route::get('/admin/daftar_karyawan', [AdminController::class, 'daftarKaryawan'])->name('admin.daftar_karyawan');
+    Route::get('/admin/daftar_karyawan/tambah', [AdminController::class, 'tambahKaryawan'])->name('admin.karyawan.create');
     Route::post('/admin/daftar_karyawan/store', [AdminController::class, 'storeDaftarKaryawan'])->name('admin.karyawan.store');
     Route::put('/karyawan/{id}', [AdminController::class, 'updateDaftarKaryawan'])->name('admin.karyawan.update');
     Route::delete('/karyawan/{id}', [AdminController::class, 'destroyDaftarKaryawan'])->name('admin.karyawan.destroy');

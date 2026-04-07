@@ -44,11 +44,11 @@
                                     <!-- Login form -->
                                     <form action="{{ route('login.post') }}" method="post" id="kt_sign_in_form">
                                         @csrf
-                                        <!-- Form Group (username) -->
+                                        <!-- Form Group (nik) -->
                                         <div class="mb-3">
-                                            <label class="text-gray-600 small" for="username">Username</label>
-                                            <input class="form-control form-control-solid" type="text" name="username"
-                                                id="username" placeholder="" autocomplete="off" />
+                                            <label class="text-gray-600 small" for="nik">NIK</label>
+                                            <input class="form-control form-control-solid" type="text" name="nik"
+                                                id="nik" placeholder="" autocomplete="off" />
                                         </div>
                                         <!-- Form Group (password) -->
                                         <div class="mb-3">

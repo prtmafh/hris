@@ -14,14 +14,14 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $credentials = $request->validate([
-            'username' => ['required', 'string'],
+            'nik' => ['required', 'string'],
             'password' => ['required', 'string'],
         ]);
 
         // Login
         if (!Auth::attempt($credentials)) {
             return back()->withErrors([
-                'error' => 'Username atau password salah!',
+                'error' => 'nik atau password salah!',
             ])->withInput();
         }
 
