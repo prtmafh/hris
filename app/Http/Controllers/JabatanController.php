@@ -12,7 +12,7 @@ class JabatanController extends Controller
     {
         $jabatan = Jabatan::all();
         $user = Auth::user();
-        return view('admin.data_karyawan.jabatan', compact('jabatan', 'user'));
+        return view('admin.data_karyawan.jabatan.index', compact('jabatan', 'user'));
     }
     public function storeJabatan(Request $request)
     {

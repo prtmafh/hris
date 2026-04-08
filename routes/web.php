@@ -1,7 +1,9 @@
 <?php
 
+use App\Http\Controllers\AbsensiController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\DaftarKaryawanController;
 use App\Http\Controllers\JabatanController;
 use Illuminate\Support\Facades\Route;
 
@@ -11,18 +13,43 @@ Route::get('/login', [AuthController::class, 'loginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login.post');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
+
+    Route::get('/admin/daftar_admin', [AdminController::class, 'daftarAdmin'])->name('admin.daftar_admin');
+    Route::post('/admin/daftar_admin', [AdminController::class, 'storeAdmin'])->name('admin.daftar_admin.store');
+    Route::put('/admin/daftar_admin/{id}', [AdminController::class, 'updateAdmin'])->name('admin.daftar_admin.update');
+    Route::post('/admin/daftar_admin/{id}/toggle-status', [AdminController::class, 'toggleAdminStatus'])->name('admin.daftar_admin.toggleStatus');
+    Route::delete('/admin/daftar_admin/{id}', [AdminController::class, 'destroyAdmin'])->name('admin.daftar_admin.destroy');
 
     Route::get('/admin/jabatan', [JabatanController::class, 'index'])->name('admin.jabatan');
     Route::post('/admin/jabatan', [JabatanController::class, 'storeJabatan'])->name('admin.jabatan.store');
     Route::put('/admin/jabatan/{id}', [JabatanController::class, 'updateJabatan'])->name('admin.jabatan.update');
     Route::delete('/admin/jabatan/{id}', [JabatanController::class, 'destroyJabatan'])->name('admin.jabatan.destroy');
 
-    Route::get('/admin/daftar_karyawan', [AdminController::class, 'daftarKaryawan'])->name('admin.daftar_karyawan');
-    Route::get('/admin/daftar_karyawan/tambah', [AdminController::class, 'tambahKaryawan'])->name('admin.karyawan.create');
-    Route::post('/admin/daftar_karyawan/store', [AdminController::class, 'storeDaftarKaryawan'])->name('admin.karyawan.store');
-    Route::put('/karyawan/{id}', [AdminController::class, 'updateDaftarKaryawan'])->name('admin.karyawan.update');
-    Route::delete('/karyawan/{id}', [AdminController::class, 'destroyDaftarKaryawan'])->name('admin.karyawan.destroy');
+    Route::get('/admin/daftar_karyawan', [DaftarKaryawanController::class, 'index'])->name('admin.daftar_karyawan');
+    Route::get('/admin/daftar_karyawan/tambah', [DaftarKaryawanController::class, 'tambah'])->name('admin.karyawan.create');
+    Route::post('/admin/daftar_karyawan/store', [DaftarKaryawanController::class, 'store'])->name('admin.karyawan.store');
+    Route::get('admin/daftar_karyawan/detail_karyawan/{id}', [DaftarKaryawanController::class, 'detail'])->name('admin.karyawan.show');
+    Route::get('admin/daftar_karyawan/edit_karyawan/{id}', [DaftarKaryawanController::class, 'edit'])->name('admin.karyawan.edit');
+    Route::put('admin/daftar_karyawan/update/{id}', [DaftarKaryawanController::class, 'update'])->name('admin.karyawan.update');
+    Route::delete('/karyawan/{id}', [DaftarKaryawanController::class, 'destroy'])->name('admin.karyawan.destroy');
+    Route::post('/admin/karyawan/{id}/toggle-status', [DaftarKaryawanController::class, 'toggleStatus'])->name('admin.karyawan.toggleStatus');
+    Route::post('/admin/karyawan/{id}/toggle-karyawan-status', [DaftarKaryawanController::class, 'toggleKaryawanStatus'])->name('admin.karyawan.toggleKaryawanStatus');
+
+    Route::get('/admin/absensi', [AbsensiController::class, 'index'])->name('data_absen');
+    Route::get('/admin/absensi/tambah', [AbsensiController::class, 'create'])->name('admin.absensi.create');
+    Route::post('/admin/absensi', [AbsensiController::class, 'store'])->name('admin.absensi.store');
+    Route::get('/admin/absensi/{id}', [AbsensiController::class, 'show'])->name('admin.absensi.show');
+    Route::get('/admin/absensi/{id}/edit', [AbsensiController::class, 'edit'])->name('admin.absensi.edit');
+    Route::put('/admin/absensi/{id}', [AbsensiController::class, 'update'])->name('admin.absensi.update');
+    Route::delete('/admin/absensi/{id}', [AbsensiController::class, 'destroy'])->name('admin.absensi.destroy');
+    Route::get('/admin/rekap-tahunan', [AbsensiController::class, 'rekap'])->name('rekap.tahunan');
+
+    Route::get('admin/izin', [AbsensiController::class, 'izin'])->name('admin.izin');
 });
-// Route::get('/admin/dashboard', [AdminController::class, 'index'])->name('dashboard');
+
+Route::middleware(['auth', 'karyawan'])->group(function () {
+    // Route karyawan akan ditambahkan di sini
+    // Contoh: Route::get('/dashboard', [KaryawanController::class, 'index'])->name('dashboard.karyawan');
+});

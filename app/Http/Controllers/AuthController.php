@@ -36,15 +36,6 @@ class AuthController extends Controller
             ])->withInput();
         }
 
-        if ($user->role === 'karyawan') {
-            if (!$user->karyawan || $user->karyawan->status !== 'aktif') {
-                Auth::logout();
-                return back()->withErrors([
-                    'error' => 'Status karyawan tidak aktif!',
-                ])->withInput();
-            }
-        }
-
         if ($user->role === 'admin') {
             return redirect()->route('admin.dashboard');
         }

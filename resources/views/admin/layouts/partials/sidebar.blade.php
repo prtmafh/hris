@@ -49,8 +49,8 @@
                 <div class="collapse {{ request()->is('admin/daftar_karyawan*') || request()->is('admin/daftar_admin*') || request()->is('admin/jabatan*') ? 'show' : '' }}"
                     id="collapseDataKaryawan" data-bs-parent="#accordionSidenav">
                     <nav class="sidenav-menu-nested nav">
-                        <a class="nav-link {{ request()->is('admin/daftar_admin*') ? 'active' : '' }}" href="#">Daftar
-                            Admin</a>
+                        <a class="nav-link {{ request()->is('admin/daftar_admin*') ? 'active' : '' }}"
+                            href="{{ route('admin.daftar_admin') }}">Daftar Admin</a>
                         <a class="nav-link {{ request()->is('admin/daftar_karyawan*') ? 'active' : '' }}"
                             href="{{route('admin.daftar_karyawan')}}">Daftar Karyawan</a>
                         <a class="nav-link {{ request()->is('admin/jabatan*') ? 'active' : '' }}"
@@ -59,8 +59,7 @@
                 </div>
 
                 {{-- Absensi --}}
-                {{-- <a
-                    class="nav-link {{ request()->is('admin/absensi*') || request()->is('admin/rekap-tahunan*') ? '' : 'collapsed' }}"
+                <a class="nav-link {{ request()->is('admin/absensi*') || request()->is('admin/rekap-tahunan*') ? '' : 'collapsed' }}"
                     href="javascript:void(0);" data-bs-toggle="collapse" data-bs-target="#collapseAbsensi"
                     aria-expanded="{{ request()->is('admin/absensi*') || request()->is('admin/rekap-tahunan*') ? 'true' : 'false' }}"
                     aria-controls="collapseAbsensi">
@@ -84,11 +83,10 @@
                         <a class="nav-link {{ request()->is('admin/rekap-tahunan*') ? 'active' : '' }}"
                             href="{{ route('rekap.tahunan') }}">Rekap Absen</a>
                     </nav>
-                </div> --}}
+                </div>
 
                 {{-- Pengajuan --}}
-                {{-- <a
-                    class="nav-link {{ request()->is('admin/lembur*') || request()->is('admin/izin*') ? '' : 'collapsed' }}"
+                <a class="nav-link {{ request()->is('admin/lembur*') || request()->is('admin/izin*') ? '' : 'collapsed' }}"
                     href="javascript:void(0);" data-bs-toggle="collapse" data-bs-target="#collapsePengajuan"
                     aria-expanded="{{ request()->is('admin/lembur*') || request()->is('admin/izin*') ? 'true' : 'false' }}"
                     aria-controls="collapsePengajuan">
@@ -107,11 +105,11 @@
                     id="collapsePengajuan" data-bs-parent="#accordionSidenav">
                     <nav class="sidenav-menu-nested nav">
                         <a class="nav-link {{ request()->is('admin/izin*') ? 'active' : '' }}"
-                            href="{{ route('data_izin') }}">Izin Karyawan</a>
-                        <a class="nav-link {{ request()->is('admin/lembur*') ? 'active' : '' }}"
-                            href="{{ route('data_lembur') }}">Lembur Karyawan</a>
+                            href="{{ route('admin.izin') }}">Izin Karyawan</a>
+                        {{-- <a class="nav-link {{ request()->is('admin/lembur*') ? 'active' : '' }}"
+                            href="{{ route('data_lembur') }}">Lembur Karyawan</a> --}}
                     </nav>
-                </div> --}}
+                </div>
 
                 {{-- Gaji & Periode --}}
                 {{-- <a

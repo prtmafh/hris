@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <meta name="description" content="" />
     <meta name="author" content="" />
-    <title>Dashboard - SB Admin Pro</title>
+    <title>@yield('title') - TSI GROUP</title>
     <link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/litepicker/dist/css/litepicker.css" rel="stylesheet" />
     <link href="{{asset('sbadmin/css/styles.css')}}" rel="stylesheet" />
@@ -77,6 +77,30 @@
                 });
     </script>
     @endif
+    <script>
+        function confirmDelete(id) {
+            Swal.fire({
+                title: 'Apakah Anda yakin?',
+                text: "Data akan dihapus permanen!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Ya, Hapus!',
+                cancelButtonText: 'Batal',
+                reverseButtons: true,
+    
+                // 🔵 gunakan style Bootstrap / Metronic
+                customClass: {
+                    confirmButton: 'btn btn-primary', // tombol biru
+                    cancelButton: 'btn btn-light'      // tombol abu-abu terang
+                },
+                buttonsStyling: false, // penting supaya style di atas tidak ditimpa
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('delete-form-' + id).submit();
+                }
+            });
+        }
+    </script>
     @stack('scripts')
 </body>
 

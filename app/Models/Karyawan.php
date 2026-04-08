@@ -60,10 +60,10 @@ class Karyawan extends Model
     /**
      * Relasi ke absensi
      */
-    // public function absensi()
-    // {
-    //     return $this->hasMany(Absensi::class);
-    // }
+    public function absensi()
+    {
+        return $this->hasMany(Absensi::class);
+    }
 
     /**
      * Relasi ke izin
