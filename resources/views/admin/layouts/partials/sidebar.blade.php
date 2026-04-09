@@ -106,16 +106,15 @@
                     <nav class="sidenav-menu-nested nav">
                         <a class="nav-link {{ request()->is('admin/izin*') ? 'active' : '' }}"
                             href="{{ route('admin.izin') }}">Izin Karyawan</a>
-                        {{-- <a class="nav-link {{ request()->is('admin/lembur*') ? 'active' : '' }}"
-                            href="{{ route('data_lembur') }}">Lembur Karyawan</a> --}}
+                        <a class="nav-link {{ request()->is('admin/lembur*') ? 'active' : '' }}"
+                            href="{{ route('admin.lembur') }}">Lembur Karyawan</a>
                     </nav>
                 </div>
 
                 {{-- Gaji & Periode --}}
-                {{-- <a
-                    class="nav-link {{ request()->is('admin/jenis_gaji*') || request()->is('admin/gaji*') ? '' : 'collapsed' }}"
+                <a class="nav-link {{ request()->is('admin/jenis_gaji*') || request()->is('admin/penggajian*') ? '' : 'collapsed' }}"
                     href="javascript:void(0);" data-bs-toggle="collapse" data-bs-target="#collapseGaji"
-                    aria-expanded="{{ request()->is('admin/jenis_gaji*') || request()->is('admin/gaji*') ? 'true' : 'false' }}"
+                    aria-expanded="{{ request()->is('admin/jenis_gaji*') || request()->is('admin/penggajian*') ? 'true' : 'false' }}"
                     aria-controls="collapseGaji">
                     <div class="nav-link-icon">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -128,15 +127,15 @@
                     Gaji &amp; Periode
                     <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                 </a>
-                <div class="collapse {{ request()->is('admin/jenis_gaji*') || request()->is('admin/gaji*') ? 'show' : '' }}"
+                <div class="collapse {{ request()->is('admin/jenis_gaji*') || request()->is('admin/penggajian*') ? 'show' : '' }}"
                     id="collapseGaji" data-bs-parent="#accordionSidenav">
                     <nav class="sidenav-menu-nested nav">
-                        <a class="nav-link {{ request()->is('admin/jenis_gaji') ? 'active' : '' }}"
-                            href="{{ route('jenis_gaji') }}">Periode Gaji</a>
-                        <a class="nav-link {{ request()->is('admin/gaji') ? 'active' : '' }}"
-                            href="{{ route('gaji') }}">Data Gaji</a>
+                        {{-- <a class="nav-link {{ request()->is('admin/jenis_gaji') ? 'active' : '' }}"
+                            href="{{ route('jenis_gaji') }}">Periode Gaji</a> --}}
+                        <a class="nav-link {{ request()->is('admin/penggajian') ? 'active' : '' }}"
+                            href="{{ route('admin.penggajian') }}">Data Gaji</a>
                     </nav>
-                </div> --}}
+                </div>
 
                 {{-- ======================== --}}
                 {{-- SECTION: PENGATURAN --}}

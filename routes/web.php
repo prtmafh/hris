@@ -5,6 +5,8 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DaftarKaryawanController;
 use App\Http\Controllers\JabatanController;
+use App\Http\Controllers\PengajuanController;
+use App\Http\Controllers\PenggajianController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -46,7 +48,13 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::delete('/admin/absensi/{id}', [AbsensiController::class, 'destroy'])->name('admin.absensi.destroy');
     Route::get('/admin/rekap-tahunan', [AbsensiController::class, 'rekap'])->name('rekap.tahunan');
 
-    Route::get('admin/izin', [AbsensiController::class, 'izin'])->name('admin.izin');
+    Route::get('admin/izin', [PengajuanController::class, 'izin'])->name('admin.izin');
+
+    Route::get('/admin/lembur', [PengajuanController::class, 'lembur'])->name('admin.lembur');
+    Route::post('/admin/lembur/{id}/approve', [PengajuanController::class, 'approveLembur'])->name('admin.lembur.approve');
+    Route::post('/admin/lembur/{id}/reject', [PengajuanController::class, 'rejectLembur'])->name('admin.lembur.reject');
+
+    Route::get('/admin/penggajian', [PenggajianController::class, 'data_gaji'])->name('admin.penggajian');
 });
 
 Route::middleware(['auth', 'karyawan'])->group(function () {

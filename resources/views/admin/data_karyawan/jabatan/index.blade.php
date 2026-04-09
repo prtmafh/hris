@@ -38,7 +38,7 @@
 
                             <div class="mb-3">
                                 <label class="form-label fw-bold">
-                                    Nama Jabatan <span class="text-danger">*</span>
+                                    Nama Jabatan
                                 </label>
 
                                 <input type="text" class="form-control" name="nama_jabatan"

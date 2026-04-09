@@ -6,30 +6,32 @@
 <main>
     <header class="page-header page-header-dark bg-gradient-primary-to-secondary pb-10">
         <div class="container-xl px-4">
-            <div class="page-header-content pt-4 d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3">
+            <div
+                class="page-header-content pt-4 d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3">
                 <div>
                     <h1 class="page-header-title">
                         <div class="page-header-icon"><i data-feather="file-text"></i></div>
                         Data Izin
                     </h1>
-                    <div class="page-header-subtitle">Kelola pengajuan izin karyawan dan tindak lanjuti persetujuannya.</div>
+                    <div class="page-header-subtitle">Kelola pengajuan izin karyawan dan tindak lanjuti persetujuannya.
+                    </div>
                 </div>
-                <a href="{{ route('admin.izin') }}" class="btn btn-white btn-sm">
+                {{-- <a href="{{ route('admin.izin') }}" class="btn btn-white btn-sm">
                     <i data-feather="refresh-cw"></i> Muat Ulang
-                </a>
+                </a> --}}
             </div>
         </div>
     </header>
 
     <div class="container-xl px-4 mt-n10">
         @php
-            $totalIzin = $izin->total();
-            $pendingCount = $izin->getCollection()->where('status_approval', 'pending')->count();
-            $approvedCount = $izin->getCollection()->where('status_approval', 'disetujui')->count();
-            $rejectedCount = $izin->getCollection()->where('status_approval', 'ditolak')->count();
-            $hasFilter = request()->filled('tanggal') || request()->filled('karyawan_id') || request()->filled('status');
+        $totalIzin = $izin->total();
+        $pendingCount = $izin->getCollection()->where('status_approval', 'pending')->count();
+        $approvedCount = $izin->getCollection()->where('status_approval', 'disetujui')->count();
+        $rejectedCount = $izin->getCollection()->where('status_approval', 'ditolak')->count();
+        $hasFilter = request()->filled('tanggal') || request()->filled('karyawan_id') || request()->filled('status');
         @endphp
-
+        {{--
         <div class="row g-4 mb-4">
             <div class="col-md-6 col-xl-3">
                 <div class="card border-0 h-100 shadow-sm">
@@ -67,13 +69,14 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> --}}
 
         <div class="card mb-4 shadow-sm">
             <div class="card-header d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2">
                 <div>
                     <div class="fw-bold">Filter Data Izin</div>
-                    <div class="small text-muted">Gunakan filter untuk menemukan pengajuan tertentu dengan lebih cepat.</div>
+                    <div class="small text-muted">Gunakan filter untuk menemukan pengajuan tertentu dengan lebih cepat.
+                    </div>
                 </div>
                 @if($hasFilter)
                 <a href="{{ route('admin.izin') }}" class="btn btn-outline-secondary btn-sm">
@@ -94,7 +97,8 @@
                         <select name="karyawan_id" class="form-select form-select-sm">
                             <option value="">Semua karyawan</option>
                             @foreach($karyawanList as $k)
-                            <option value="{{ $k->id }}" {{ (string) request('karyawan_id') === (string) $k->id ? 'selected' : '' }}>
+                            <option value="{{ $k->id }}" {{ (string) request('karyawan_id')===(string) $k->id ?
+                                'selected' : '' }}>
                                 {{ $k->nama }}
                             </option>
                             @endforeach
@@ -105,9 +109,12 @@
                         <label class="form-label small mb-1">Status</label>
                         <select name="status" class="form-select form-select-sm">
                             <option value="">Semua status</option>
-                            <option value="pending" {{ request('status') === 'pending' ? 'selected' : '' }}>Pending</option>
-                            <option value="disetujui" {{ request('status') === 'disetujui' ? 'selected' : '' }}>Disetujui</option>
-                            <option value="ditolak" {{ request('status') === 'ditolak' ? 'selected' : '' }}>Ditolak</option>
+                            <option value="pending" {{ request('status')==='pending' ? 'selected' : '' }}>Pending
+                            </option>
+                            <option value="disetujui" {{ request('status')==='disetujui' ? 'selected' : '' }}>Disetujui
+                            </option>
+                            <option value="ditolak" {{ request('status')==='ditolak' ? 'selected' : '' }}>Ditolak
+                            </option>
                         </select>
                     </div>
 
@@ -124,12 +131,14 @@
             <div class="card-header d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2">
                 <div>
                     <div class="fw-bold">Daftar Pengajuan Izin</div>
-                    <div class="small text-muted">Menampilkan {{ $izin->count() }} dari {{ $izin->total() }} data izin.</div>
+                    {{-- <div class="small text-muted">Menampilkan {{ $izin->count() }} dari {{ $izin->total() }} data
+                        izin.
+                    </div> --}}
                 </div>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table table-hover align-middle mb-0">
+                    <table id="datatablesSimple" class="table table-hover align-middle mb-0">
                         <thead>
                             <tr>
                                 <th class="text-muted small text-uppercase">No</th>
@@ -144,12 +153,12 @@
                         <tbody>
                             @forelse($izin as $index => $i)
                             @php
-                                $badge = match($i->status_approval) {
-                                    'pending' => 'warning',
-                                    'disetujui' => 'success',
-                                    'ditolak' => 'danger',
-                                    default => 'secondary',
-                                };
+                            $badge = match($i->status_approval) {
+                            'pending' => 'warning',
+                            'disetujui' => 'success',
+                            'ditolak' => 'danger',
+                            default => 'secondary',
+                            };
                             @endphp
                             <tr>
                                 <td class="text-muted">{{ $izin->firstItem() + $index }}</td>
@@ -162,7 +171,8 @@
                                     <div class="small text-muted">{{ $i->tanggal->translatedFormat('l') }}</div>
                                 </td>
                                 <td>
-                                    <span class="badge bg-light text-dark border text-capitalize">{{ $i->jenis_izin }}</span>
+                                    <span class="badge bg-light text-dark border text-capitalize">{{ $i->jenis_izin
+                                        }}</span>
                                 </td>
                                 <td class="text-muted" style="min-width: 220px;">
                                     {{ $i->keterangan ?: 'Tidak ada keterangan tambahan.' }}
@@ -173,14 +183,16 @@
                                 <td class="text-center">
                                     @if($i->status_approval === 'pending')
                                     <div class="d-inline-flex gap-2">
-                                        <form action="{{ route('izin.approve', $i->id) }}" method="POST" class="d-inline">
+                                        <form action="{{ route('izin.approve', $i->id) }}" method="POST"
+                                            class="d-inline">
                                             @csrf
                                             <button type="submit" class="btn btn-success btn-sm" title="Setujui">
                                                 <i data-feather="check"></i>
                                             </button>
                                         </form>
 
-                                        <form action="{{ route('izin.reject', $i->id) }}" method="POST" class="d-inline">
+                                        <form action="{{ route('izin.reject', $i->id) }}" method="POST"
+                                            class="d-inline">
                                             @csrf
                                             <button type="submit" class="btn btn-danger btn-sm" title="Tolak">
                                                 <i data-feather="x"></i>
@@ -193,15 +205,7 @@
                                 </td>
                             </tr>
                             @empty
-                            <tr>
-                                <td colspan="7" class="text-center py-5">
-                                    <div class="mb-2 text-muted">
-                                        <i data-feather="inbox"></i>
-                                    </div>
-                                    <div class="fw-semibold">Belum ada data izin</div>
-                                    <div class="small text-muted">Coba ubah filter atau tambahkan data pengajuan baru.</div>
-                                </td>
-                            </tr>
+
                             @endforelse
                         </tbody>
                     </table>
