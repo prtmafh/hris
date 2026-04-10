@@ -5,6 +5,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DaftarKaryawanController;
 use App\Http\Controllers\JabatanController;
+use App\Http\Controllers\KaryawanController;
 use App\Http\Controllers\PengajuanController;
 use App\Http\Controllers\PenggajianController;
 use Illuminate\Support\Facades\Route;
@@ -58,6 +59,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
 });
 
 Route::middleware(['auth', 'karyawan'])->group(function () {
-    // Route karyawan akan ditambahkan di sini
-    // Contoh: Route::get('/dashboard', [KaryawanController::class, 'index'])->name('dashboard.karyawan');
+    Route::get('/dashboard', [KaryawanController::class, 'index'])->name('dashboard.karyawan');
+    Route::post('/absen/masuk', [KaryawanController::class, 'absenMasuk'])->name('absen.masuk');
+    Route::post('/absen/pulang', [KaryawanController::class, 'absenPulang'])->name('absen.pulang');
 });

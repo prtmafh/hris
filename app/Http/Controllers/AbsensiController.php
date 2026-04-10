@@ -148,26 +148,4 @@ class AbsensiController extends Controller
 
         return view('admin.absensi.rekap', compact('rekap', 'tahun', 'bulan', 'tahunList'));
     }
-
-    public function izin(Request $request)
-    {
-        $query = Izin::with('karyawan');
-
-        if ($request->tanggal) {
-            $query->whereDate('tanggal', $request->tanggal);
-        }
-
-        if ($request->status) {
-            $query->where('status_approval', $request->status);
-        }
-
-        if ($request->karyawan_id) {
-            $query->where('karyawan_id', $request->karyawan_id);
-        }
-
-        $izin = $query->latest()->paginate(10);
-        $karyawanList = Karyawan::all();
-
-        return view('admin.pengajuan.izin', compact('izin', 'karyawanList'));
-    }
 }
