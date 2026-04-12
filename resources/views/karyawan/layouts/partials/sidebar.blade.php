@@ -6,7 +6,7 @@
                 <div class="sidenav-menu-heading">Portal Karyawan</div>
 
                 {{-- Dashboard --}}
-                <a class="nav-link {{ request()->is('dashboard*') ? 'active' : '' }}"
+                <a class="nav-link {{ request()->routeIs('dashboard.karyawan') ? 'active' : '' }}"
                     href="{{ route('dashboard.karyawan') }}">
                     <div class="nav-link-icon">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -22,7 +22,8 @@
                 <div class="sidenav-menu-heading">Menu</div>
 
                 {{-- Absensi Saya --}}
-                <a class="nav-link disabled" href="javascript:void(0);">
+                <a class="nav-link {{ request()->routeIs('karyawan.absensi') ? 'active' : '' }}"
+                    href="{{ route('karyawan.absensi') }}">
                     <div class="nav-link-icon">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
                             <path opacity="0.3"
@@ -39,7 +40,8 @@
                 </a>
 
                 {{-- Pengajuan Izin --}}
-                <a class="nav-link disabled" href="javascript:void(0);">
+                <a class="nav-link {{ request()->routeIs('karyawan.izin*') ? 'active' : '' }}"
+                    href="{{ route('karyawan.izin') }}">
                     <div class="nav-link-icon">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
                             <path opacity="0.3"
@@ -53,7 +55,8 @@
                 </a>
 
                 {{-- Pengajuan Lembur --}}
-                <a class="nav-link disabled" href="javascript:void(0);">
+                <a class="nav-link {{ request()->routeIs('karyawan.lembur*') ? 'active' : '' }}"
+                    href="{{ route('karyawan.lembur') }}">
                     <div class="nav-link-icon">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
                             <path opacity="0.3"
@@ -67,7 +70,8 @@
                 </a>
 
                 {{-- Slip Gaji --}}
-                <a class="nav-link disabled" href="javascript:void(0);">
+                <a class="nav-link {{ request()->routeIs('karyawan.slip_gaji') ? 'active' : '' }}"
+                    href="{{ route('karyawan.slip_gaji') }}">
                     <div class="nav-link-icon">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
                             <path opacity="0.3"

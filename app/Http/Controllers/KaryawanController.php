@@ -10,6 +10,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 
 class KaryawanController extends Controller
 {
@@ -74,6 +75,128 @@ class KaryawanController extends Controller
             'shift_start',
             'shift_end'
         ));
+    }
+
+    public function absensiSaya(Request $request)
+    {
+        $karyawan = Auth::user()->karyawan()->firstOrFail();
+
+        $bulan = $request->get('bulan', Carbon::now()->month);
+        $tahun = $request->get('tahun', Carbon::now()->year);
+
+        $absensi = Absensi::where('karyawan_id', $karyawan->id)
+            ->whereMonth('tanggal', $bulan)
+            ->whereYear('tanggal', $tahun)
+            ->orderByDesc('tanggal')
+            ->get();
+
+        $totalHadir    = $absensi->whereIn('status', ['hadir', 'terlambat'])->count();
+        $totalTerlambat = $absensi->where('status', 'terlambat')->count();
+        $totalAlpha    = $absensi->where('status', 'alpha')->count();
+        $totalIzin     = $absensi->where('status', 'izin')->count();
+
+        $daftarTahun = range(Carbon::now()->year, Carbon::now()->year - 3);
+
+        return view('karyawan.absensi-saya', compact(
+            'absensi', 'bulan', 'tahun', 'daftarTahun',
+            'totalHadir', 'totalTerlambat', 'totalAlpha', 'totalIzin'
+        ));
+    }
+
+    public function izinSaya(Request $request)
+    {
+        $karyawan = Auth::user()->karyawan()->firstOrFail();
+
+        $izin = Izin::where('karyawan_id', $karyawan->id)
+            ->orderByDesc('tanggal')
+            ->paginate(10);
+
+        return view('karyawan.izin-saya', compact('izin'));
+    }
+
+    public function storeIzin(Request $request)
+    {
+        $karyawan = Auth::user()->karyawan()->firstOrFail();
+
+        $request->validate([
+            'tanggal'    => 'required|date',
+            'jenis_izin' => 'required|in:sakit,izin,cuti',
+            'keterangan' => 'required|string|max:500',
+        ]);
+
+        $sudahAda = Izin::where('karyawan_id', $karyawan->id)
+            ->whereDate('tanggal', $request->tanggal)
+            ->exists();
+
+        if ($sudahAda) {
+            return back()->with('error', 'Pengajuan izin untuk tanggal tersebut sudah ada.');
+        }
+
+        Izin::create([
+            'karyawan_id'     => $karyawan->id,
+            'tanggal'         => $request->tanggal,
+            'jenis_izin'      => $request->jenis_izin,
+            'keterangan'      => $request->keterangan,
+            'status_approval' => 'pending',
+        ]);
+
+        return back()->with('success', 'Pengajuan izin berhasil dikirim.');
+    }
+
+    public function lemburSaya(Request $request)
+    {
+        $karyawan = Auth::user()->karyawan()->firstOrFail();
+
+        $lembur = Lembur::where('karyawan_id', $karyawan->id)
+            ->orderByDesc('tanggal')
+            ->paginate(10);
+
+        return view('karyawan.lembur-saya', compact('lembur'));
+    }
+
+    public function storeLembur(Request $request)
+    {
+        $karyawan = Auth::user()->karyawan()->firstOrFail();
+
+        $request->validate([
+            'tanggal'     => 'required|date',
+            'jam_mulai'   => 'required',
+            'jam_selesai' => 'required|after:jam_mulai',
+            'keterangan'  => 'required|string|max:500',
+        ]);
+
+        $mulai    = Carbon::parse($request->tanggal . ' ' . $request->jam_mulai);
+        $selesai  = Carbon::parse($request->tanggal . ' ' . $request->jam_selesai);
+        $totalJam = $selesai->diffInHours($mulai);
+
+        Lembur::create([
+            'karyawan_id' => $karyawan->id,
+            'tanggal'     => $request->tanggal,
+            'jam_mulai'   => $request->jam_mulai,
+            'jam_selesai' => $request->jam_selesai,
+            'total_jam'   => $totalJam,
+            'keterangan'  => $request->keterangan,
+            'status'      => 'pending',
+        ]);
+
+        return back()->with('success', 'Pengajuan lembur berhasil dikirim.');
+    }
+
+    public function slipGaji(Request $request)
+    {
+        $karyawan = Auth::user()->karyawan()->firstOrFail();
+
+        $tahun = $request->get('tahun', Carbon::now()->year);
+
+        $penggajian = Penggajian::where('karyawan_id', $karyawan->id)
+            ->whereYear('tgl_dibayar', $tahun)
+            ->orderByDesc('periode_tahun')
+            ->orderByDesc('periode_bulan')
+            ->get();
+
+        $daftarTahun = range(Carbon::now()->year, Carbon::now()->year - 3);
+
+        return view('karyawan.slip-gaji', compact('penggajian', 'tahun', 'daftarTahun', 'karyawan'));
     }
 
     public function absenMasuk(Request $request)

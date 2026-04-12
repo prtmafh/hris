@@ -62,4 +62,11 @@ Route::middleware(['auth', 'karyawan'])->group(function () {
     Route::get('/dashboard', [KaryawanController::class, 'index'])->name('dashboard.karyawan');
     Route::post('/absen/masuk', [KaryawanController::class, 'absenMasuk'])->name('absen.masuk');
     Route::post('/absen/pulang', [KaryawanController::class, 'absenPulang'])->name('absen.pulang');
+
+    Route::get('/karyawan/absensi-saya', [KaryawanController::class, 'absensiSaya'])->name('karyawan.absensi');
+    Route::get('/karyawan/izin-saya', [KaryawanController::class, 'izinSaya'])->name('karyawan.izin');
+    Route::post('/karyawan/izin-saya', [KaryawanController::class, 'storeIzin'])->name('karyawan.izin.store');
+    Route::get('/karyawan/lembur-saya', [KaryawanController::class, 'lemburSaya'])->name('karyawan.lembur');
+    Route::post('/karyawan/lembur-saya', [KaryawanController::class, 'storeLembur'])->name('karyawan.lembur.store');
+    Route::get('/karyawan/slip-gaji', [KaryawanController::class, 'slipGaji'])->name('karyawan.slip_gaji');
 });
