@@ -14,9 +14,9 @@
                     </h1>
                     <div class="page-header-subtitle">Manajemen data kehadiran karyawan</div>
                 </div>
-                <a href="{{ route('admin.absensi.create') }}" class="btn btn-white btn-sm">
+                {{-- <a href="{{ route('admin.absensi.create') }}" class="btn btn-white btn-sm">
                     <i data-feather="plus"></i> Tambah Absensi
-                </a>
+                </a> --}}
             </div>
         </div>
     </header>

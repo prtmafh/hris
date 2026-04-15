@@ -1,14 +1,17 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
     <title>@yield('title') - TSI GROUP</title>
     <link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet" />
-    <link href="{{ asset('sbadmin/css/styles.css') }}" rel="stylesheet" />
-    <link rel="icon" type="image/x-icon" href="{{ asset('sbadmin/assets/img/favicon.png') }}" />
+    <link href="https://cdn.jsdelivr.net/npm/litepicker/dist/css/litepicker.css" rel="stylesheet" />
+    <link href="{{asset('sbadmin/css/styles.css')}}" rel="stylesheet" />
+    <link rel="icon" type="image/x-icon" href="{{asset('sbadmin/assets/img/favicon.png')}}" />
     <script data-search-pseudo-elements defer
         src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/js/all.min.js" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.28.0/feather.min.js" crossorigin="anonymous">
@@ -25,9 +28,11 @@
             <footer class="footer-admin mt-auto footer-light">
                 <div class="container-xl px-4">
                     <div class="row">
-                        <div class="col-md-6 small">Copyright &copy; {{ now()->year }} TSI Karyawan</div>
+                        <div class="col-md-6 small">Copyright &copy; {{ now()->year }} TSI Admin</div>
                         <div class="col-md-6 text-md-end small">
-                            <span>Portal Absensi TSI GROUP</span>
+                            <a href="#!">Privacy Policy</a>
+                            &middot;
+                            <a href="#!">Terms &amp; Conditions</a>
                         </div>
                     </div>
                 </div>
@@ -39,19 +44,27 @@
     </script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="{{ asset('sbadmin/js/scripts.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js" crossorigin="anonymous"></script>
+    {{-- <script src="{{asset('sbadmin/assets/demo/chart-area-demo.js')}}"></script>
+    <script src="{{asset('sbadmin/assets/demo/chart-bar-demo.js')}}"></script> --}}
+    <script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest" crossorigin="anonymous"></script>
+    <script src="{{asset('sbadmin/js/datatables/datatables-simple-demo.js')}}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/litepicker/dist/bundle.js" crossorigin="anonymous"></script>
+    <script src="{{asset('sbadmin/js/litepicker.js')}}"></script>
     @if(session('success'))
     <script>
         Swal.fire({
-            icon: 'success',
-            title: 'Berhasil!',
-            text: '{{ session('success') }}',
-            showConfirmButton: false,
-            timer: 2000,
-            buttonsStyling: false,
-            customClass: {
-                confirmButton: 'btn btn-primary'
-            }
-        });
+                icon: 'success',
+                title: 'Berhasil!',
+                text: '{{ session('success') }}',
+                showConfirmButton: false,
+                timer: 2000,
+                confirmButtonText: 'OK',
+                customClass: {
+                    confirmButton: 'btn btn-primary' // 🔵 gunakan tombol biru bawaan Metronic
+                },  
+                buttonsStyling: false // ⛔️ supaya SweetAlert tidak override style Bootstrap
+            });
     </script>
     @endif
 
@@ -65,6 +78,30 @@
         });
     </script>
     @endif
+    <script>
+        function confirmDelete(id) {
+            Swal.fire({
+                title: 'Apakah Anda yakin?',
+                text: "Data akan dihapus permanen!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Ya, Hapus!',
+                cancelButtonText: 'Batal',
+                reverseButtons: true,
+    
+                // 🔵 gunakan style Bootstrap / Metronic
+                customClass: {
+                    confirmButton: 'btn btn-primary', // tombol biru
+                    cancelButton: 'btn btn-light'      // tombol abu-abu terang
+                },
+                buttonsStyling: false, // penting supaya style di atas tidak ditimpa
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('delete-form-' + id).submit();
+                }
+            });
+        }
+    </script>
     @stack('scripts')
 </body>
 

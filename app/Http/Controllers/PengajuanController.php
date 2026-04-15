@@ -59,6 +59,26 @@ class PengajuanController extends Controller
         return view('admin.pengajuan.lembur', compact('lembur', 'karyawanList', 'hasFilter'));
     }
 
+    public function approveIzin($id)
+    {
+        $izin = Izin::findOrFail($id);
+        $izin->update([
+            'status_approval' => 'disetujui',
+        ]);
+
+        return redirect()->back()->with('success', 'Pengajuan izin berhasil disetujui.');
+    }
+
+    public function rejectIzin($id)
+    {
+        $izin = Izin::findOrFail($id);
+        $izin->update([
+            'status_approval' => 'ditolak',
+        ]);
+
+        return redirect()->back()->with('success', 'Pengajuan izin berhasil ditolak.');
+    }
+
     public function approveLembur($id)
     {
         $lembur = Lembur::findOrFail($id);

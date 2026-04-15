@@ -4,13 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Models\Absensi;
 use App\Models\Izin;
+use App\Models\Karyawan;
 use App\Models\Lembur;
 use App\Models\Penggajian;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Validator;
+// use Illuminate\Support\Facades\Validator;
 
 class KaryawanController extends Controller
 {
@@ -20,9 +22,18 @@ class KaryawanController extends Controller
     // Toleransi keterlambatan (menit)
     const TOLERANCE_MINUTES = 15;
 
+    private function currentKaryawan(): Karyawan
+    {
+        /** @var User $user */
+        $user = Auth::user();
+
+        return $user->karyawan()->firstOrFail();
+    }
+
     public function index()
     {
-        $user     = Auth::user();
+        /** @var User $user */
+        $user = Auth::user();
         $karyawan = $user->karyawan()->with('jabatan')->firstOrFail();
 
         $today        = Carbon::today();
@@ -79,7 +90,7 @@ class KaryawanController extends Controller
 
     public function absensiSaya(Request $request)
     {
-        $karyawan = Auth::user()->karyawan()->firstOrFail();
+        $karyawan = $this->currentKaryawan();
 
         $bulan = $request->get('bulan', Carbon::now()->month);
         $tahun = $request->get('tahun', Carbon::now()->year);
@@ -98,14 +109,20 @@ class KaryawanController extends Controller
         $daftarTahun = range(Carbon::now()->year, Carbon::now()->year - 3);
 
         return view('karyawan.absensi-saya', compact(
-            'absensi', 'bulan', 'tahun', 'daftarTahun',
-            'totalHadir', 'totalTerlambat', 'totalAlpha', 'totalIzin'
+            'absensi',
+            'bulan',
+            'tahun',
+            'daftarTahun',
+            'totalHadir',
+            'totalTerlambat',
+            'totalAlpha',
+            'totalIzin'
         ));
     }
 
     public function izinSaya(Request $request)
     {
-        $karyawan = Auth::user()->karyawan()->firstOrFail();
+        $karyawan = $this->currentKaryawan();
 
         $izin = Izin::where('karyawan_id', $karyawan->id)
             ->orderByDesc('tanggal')
@@ -116,7 +133,7 @@ class KaryawanController extends Controller
 
     public function storeIzin(Request $request)
     {
-        $karyawan = Auth::user()->karyawan()->firstOrFail();
+        $karyawan = $this->currentKaryawan();
 
         $request->validate([
             'tanggal'    => 'required|date',
@@ -145,7 +162,7 @@ class KaryawanController extends Controller
 
     public function lemburSaya(Request $request)
     {
-        $karyawan = Auth::user()->karyawan()->firstOrFail();
+        $karyawan = $this->currentKaryawan();
 
         $lembur = Lembur::where('karyawan_id', $karyawan->id)
             ->orderByDesc('tanggal')
@@ -156,7 +173,7 @@ class KaryawanController extends Controller
 
     public function storeLembur(Request $request)
     {
-        $karyawan = Auth::user()->karyawan()->firstOrFail();
+        $karyawan = $this->currentKaryawan();
 
         $request->validate([
             'tanggal'     => 'required|date',
@@ -184,7 +201,7 @@ class KaryawanController extends Controller
 
     public function slipGaji(Request $request)
     {
-        $karyawan = Auth::user()->karyawan()->firstOrFail();
+        $karyawan = $this->currentKaryawan();
 
         $tahun = $request->get('tahun', Carbon::now()->year);
 
@@ -201,7 +218,7 @@ class KaryawanController extends Controller
 
     public function absenMasuk(Request $request)
     {
-        $karyawan = Auth::user()->karyawan;
+        $karyawan = $this->currentKaryawan();
         $today    = Carbon::today();
 
         $existing = Absensi::where('karyawan_id', $karyawan->id)
@@ -255,7 +272,7 @@ class KaryawanController extends Controller
 
     public function absenPulang(Request $request)
     {
-        $karyawan = Auth::user()->karyawan;
+        $karyawan = $this->currentKaryawan();
         $today    = Carbon::today();
 
         $absensi = Absensi::where('karyawan_id', $karyawan->id)

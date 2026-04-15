@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Database\Factories\UserFactory;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -26,7 +27,7 @@ class User extends Authenticatable
     /**
      * Relasi ke karyawan (1:1)
      */
-    public function karyawan()
+    public function karyawan(): HasOne
     {
         return $this->hasOne(Karyawan::class);
     }

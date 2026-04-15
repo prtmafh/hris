@@ -5,317 +5,382 @@
 @push('styles')
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <style>
-    :root {
-        --primary-color: #3b82f6;
-        --success-color: #10b981;
-        --danger-color: #ef4444;
-        --warning-color: #f59e0b;
-        --dark-color: #1f2937;
-        --card-shadow: 0 4px 6px -1px rgba(0,0,0,.1), 0 2px 4px -1px rgba(0,0,0,.06);
-        --card-shadow-lg: 0 10px 15px -3px rgba(0,0,0,.1), 0 4px 6px -2px rgba(0,0,0,.05);
-    }
-
     #map {
-        height: 300px;
-        border-radius: 12px;
-        box-shadow: var(--card-shadow);
-        margin-bottom: 1.5rem;
+        height: 320px;
+        border-radius: 0.75rem;
+        border: 1px solid rgba(0, 0, 0, 0.08);
     }
 
     @media (min-width: 768px) {
-        #map { height: 400px; }
+        #map {
+            height: 380px;
+        }
     }
 
     .clock-display {
-        font-size: clamp(2rem, 8vw, 3.5rem);
+        font-size: clamp(2rem, 7vw, 3.4rem);
         font-weight: 700;
-        color: var(--dark-color);
-        letter-spacing: -0.02em;
+        letter-spacing: -0.03em;
     }
 
     .date-display {
-        font-size: clamp(0.875rem, 3vw, 1.125rem);
-        color: #6b7280;
-        font-weight: 500;
+        font-size: 0.95rem;
+        color: #69707a;
     }
 
-    .header-card {
-        background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%);
-        border-radius: 16px;
-        box-shadow: var(--card-shadow-lg);
-        border: none;
+    .attendance-panel {
+        border: 0;
+        box-shadow: 0 0.15rem 1.75rem 0 rgba(33, 40, 50, 0.1);
     }
 
-    .main-card {
-        background: white;
-        border-radius: 20px;
-        box-shadow: var(--card-shadow-lg);
-        border: none;
+    .status-list .list-group-item {
+        padding: 0.9rem 0;
+        border-color: rgba(0, 0, 0, 0.06);
     }
 
-    .status-card {
-        background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
-        border-radius: 12px;
-        padding: 1.25rem;
-        margin-bottom: 1.5rem;
-        border: 1px solid #e5e7eb;
+    .info-box {
+        background: #f8f9fc;
+        border: 1px solid rgba(0, 0, 0, 0.06);
+        border-radius: 0.75rem;
     }
 
-    .status-row {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 0.5rem 0;
-        font-size: clamp(0.875rem, 3vw, 1rem);
+    .hero-status {
+        border: 0;
+        box-shadow: 0 0.15rem 1.75rem 0 rgba(33, 40, 50, 0.12);
     }
 
-    @media (max-width: 576px) {
-        .status-row { flex-direction: column; align-items: flex-start; gap: .25rem; }
+    .hero-status-label {
+        font-size: 0.78rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: #69707a;
+        font-weight: 700;
+    }
+
+    .hero-status-value {
+        font-size: clamp(1.8rem, 5vw, 2.6rem);
+        font-weight: 700;
+        line-height: 1.1;
+    }
+
+    .simple-note {
+        font-size: 1rem;
+        color: #4b5563;
     }
 
     .btn-absen {
-        padding: .875rem 2rem;
+        min-width: 220px;
+        padding: 1rem 1.5rem;
         font-weight: 600;
-        font-size: clamp(.875rem, 3vw, 1rem);
-        border-radius: 12px;
-        transition: all .3s ease;
-        box-shadow: var(--card-shadow);
+        border-radius: 0.65rem;
         border: none;
-        flex: 1;
-        max-width: 200px;
+        box-shadow: 0 0.15rem 1rem 0 rgba(33, 40, 50, 0.12);
+        font-size: 1.1rem;
     }
 
-    @media (max-width: 576px) {
-        .btn-absen { width: 100%; max-width: none; padding: 1rem; }
+    .btn-success-absen {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    }
+
+    .btn-danger-absen {
+        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    }
+
+    .btn-absen:disabled {
+        opacity: 0.55;
+        cursor: not-allowed;
     }
 
     .btn-absen:not(:disabled):hover {
-        transform: translateY(-2px);
-        box-shadow: var(--card-shadow-lg);
+        transform: translateY(-1px);
     }
 
-    .btn-success-absen { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: #fff; }
-    .btn-danger-absen  { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: #fff; }
-    .btn-absen:disabled { opacity: .5; cursor: not-allowed; transform: none !important; }
-
-    .time-info {
-        background: #fef3c7;
-        border-left: 4px solid var(--warning-color);
-        padding: .75rem 1rem;
-        border-radius: 8px;
-        margin-top: 1rem;
-    }
-
-    .time-info p {
-        margin: .25rem 0;
-        font-size: clamp(.75rem, 2.5vw, .875rem);
-        color: #92400e;
-    }
-
-    .separatorr {
-        height: 1px;
-        background: linear-gradient(90deg, transparent, #e5e7eb, transparent);
-        margin: 1.5rem 0;
-    }
-
-    .button-container {
+    .action-group {
         display: flex;
         gap: 1rem;
-        justify-content: center;
         flex-wrap: wrap;
     }
 
     @media (max-width: 576px) {
-        .button-container { flex-direction: column; gap: .75rem; }
+        .action-group {
+            flex-direction: column;
+        }
+
+        .btn-absen {
+            width: 100%;
+        }
     }
 
-    .table-history th { font-size: .8rem; text-transform: uppercase; color: #6b7280; font-weight: 600; }
-    .table-history td { font-size: .9rem; vertical-align: middle; }
+    .company-mark {
+        width: 56px;
+        height: 56px;
+        object-fit: contain;
+    }
+
+    .mini-label {
+        font-size: 0.72rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: rgba(255, 255, 255, 0.75);
+    }
+
+    .history-table th {
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: #69707a;
+    }
+
+    .history-table td {
+        vertical-align: middle;
+    }
+
+    .quick-guide-item {
+        border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+        padding: 0.9rem 0;
+    }
+
+    .quick-guide-item:last-child {
+        border-bottom: 0;
+        padding-bottom: 0;
+    }
+
+    .helper-text {
+        font-size: 0.95rem;
+        color: #69707a;
+    }
 </style>
 @endpush
 
 @section('content')
-<div class="content d-flex flex-column flex-column-fluid" id="kt_content">
-    <div class="post d-flex flex-column-fluid" id="kt_post">
-        <div id="kt_content_container" class="container-xxl px-3 px-md-4">
-
-            {{-- HEADER --}}
-            <div class="card header-card shadow-sm mb-4 mt-4">
-                <div class="card-body text-center py-4">
-                    <img src="{{ asset('') }}assets/img/logotsi.png" alt="logo"
-                        style="height: clamp(50px,12vw,70px); object-fit: contain;" class="mb-3">
-                    <h1 class="fw-bolder text-dark mb-1" style="font-size: clamp(1.1rem,4vw,1.5rem);">
-                        PT. Tidarjaya Solidindo
-                    </h1>
-                    <div class="text-muted fw-semibold" id="greetingText" style="font-size: clamp(.9rem,3vw,1.1rem);">
-                        Selamat Datang
+<main>
+    <header class="page-header page-header-dark bg-gradient-primary-to-secondary pb-10">
+        <div class="container-xl px-4">
+            <div class="page-header-content pt-4">
+                <div class="row align-items-center justify-content-between">
+                    <div class="col-xl-8">
+                        <h1 class="page-header-title">
+                            <div class="page-header-icon"><i data-feather="activity"></i></div>
+                            Dashboard Absensi
+                        </h1>
+                        <div class="page-header-subtitle" id="greetingText">Selamat Datang</div>
+                    </div>
+                    <div class="col-xl-4 mt-4 mt-xl-0">
+                        <div class="card border-0 shadow-sm bg-white bg-opacity-10">
+                            <div class="card-body py-3">
+                                <div class="d-flex align-items-center gap-3">
+                                    <img src="{{ asset('assets/img/logotsi.png') }}" alt="logo" class="company-mark">
+                                    <div>
+                                        <div class="mini-label">Perusahaan</div>
+                                        <div class="fw-bold text-white">PT. Tidarjaya Solidindo</div>
+                                        <div class="small text-white-50">Dashboard absensi karyawan</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
+        </div>
+    </header>
 
-            {{-- ABSENSI + RIWAYAT --}}
-            <div class="row g-4 mb-4">
+    <div class="container-xl px-4 mt-n10">
 
-                {{-- ABSENSI HARI INI --}}
-                <div class="col-12 col-xl-7">
-                    <div class="card main-card h-100">
-                        <div class="card-header border-0 pt-4 px-4">
-                            <h3 class="card-title fw-bolder text-dark mb-0" style="font-size: clamp(1rem,3.5vw,1.35rem);">
-                                Absensi Hari Ini
-                            </h3>
+        <div class="row">
+            <div class="col-xl-8 mb-4">
+                <div class="card attendance-panel h-100">
+                    {{-- <div
+                        class="card-header d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2">
+                        <div>
+                            <div class="fw-bold">Absensi Hari Ini</div>
+                            <div class="small text-muted">Tekan tombol besar di bawah untuk absen masuk atau absen
+                                pulang.</div>
                         </div>
-                        <div class="card-body pt-3 px-4">
-
-                            {{-- MAP --}}
-                            <div id="map"></div>
-
-                            {{-- CLOCK --}}
-                            <div class="text-center mb-4">
-                                <div id="clock" class="clock-display mb-1"></div>
-                                <div class="date-display" id="today"></div>
+                        <span class="badge bg-light text-dark border">Mudah digunakan</span>
+                    </div> --}}
+                    <div class="card-body">
+                        <div class="row g-4">
+                            <div class="col-lg-7">
+                                <div id="map" class="mb-4"></div>
+                                <div class="action-group justify-content-center mb-4">
+                                    <button id="btnMasuk" class="btn btn-absen btn-success-absen text-white" {{ ($cek &&
+                                        $cek->jam_masuk) ? 'disabled' : '' }}>
+                                        <i data-feather="log-in" class="me-1"></i> Absen Masuk
+                                    </button>
+                                    <button id="btnPulang" class="btn btn-absen btn-danger-absen text-white" {{ (!$cek
+                                        || !$cek->jam_masuk || $cek->jam_keluar) ? 'disabled' : '' }}>
+                                        <i data-feather="log-out" class="me-1"></i> Absen Pulang
+                                    </button>
+                                </div>
+                                <div class="text-center">
+                                    <div id="clock" class="clock-display mb-1"></div>
+                                    <div class="date-display" id="today"></div>
+                                </div>
                             </div>
-
-                            {{-- STATUS --}}
-                            <div class="status-card">
-                                <div class="status-row mb-2">
-                                    <span class="fw-bold">Status Kehadiran:</span>
-                                    <div>
-                                        @if (is_null($cek))
-                                            <span class="badge badge-light-danger">Belum Absen</span>
-                                        @else
-                                            @switch($cek->status)
-                                                @case('hadir')
-                                                    <span class="badge badge-light-success">&#10003; Hadir</span>
-                                                    @break
-                                                @case('izin')
-                                                    <span class="badge badge-light-warning">Izin</span>
-                                                    @break
-                                                @case('alpha')
-                                                    <span class="badge badge-light-danger">&#10007; Alpha</span>
-                                                    @break
-                                                @case('terlambat')
-                                                    <span class="badge badge-light-danger">Terlambat</span>
-                                                    @break
-                                                @default
-                                                    <span class="badge badge-light-danger">Belum Absen</span>
-                                            @endswitch
-                                        @endif
+                            <div class="col-lg-5">
+                                <div class="info-box p-4 mb-4">
+                                    <div class="small text-uppercase text-muted fw-bold mb-3">Keterangan Hari Ini</div>
+                                    <div class="list-group list-group-flush status-list">
+                                        <div
+                                            class="list-group-item px-0 d-flex justify-content-between align-items-center bg-transparent">
+                                            <span class="fw-semibold text-gray-700">Status</span>
+                                            <span>
+                                                @if (is_null($cek))
+                                                <span class="badge bg-danger px-3 py-2">Belum Absen</span>
+                                                @else
+                                                @php
+                                                $statusBadge = match($cek->status) {
+                                                'hadir' => 'success',
+                                                'izin' => 'info',
+                                                'alpha' => 'danger',
+                                                'terlambat' => 'warning',
+                                                default => 'secondary',
+                                                };
+                                                @endphp
+                                                <span class="badge bg-{{ $statusBadge }} text-capitalize px-3 py-2">{{
+                                                    $cek->status }}</span>
+                                                @endif
+                                            </span>
+                                        </div>
+                                        <div
+                                            class="list-group-item px-0 d-flex justify-content-between align-items-center bg-transparent">
+                                            <span class="fw-semibold text-gray-700">Waktu Datang</span>
+                                            <span class="badge bg-light text-dark border px-3 py-2">{{ $cek->jam_masuk
+                                                ??
+                                                '--:--:--' }}</span>
+                                        </div>
+                                        <div
+                                            class="list-group-item px-0 d-flex justify-content-between align-items-center bg-transparent">
+                                            <span class="fw-semibold text-gray-700">Waktu Pulang</span>
+                                            <span class="badge bg-light text-dark border px-3 py-2">{{ $cek->jam_keluar
+                                                ??
+                                                '--:--:--' }}</span>
+                                        </div>
                                     </div>
                                 </div>
 
-                                <div class="status-row">
-                                    <span class="fw-semibold">Waktu Datang:</span>
-                                    <span class="badge badge-light-dark">{{ $cek->jam_masuk ?? '00:00:00' }}</span>
+                                <div class="info-box p-4">
+                                    <div class="small text-uppercase text-muted fw-bold mb-3">Jam Kerja</div>
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <span class="text-muted">Jam Masuk</span>
+                                        <span class="fw-bold">{{ $shift_start ?
+                                            \Carbon\Carbon::parse($shift_start)->format('H:i') : '-' }} WIB</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <span class="text-muted">Jam Pulang</span>
+                                        <span class="fw-bold">{{ $shift_end ?
+                                            \Carbon\Carbon::parse($shift_end)->format('H:i') : '-' }} WIB</span>
+                                    </div>
+                                    <div class="helper-text mb-0">
+                                        Bila ada kendala, hubungi admin atau mandor sebelum meninggalkan lokasi kerja.
+                                    </div>
                                 </div>
-
-                                <div class="status-row">
-                                    <span class="fw-semibold">Waktu Pulang:</span>
-                                    <span class="badge badge-light-dark">{{ $cek->jam_keluar ?? '00:00:00' }}</span>
-                                </div>
-                            </div>
-
-                            {{-- BUTTONS --}}
-                            <div class="button-container mb-4">
-                                <button id="btnMasuk"
-                                    class="btn btn-absen btn-success-absen"
-                                    {{ ($cek && $cek->jam_masuk) ? 'disabled' : '' }}>
-                                    Absen Masuk
-                                </button>
-                                <button id="btnPulang"
-                                    class="btn btn-absen btn-danger-absen"
-                                    {{ (!$cek || !$cek->jam_masuk || $cek->jam_keluar) ? 'disabled' : '' }}>
-                                    Absen Pulang
-                                </button>
-                            </div>
-
-                            <div class="separatorr"></div>
-
-                            <div class="time-info">
-                                <p class="mb-1"><strong>Jam Kerja:</strong></p>
-                                <p class="mb-1">
-                                    &bull; Absen Masuk:
-                                    <strong>{{ $shift_start ? \Carbon\Carbon::parse($shift_start)->format('H:i') : '-' }} WIB</strong>
-                                </p>
-                                <p class="mb-0">
-                                    &bull; Absen Pulang:
-                                    <strong>{{ $shift_end ? \Carbon\Carbon::parse($shift_end)->format('H:i') : '-' }} WIB</strong>
-                                </p>
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-
-                {{-- RIWAYAT ABSENSI --}}
-                <div class="col-12 col-xl-5">
-                    <div class="card main-card h-100">
-                        <div class="card-header border-0 pt-4 px-4">
-                            <h3 class="card-title fw-bolder text-dark mb-0" style="font-size: clamp(1rem,3.5vw,1.35rem);">
-                                Riwayat Absensi
-                            </h3>
-                        </div>
-                        <div class="card-body px-4 pt-3">
-                            <div class="table-responsive">
-                                <table class="table table-hover table-history">
-                                    <thead>
-                                        <tr>
-                                            <th>Tanggal</th>
-                                            <th>Masuk</th>
-                                            <th>Pulang</th>
-                                            <th>Status</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @forelse($riwayatAbsensi as $r)
-                                        <tr>
-                                            <td>{{ \Carbon\Carbon::parse($r->tanggal)->format('d/m/Y') }}</td>
-                                            <td>{{ $r->jam_masuk ? \Carbon\Carbon::parse($r->jam_masuk)->format('H:i') : '-' }}</td>
-                                            <td>{{ $r->jam_keluar ? \Carbon\Carbon::parse($r->jam_keluar)->format('H:i') : '-' }}</td>
-                                            <td>
-                                                @switch($r->status)
-                                                    @case('hadir')
-                                                        <span class="badge badge-light-success">Hadir</span>
-                                                        @break
-                                                    @case('terlambat')
-                                                        <span class="badge badge-light-warning">Terlambat</span>
-                                                        @break
-                                                    @case('izin')
-                                                        <span class="badge badge-light-primary">Izin</span>
-                                                        @break
-                                                    @case('alpha')
-                                                        <span class="badge badge-light-danger">Alpha</span>
-                                                        @break
-                                                    @default
-                                                        <span class="badge badge-light-secondary text-capitalize">{{ $r->status }}</span>
-                                                @endswitch
-                                            </td>
-                                        </tr>
-                                        @empty
-                                        <tr>
-                                            <td colspan="4" class="text-center text-muted py-4">
-                                                Belum ada riwayat absensi.
-                                            </td>
-                                        </tr>
-                                        @endforelse
-                                    </tbody>
-                                </table>
                             </div>
                         </div>
                     </div>
                 </div>
-
             </div>
 
+            <div class="col-xl-4 mb-4">
+                <div class="card attendance-panel mb-4">
+                    <div class="card-header">
+                        <div class="fw-bold">Riwayat Absensi Terbaru</div>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover history-table mb-0">
+                                <thead class="bg-light">
+                                    <tr>
+                                        <th class="ps-4">Tanggal</th>
+                                        <th>Masuk</th>
+                                        <th>Pulang</th>
+                                        <th class="pe-4">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @forelse($riwayatAbsensi as $r)
+                                    @php
+                                    $badge = match($r->status) {
+                                    'hadir' => 'success',
+                                    'terlambat' => 'warning',
+                                    'izin' => 'info',
+                                    'alpha' => 'danger',
+                                    default => 'secondary',
+                                    };
+                                    @endphp
+                                    <tr>
+                                        <td class="ps-4">
+                                            <div class="fw-semibold">{{
+                                                \Carbon\Carbon::parse($r->tanggal)->format('d/m/Y') }}</div>
+                                        </td>
+                                        <td>{{ $r->jam_masuk ? \Carbon\Carbon::parse($r->jam_masuk)->format('H:i') : '-'
+                                            }}</td>
+                                        <td>{{ $r->jam_keluar ? \Carbon\Carbon::parse($r->jam_keluar)->format('H:i') :
+                                            '-' }}</td>
+                                        <td class="pe-4">
+                                            <span class="badge bg-{{ $badge }} text-capitalize">{{ $r->status }}</span>
+                                        </td>
+                                    </tr>
+                                    @empty
+                                    <tr>
+                                        <td colspan="4" class="text-center text-muted py-4">
+                                            Belum ada riwayat absensi.
+                                        </td>
+                                    </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card attendance-panel">
+                    <div class="card-header">
+                        <div class="fw-bold">Informasi Singkat</div>
+                    </div>
+                    <div class="card-body">
+                        <div class="quick-guide-item pt-0">
+                            <div class="fw-semibold mb-1">Hadir bulan ini</div>
+                            <div class="helper-text">{{ $totalHadirBulanIni }} kali kehadiran tercatat.</div>
+                        </div>
+                        <div class="quick-guide-item">
+                            <div class="fw-semibold mb-1">Izin menunggu</div>
+                            <div class="helper-text">{{ $totalIzinPending }} pengajuan belum diproses.</div>
+                        </div>
+                        <div class="quick-guide-item">
+                            <div class="fw-semibold mb-1">Lembur disetujui</div>
+                            <div class="helper-text">
+                                {{ rtrim(rtrim(number_format($totalLemburBulanIni, 2, ',', '.'), '0'), ',') }} jam pada
+                                bulan ini.
+                            </div>
+                        </div>
+                        <div class="pt-3">
+                            <div class="fw-semibold mb-1">Gaji terbaru</div>
+                            @if($penggajianTerbaru)
+                            <div class="h5 text-success mb-1">Rp {{ number_format($penggajianTerbaru->total_gaji, 0,
+                                ',', '.') }}</div>
+                            <div class="helper-text">
+                                Periode {{
+                                \Carbon\Carbon::create()->month($penggajianTerbaru->periode_bulan)->translatedFormat('F')
+                                }}
+                                {{ $penggajianTerbaru->periode_tahun }}
+                            </div>
+                            @else
+                            <div class="helper-text">Belum ada data penggajian terbaru.</div>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-</div>
+</main>
 @endsection
 
 @push('scripts')
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <script>
-    // --- GREETING ---
     const hours = new Date().getHours();
     let greeting = "Selamat Datang";
     if      (hours >= 4  && hours < 11) greeting = "Selamat Pagi";
@@ -325,7 +390,7 @@
     document.getElementById('greetingText').innerHTML =
         greeting + ', <strong class="text-capitalize">{{ $namaKaryawan }}</strong>!';
 
-    // --- MAP ---
+    //map
     var map = L.map('map', { zoomControl: true }).setView([0, 0], 15);
     var marker;
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -348,7 +413,7 @@
         });
     }
 
-    // --- CLOCK ---
+    //jam
     function updateClock() {
         const now = new Date();
         document.getElementById('clock').textContent = now.toLocaleTimeString('id-ID');

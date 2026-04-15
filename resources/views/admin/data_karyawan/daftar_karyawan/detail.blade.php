@@ -40,8 +40,9 @@
                         <img src="{{ $karyawan->foto ? asset('storage/'.$karyawan->foto) : 'https://ui-avatars.com/api/?name='.urlencode($karyawan->nama).'&size=200' }}"
                             class="rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover;">
 
-                        <div class="fw-bold fs-5">{{ $karyawan->nama }}</div>
-                        <div class="text-muted small mb-2">{{ optional($karyawan->jabatan)->nama_jabatan ?? '-' }}</div>
+                        <div class="fw-bold fs-5 text-capitalize">{{ $karyawan->nama }}</div>
+                        <div class="text-muted small mb-2 text-capitalize">{{ optional($karyawan->jabatan)->nama_jabatan
+                            ?? '-' }}</div>
 
                         @if($karyawan->status === 'aktif')
                         <span class="badge bg-success">Aktif</span>
@@ -62,13 +63,14 @@
                                 <div class="fw-semibold small">Status Karyawan</div>
                                 <div class="text-muted" style="font-size:.78rem;">Status kepegawaian karyawan</div>
                             </div>
-                            <form action="{{ route('admin.karyawan.toggleKaryawanStatus', $karyawan->id) }}" method="POST">
+                            <form action="{{ route('admin.karyawan.toggleKaryawanStatus', $karyawan->id) }}"
+                                method="POST">
                                 @csrf
                                 <div class="form-check form-switch mb-0">
                                     <input class="form-check-input" type="checkbox" role="switch"
-                                        style="width:2.5em; height:1.3em; cursor:pointer;"
-                                        {{ $karyawan->status === 'aktif' ? 'checked' : '' }}
-                                        onchange="this.form.submit()">
+                                        style="width:2.5em; height:1.3em; cursor:pointer;" {{ $karyawan->status ===
+                                    'aktif' ? 'checked' : '' }}
+                                    onchange="this.form.submit()">
                                 </div>
                             </form>
                         </div>
@@ -83,9 +85,9 @@
                                 @csrf
                                 <div class="form-check form-switch mb-0">
                                     <input class="form-check-input" type="checkbox" role="switch"
-                                        style="width:2.5em; height:1.3em; cursor:pointer;"
-                                        {{ optional($karyawan->user)->status === 'aktif' ? 'checked' : '' }}
-                                        onchange="this.form.submit()">
+                                        style="width:2.5em; height:1.3em; cursor:pointer;" {{
+                                        optional($karyawan->user)->status === 'aktif' ? 'checked' : '' }}
+                                    onchange="this.form.submit()">
                                 </div>
                             </form>
                         </div>
@@ -108,11 +110,12 @@
                         <div class="row gx-3 mb-3">
                             <div class="col-md-6">
                                 <label class="small mb-1 text-muted">Nama Lengkap</label>
-                                <div class="form-control bg-light">{{ $karyawan->nama }}</div>
+                                <div class="form-control bg-light text-capitalize">{{ $karyawan->nama }}</div>
                             </div>
                             <div class="col-md-6">
                                 <label class="small mb-1 text-muted">Jabatan</label>
-                                <div class="form-control bg-light">{{ optional($karyawan->jabatan)->nama_jabatan ?? '-'
+                                <div class="form-control bg-light text-capitalize">{{
+                                    optional($karyawan->jabatan)->nama_jabatan ?? '-'
                                     }}</div>
                             </div>
                         </div>
@@ -192,7 +195,8 @@
 
                     <div class="mb-3">
                         <label class="small mb-1 text-muted">Nama</label>
-                        <input type="text" name="nama" class="form-control" value="{{ $karyawan->nama }}">
+                        <input type="text" name="nama" class="form-control text-capitalize"
+                            value="{{ $karyawan->nama }}">
                     </div>
 
                     <div class="mb-3">

@@ -31,7 +31,8 @@
                                 fill="currentColor" />
                             <path d="M8 2C7.4 2 7 2.4 7 3V5C7 5.6 7.4 6 8 6C8.6 6 9 5.6 9 5V3C9 2.4 8.6 2 8 2Z"
                                 fill="currentColor" />
-                            <path d="M16 2C15.4 2 15 2.4 15 3V5C15 5.6 15.4 6 16 6C16.6 6 17 5.6 17 5V3C17 2.4 16.6 2 16 2Z"
+                            <path
+                                d="M16 2C15.4 2 15 2.4 15 3V5C15 5.6 15.4 6 16 6C16.6 6 17 5.6 17 5V3C17 2.4 16.6 2 16 2Z"
                                 fill="currentColor" />
                             <path d="M7 10H17V12H7V10ZM7 14H13V16H7V14Z" fill="currentColor" />
                         </svg>
@@ -62,8 +63,8 @@
                             <path opacity="0.3"
                                 d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"
                                 fill="currentColor" />
-                            <path d="M12 7V12L15 15" stroke="currentColor" stroke-width="2"
-                                stroke-linecap="round" stroke-linejoin="round" />
+                            <path d="M12 7V12L15 15" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" />
                         </svg>
                     </div>
                     Pengajuan Lembur
@@ -77,8 +78,7 @@
                             <path opacity="0.3"
                                 d="M18 21H6C4.9 21 4 20.1 4 19V5C4 3.9 4.9 3 6 3H18C19.1 3 20 3.9 20 5V19C20 20.1 19.1 21 18 21Z"
                                 fill="currentColor" />
-                            <path d="M10 17H14V15H10V17ZM10 13H14V11H10V13ZM10 9H14V7H10V9Z"
-                                fill="currentColor" />
+                            <path d="M10 17H14V15H10V17ZM10 13H14V11H10V13ZM10 9H14V7H10V9Z" fill="currentColor" />
                         </svg>
                     </div>
                     Slip Gaji
@@ -90,7 +90,8 @@
         <div class="sidenav-footer">
             <div class="sidenav-footer-content">
                 <div class="sidenav-footer-subtitle">Logged in as:</div>
-                <div class="sidenav-footer-title">{{ auth()->user()->karyawan->nama ?? auth()->user()->nik }}</div>
+                <div class="sidenav-footer-title text-capitalize">{{ auth()->user()->karyawan->nama ??
+                    auth()->user()->nik }}</div>
             </div>
         </div>
     </nav>

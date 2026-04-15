@@ -50,6 +50,8 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/rekap-tahunan', [AbsensiController::class, 'rekap'])->name('rekap.tahunan');
 
     Route::get('admin/izin', [PengajuanController::class, 'izin'])->name('admin.izin');
+    Route::post('/admin/izin/{id}/approve', [PengajuanController::class, 'approveIzin'])->name('izin.approve');
+    Route::post('/admin/izin/{id}/reject', [PengajuanController::class, 'rejectIzin'])->name('izin.reject');
 
     Route::get('/admin/lembur', [PengajuanController::class, 'lembur'])->name('admin.lembur');
     Route::post('/admin/lembur/{id}/approve', [PengajuanController::class, 'approveLembur'])->name('admin.lembur.approve');
