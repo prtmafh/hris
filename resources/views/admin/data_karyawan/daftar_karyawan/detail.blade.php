@@ -94,6 +94,23 @@
 
                     </div>
                 </div>
+
+                <div class="card mt-4">
+                    <div class="card-header">Keamanan Akun</div>
+                    <div class="card-body">
+                        <div class="small text-muted mb-3">
+                            Reset password akan mengubah password login menjadi tanggal lahir karyawan:
+                            <span class="fw-semibold text-dark">{{ $karyawan->tgl_lahir ?? '-' }}</span>
+                        </div>
+                        <form action="{{ route('admin.karyawan.resetPassword', $karyawan->id) }}" method="POST"
+                            onsubmit="return confirmResetPassword(event, '{{ addslashes($karyawan->nama) }}', '{{ $karyawan->tgl_lahir ?? '-' }}')">
+                            @csrf
+                            <button type="submit" class="btn btn-outline-danger w-100">
+                                <i data-feather="refresh-cw"></i> Reset Password
+                            </button>
+                        </form>
+                    </div>
+                </div>
             </div>
 
             {{-- Kolom Kanan: Info Detail --}}
@@ -285,6 +302,31 @@
         gajiPokok.style.display  = this.value === 'bulanan' ? 'block' : 'none';
         gajiHarian.style.display = this.value === 'harian'  ? 'block' : 'none';
     });
+
+    function confirmResetPassword(event, nama, tanggalLahir) {
+        event.preventDefault();
+
+        Swal.fire({
+            title: 'Reset password?',
+            text: `Password ${nama} akan direset ke tanggal lahir ${tanggalLahir}.`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Ya, reset',
+            cancelButtonText: 'Batal',
+            reverseButtons: true,
+            customClass: {
+                confirmButton: 'btn btn-danger',
+                cancelButton: 'btn btn-light'
+            },
+            buttonsStyling: false
+        }).then((result) => {
+            if (result.isConfirmed) {
+                event.target.submit();
+            }
+        });
+
+        return false;
+    }
 </script>
 @endpush
 @endsection

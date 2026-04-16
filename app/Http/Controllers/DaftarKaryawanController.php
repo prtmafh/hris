@@ -40,7 +40,6 @@ class DaftarKaryawanController extends Controller
             'status' => 'required|in:aktif,nonaktif',
         ]);
 
-        // 🔥 1. BUAT USER (LOGIN NIK)
         $user = User::create([
             'nik' => $request->nik,
             // 'email' => $request->nik . '@company.com',
@@ -49,13 +48,11 @@ class DaftarKaryawanController extends Controller
             'status' => 'aktif'
         ]);
 
-        // 🔥 2. HANDLE FOTO
         $foto = null;
         if ($request->hasFile('foto')) {
             $foto = $request->file('foto')->store('karyawan', 'public');
         }
 
-        // 🔥 3. SIMPAN KARYAWAN
         Karyawan::create([
             'user_id' => $user->id,
             'jabatan_id' => $request->jabatan_id,
@@ -72,7 +69,7 @@ class DaftarKaryawanController extends Controller
             'foto' => $foto,
         ]);
 
-        return redirect()->back()->with('success', 'Karyawan berhasil ditambahkan');
+        return redirect()->route('admin.daftar_karyawan')->with('success', 'Karyawan berhasil ditambahkan');
     }
 
     public function tambah()
@@ -166,6 +163,31 @@ class DaftarKaryawanController extends Controller
         $label = $user->status === 'aktif' ? 'diaktifkan' : 'dinonaktifkan';
 
         return redirect()->back()->with('success', "Akun {$karyawan->nama} berhasil {$label}.");
+    }
+
+    public function resetPassword($id)
+    {
+        $karyawan = Karyawan::with('user')->findOrFail($id);
+        $user = $karyawan->user;
+
+        if (! $user) {
+            return redirect()->back()->with('error', 'Akun login untuk karyawan ini tidak ditemukan.');
+        }
+
+        if (! $karyawan->tgl_lahir) {
+            return redirect()->back()->with('error', 'Tanggal lahir karyawan belum tersedia, password tidak dapat direset.');
+        }
+
+        $passwordDefault = $karyawan->tgl_lahir;
+
+        $user->update([
+            'password' => Hash::make($passwordDefault),
+        ]);
+
+        return redirect()->back()->with(
+            'success',
+            "Password {$karyawan->nama} berhasil direset ke tanggal lahir ({$passwordDefault})."
+        );
     }
 
     public function destroy($id)

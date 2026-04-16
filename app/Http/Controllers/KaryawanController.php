@@ -126,7 +126,7 @@ class KaryawanController extends Controller
 
         $izin = Izin::where('karyawan_id', $karyawan->id)
             ->orderByDesc('tanggal')
-            ->paginate(10);
+            ->get();
 
         return view('karyawan.izin-saya', compact('izin'));
     }
@@ -166,7 +166,7 @@ class KaryawanController extends Controller
 
         $lembur = Lembur::where('karyawan_id', $karyawan->id)
             ->orderByDesc('tanggal')
-            ->paginate(10);
+            ->get();
 
         return view('karyawan.lembur-saya', compact('lembur'));
     }

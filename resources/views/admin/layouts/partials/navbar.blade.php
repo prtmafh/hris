@@ -18,6 +18,13 @@
     </form>
     <!-- Navbar Items-->
     <ul class="navbar-nav align-items-center ms-auto">
+        <li class="nav-item me-2">
+            <button class="btn btn-sm btn-outline-secondary btn-theme-toggle d-inline-flex align-items-center gap-2"
+                type="button" data-theme-toggle aria-label="Ganti tema">
+                <i data-feather="moon"></i>
+                <span class="d-none d-sm-inline" data-theme-label>Dark mode</span>
+            </button>
+        </li>
         <!-- Documentation Dropdown-->
         {{-- <li class="nav-item dropdown no-caret d-none d-md-block me-3">
             <a class="nav-link dropdown-toggle" id="navbarDropdownDocs" href="javascript:void(0);" role="button"

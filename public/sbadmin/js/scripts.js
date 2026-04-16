@@ -56,6 +56,39 @@
         });
     }
 
+    const themeToggleButtons = document.querySelectorAll('[data-theme-toggle]');
+    const themeLabelTargets = document.querySelectorAll('[data-theme-label]');
+    const themeStorageKey = 'sb-theme';
+
+    const applyTheme = (theme) => {
+        document.documentElement.setAttribute('data-sb-theme', theme);
+
+        themeToggleButtons.forEach(button => {
+            const icon = button.querySelector('[data-feather]');
+            if (icon) {
+                icon.setAttribute('data-feather', theme === 'dark' ? 'sun' : 'moon');
+            }
+        });
+
+        themeLabelTargets.forEach(label => {
+            label.textContent = theme === 'dark' ? 'Light mode' : 'Dark mode';
+        });
+
+        feather.replace();
+    };
+
+    applyTheme(localStorage.getItem(themeStorageKey) || 'light');
+
+    themeToggleButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const currentTheme = document.documentElement.getAttribute('data-sb-theme') || 'light';
+            const nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+            localStorage.setItem(themeStorageKey, nextTheme);
+            applyTheme(nextTheme);
+        });
+    });
+
     // Add active state to sidbar nav links
     let activatedPath = window.location.pathname.match(/([\w-]+\.html)/, '$1');
 

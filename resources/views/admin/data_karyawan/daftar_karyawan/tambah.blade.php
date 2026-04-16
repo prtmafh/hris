@@ -32,18 +32,12 @@
                     </h1>
                     <div class="page-header-subtitle">Manajemen data karyawan</div>
                 </div>
-                {{--
-                <button class="btn btn-white btn-sm" data-bs-toggle="modal" data-bs-target="#modalTambahKaryawan">
-                    <i data-feather="plus"></i> Tambah Karyawan
-                </button> --}}
             </div>
         </div>
     </header>
 
     <div class="container-xl px-4 mt-n10">
         <div class="row">
-
-            {{-- FORM TAMBAH --}}
             <div class="col-lg-12">
                 <div class="card mb-4 shadow-sm">
                     <div class="card-header fw-bold">
@@ -54,15 +48,12 @@
                         <form action="{{ route('admin.karyawan.store') }}" method="POST" enctype="multipart/form-data">
                             @csrf
 
-                            {{-- STEP INDICATOR --}}
                             <div class="d-flex justify-content-between mb-4">
-                                <div class="step active" data-step="1">1. Pribadi</div>
+                                <div class="step active p-3" data-step="1">1. Pribadi</div>
                                 <div class="step" data-step="2">2. Pekerjaan</div>
                                 <div class="step" data-step="3">3. Gaji</div>
                             </div>
 
-                            {{-- STEP 1 --}}
-                            {{-- STEP 1 --}}
                             <div class="step-content" id="step-1">
                                 <h5 class="fw-bold mb-3">Data Pribadi</h5>
 
@@ -96,8 +87,6 @@
                                 </div>
                             </div>
 
-
-                            {{-- STEP 2 --}}
                             <div class="step-content d-none" id="step-2">
                                 <h5 class="fw-bold mb-3">Data Pekerjaan</h5>
 
@@ -127,8 +116,6 @@
                                 </div>
                             </div>
 
-
-                            {{-- STEP 3 --}}
                             <div class="step-content d-none" id="step-3">
                                 <h5 class="fw-bold mb-3">Penggajian & Foto</h5>
 
@@ -144,12 +131,14 @@
 
                                     <div class="col-md-6 mb-3" id="wrap_gaji_pokok">
                                         <label class="form-label fw-semibold">Gaji Pokok</label>
-                                        <input type="text" name="gaji_pokok" id="gaji_pokok" class="form-control">
+                                        <input type="text" name="gaji_pokok" id="gaji_pokok" class="form-control"
+                                            inputmode="numeric" placeholder="Masukkan gaji pokok">
                                     </div>
 
                                     <div class="col-md-6 mb-3" id="wrap_gaji_harian">
                                         <label class="form-label fw-semibold">Gaji Per Hari</label>
-                                        <input type="text" name="gaji_per_hari" id="gaji_per_hari" class="form-control">
+                                        <input type="text" name="gaji_per_hari" id="gaji_per_hari" class="form-control"
+                                            inputmode="numeric" placeholder="Masukkan gaji per hari">
                                     </div>
 
                                     <div class="col-md-6 mb-3">
@@ -168,7 +157,6 @@
                                 </div>
                             </div>
 
-                            {{-- NAV BUTTON --}}
                             <div class="d-flex justify-content-between mt-3">
                                 <button type="button" class="btn btn-secondary" id="prevBtn">Kembali</button>
 
@@ -177,7 +165,6 @@
                                     <button type="submit" class="btn btn-success d-none" id="submitBtn">Simpan</button>
                                 </div>
                             </div>
-
                         </form>
                     </div>
                 </div>
@@ -192,107 +179,111 @@
 <script>
     let currentStep = 1;
 
-const steps = document.querySelectorAll('.step-content');
-const stepIndicator = document.querySelectorAll('.step');
+    const form = document.querySelector('form[action="{{ route('admin.karyawan.store') }}"]');
+    const steps = document.querySelectorAll('.step-content');
+    const stepIndicator = document.querySelectorAll('.step');
+    const nextBtn = document.getElementById('nextBtn');
+    const prevBtn = document.getElementById('prevBtn');
+    const submitBtn = document.getElementById('submitBtn');
+    const statusGaji = document.getElementById('status_gaji');
+    const wrapGajiPokok = document.getElementById('wrap_gaji_pokok');
+    const wrapGajiHarian = document.getElementById('wrap_gaji_harian');
+    const gajiPokokInput = document.getElementById('gaji_pokok');
+    const gajiHarianInput = document.getElementById('gaji_per_hari');
+    const fotoInput = document.getElementById('foto');
+    const preview = document.getElementById('preview');
 
-const nextBtn = document.getElementById('nextBtn');
-const prevBtn = document.getElementById('prevBtn');
-const submitBtn = document.getElementById('submitBtn');
+    showStep(currentStep);
+    toggleGajiFields(statusGaji.value);
 
-// INIT
-showStep(currentStep);
+    function showStep(step) {
+        steps.forEach(stepItem => {
+            stepItem.classList.add('d-none');
+            stepItem.classList.remove('fade-in');
+        });
 
-function showStep(step) {
-    steps.forEach(s => s.classList.add('d-none'));
-    document.getElementById('step-' + step).classList.remove('d-none');
+        const active = document.getElementById('step-' + step);
+        active.classList.remove('d-none');
+        active.classList.add('fade-in');
 
-    stepIndicator.forEach(s => s.classList.remove('active'));
-    stepIndicator[step - 1].classList.add('active');
+        stepIndicator.forEach(indicator => indicator.classList.remove('active'));
+        stepIndicator[step - 1].classList.add('active');
 
-    prevBtn.style.display = step === 1 ? 'none' : 'inline-block';
-    nextBtn.style.display = step === 3 ? 'none' : 'inline-block';
-    submitBtn.classList.toggle('d-none', step !== 3);
-}
-
-// NEXT
-nextBtn.onclick = () => {
-    if (currentStep < 3) {
-        currentStep++;
-        showStep(currentStep);
-    }
-};
-
-// PREV
-prevBtn.onclick = () => {
-    if (currentStep > 1) {
-        currentStep--;
-        showStep(currentStep);
-    }
-};
-
-
-
-// 🔥 VALIDASI GAJI
-document.getElementById('status_gaji').addEventListener('change', function () {
-    let val = this.value;
-
-    document.getElementById('gaji_pokok').style.display = val === 'bulanan' ? 'block' : 'none';
-    document.getElementById('gaji_per_hari').style.display = val === 'harian' ? 'block' : 'none';
-});
-
-
-
-// 🔥 FORMAT RUPIAH
-function formatRupiah(input) {
-    let value = input.value.replace(/\D/g, '');
-    input.value = new Intl.NumberFormat('id-ID').format(value);
-}
-
-document.getElementById('gaji_pokok').addEventListener('keyup', function () {
-    formatRupiah(this);
-});
-
-document.getElementById('gaji_per_hari').addEventListener('keyup', function () {
-    formatRupiah(this);
-});
-
-
-
-// 🔥 PREVIEW FOTO
-document.getElementById('foto').addEventListener('change', function (e) {
-    let reader = new FileReader();
-
-    reader.onload = function () {
-        let preview = document.getElementById('preview');
-        preview.src = reader.result;
-        preview.classList.remove('d-none');
+        prevBtn.style.display = step === 1 ? 'none' : 'inline-block';
+        nextBtn.style.display = step === 3 ? 'none' : 'inline-block';
+        submitBtn.classList.toggle('d-none', step !== 3);
     }
 
-    reader.readAsDataURL(e.target.files[0]);
-});
-</script>
-<script>
-    // default hide gaji
-document.getElementById('wrap_gaji_pokok').style.display = 'none';
-document.getElementById('wrap_gaji_harian').style.display = 'none';
+    function toggleGajiFields(value) {
+        const isBulanan = value === 'bulanan';
+        const isHarian = value === 'harian';
 
-// animasi step
-function showStep(step) {
-    steps.forEach(s => {
-        s.classList.add('d-none');
-        s.classList.remove('fade-in');
+        wrapGajiPokok.style.display = isBulanan ? 'block' : 'none';
+        wrapGajiHarian.style.display = isHarian ? 'block' : 'none';
+
+        gajiPokokInput.disabled = !isBulanan;
+        gajiHarianInput.disabled = !isHarian;
+
+        if (!isBulanan) {
+            gajiPokokInput.value = '';
+        }
+
+        if (!isHarian) {
+            gajiHarianInput.value = '';
+        }
+    }
+
+    function formatRupiah(input) {
+        const value = input.value.replace(/\D/g, '');
+        input.value = value ? new Intl.NumberFormat('id-ID').format(value) : '';
+    }
+
+    nextBtn.onclick = () => {
+        if (currentStep < 3) {
+            currentStep++;
+            showStep(currentStep);
+        }
+    };
+
+    prevBtn.onclick = () => {
+        if (currentStep > 1) {
+            currentStep--;
+            showStep(currentStep);
+        }
+    };
+
+    statusGaji.addEventListener('change', function () {
+        toggleGajiFields(this.value);
     });
 
-    const active = document.getElementById('step-' + step);
-    active.classList.remove('d-none');
-    active.classList.add('fade-in');
+    gajiPokokInput.addEventListener('input', function () {
+        formatRupiah(this);
+    });
 
-    stepIndicator.forEach(s => s.classList.remove('active'));
-    stepIndicator[step - 1].classList.add('active');
+    gajiHarianInput.addEventListener('input', function () {
+        formatRupiah(this);
+    });
 
-    prevBtn.style.display = step === 1 ? 'none' : 'inline-block';
-    nextBtn.style.display = step === 3 ? 'none' : 'inline-block';
-    submitBtn.classList.toggle('d-none', step !== 3);
-}
+    fotoInput.addEventListener('change', function (e) {
+        const file = e.target.files[0];
+
+        if (!file) {
+            preview.classList.add('d-none');
+            preview.removeAttribute('src');
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function () {
+            preview.src = reader.result;
+            preview.classList.remove('d-none');
+        };
+        reader.readAsDataURL(file);
+    });
+
+    form.addEventListener('submit', function () {
+        gajiPokokInput.value = gajiPokokInput.value.replace(/\D/g, '');
+        gajiHarianInput.value = gajiHarianInput.value.replace(/\D/g, '');
+    });
 </script>
 @endpush

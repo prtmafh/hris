@@ -21,7 +21,7 @@
                         <div class="input-group input-group-joined border-0" style="width: 16.5rem">
                             <span class="input-group-text"><i class="text-primary" data-feather="calendar"></i></span>
                             <input class="form-control ps-0 pointer"
-                                placeholder="{{ now()->locale('id')->isoFormat('D MMMM YYYY') }}" readonly />
+                                placeholder="{{ $today->locale('id')->isoFormat('D MMMM YYYY') }}" readonly />
                         </div>
                     </div>
                 </div>
@@ -41,13 +41,13 @@
                         <div class="d-flex justify-content-between align-items-center">
                             <div class="me-3">
                                 <div class="text-white-75 small">Total Karyawan</div>
-                                <div class="text-lg fw-bold">0</div>
+                                <div class="text-lg fw-bold">{{ $totalKaryawan }}</div>
                             </div>
                             <i class="feather-xl text-white-50" data-feather="users"></i>
                         </div>
                     </div>
                     <div class="card-footer d-flex align-items-center justify-content-between small">
-                        <a class="text-white stretched-link" href="#">Lihat
+                        <a class="text-white stretched-link" href="{{ route('admin.daftar_karyawan') }}">Lihat
                             Karyawan</a>
                         <div class="text-white"><i class="fas fa-angle-right"></i></div>
                     </div>
@@ -61,13 +61,13 @@
                         <div class="d-flex justify-content-between align-items-center">
                             <div class="me-3">
                                 <div class="text-white-75 small">Hadir Hari Ini</div>
-                                <div class="text-lg fw-bold">0</div>
+                                <div class="text-lg fw-bold">{{ $hadirHariIni }}</div>
                             </div>
                             <i class="feather-xl text-white-50" data-feather="check-circle"></i>
                         </div>
                     </div>
                     <div class="card-footer d-flex align-items-center justify-content-between small">
-                        <a class="text-white stretched-link" href="#">Lihat Absensi</a>
+                        <a class="text-white stretched-link" href="{{ route('data_absen') }}">Lihat Absensi</a>
                         <div class="text-white"><i class="fas fa-angle-right"></i></div>
                     </div>
                 </div>
@@ -80,13 +80,14 @@
                         <div class="d-flex justify-content-between align-items-center">
                             <div class="me-3">
                                 <div class="text-white-75 small">Terlambat</div>
-                                <div class="text-lg fw-bold">0</div>
+                                <div class="text-lg fw-bold">{{ $terlambatHariIni }}</div>
                             </div>
                             <i class="feather-xl text-white-50" data-feather="clock"></i>
                         </div>
                     </div>
                     <div class="card-footer d-flex align-items-center justify-content-between small">
-                        <a class="text-white stretched-link" href="#">Lihat Detail</a>
+                        <a class="text-white stretched-link"
+                            href="{{ route('data_absen', ['status' => 'terlambat']) }}">Lihat Detail</a>
                         <div class="text-white"><i class="fas fa-angle-right"></i></div>
                     </div>
                 </div>
@@ -99,13 +100,14 @@
                         <div class="d-flex justify-content-between align-items-center">
                             <div class="me-3">
                                 <div class="text-white-75 small">Tidak Hadir</div>
-                                <div class="text-lg fw-bold">0</div>
+                                <div class="text-lg fw-bold">{{ $tidakHadirHariIni }}</div>
                             </div>
                             <i class="feather-xl text-white-50" data-feather="x-circle"></i>
                         </div>
                     </div>
                     <div class="card-footer d-flex align-items-center justify-content-between small">
-                        <a class="text-white stretched-link" href="#">Lihat Detail</a>
+                        <a class="text-white stretched-link"
+                            href="{{ route('data_absen', ['status' => 'alpha']) }}">Lihat Detail</a>
                         <div class="text-white"><i class="fas fa-angle-right"></i></div>
                     </div>
                 </div>
@@ -119,7 +121,7 @@
                 <div class="card card-header-actions h-100">
                     <div class="card-header">
                         Absensi Hari Ini
-                        <a href="#" class="btn btn-sm btn-primary">
+                        <a href="{{ route('data_absen') }}" class="btn btn-sm btn-primary">
                             Lihat Semua
                         </a>
                     </div>
@@ -135,17 +137,20 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {{-- @forelse($absensiHariIni as $a)
+                                    @forelse($absensiHariIni as $a)
                                     <tr>
                                         <td class="ps-4 text-capitalize">{{ $a->karyawan->nama ?? '-' }}</td>
                                         <td>
                                             <span class="badge bg-light text-dark border">
-                                                {{ $a->jam_masuk ?? 'Belum Absen' }}
+                                                {{ $a->jam_masuk ? \Illuminate\Support\Str::of($a->jam_masuk)->limit(5,
+                                                '') : 'Belum Absen' }}
                                             </span>
                                         </td>
                                         <td>
                                             <span class="badge bg-light text-dark border">
-                                                {{ $a->jam_pulang ?? 'Belum Absen' }}
+                                                {{ $a->jam_keluar ?
+                                                \Illuminate\Support\Str::of($a->jam_keluar)->limit(5, '') : 'Belum
+                                                Absen' }}
                                             </span>
                                         </td>
                                         <td>
@@ -156,8 +161,8 @@
                                             @case('izin')
                                             <span class="badge bg-warning-soft text-warning">Izin</span>
                                             @break
-                                            @case('tidak hadir')
-                                            <span class="badge bg-danger-soft text-danger">Tidak Hadir</span>
+                                            @case('alpha')
+                                            <span class="badge bg-danger-soft text-danger">Alpha</span>
                                             @break
                                             @case('terlambat')
                                             <span class="badge bg-warning-soft text-warning">Terlambat</span>
@@ -174,7 +179,7 @@
                                             Belum ada data absensi hari ini
                                         </td>
                                     </tr>
-                                    @endforelse --}}
+                                    @endforelse
                                 </tbody>
                             </table>
                         </div>
@@ -182,44 +187,54 @@
                 </div>
             </div>
 
-            <!-- Informasi Terbaru -->
+            <!-- Ringkasan Admin -->
             <div class="col-xl-4 mb-4">
-                <!-- Slip Gaji -->
                 <div class="card mb-4">
                     <div class="card-header">
-                        <i data-feather="file-text" class="me-2 text-success"></i>
-                        Slip Gaji Bulan Ini
+                        <i data-feather="clipboard" class="me-2 text-primary"></i>
+                        Persetujuan Pending
                     </div>
                     <div class="card-body">
-                        <p class="text-muted small mb-1">Periode:</p>
-                        <p class="fw-bold mb-3">{{ now()->locale('id')->monthName }} {{ now()->year }}</p>
-                        <a href="#" class="btn btn-success btn-sm w-100">
-                            <i data-feather="eye" class="me-1" style="width:14px;height:14px"></i>
-                            Lihat Slip Gaji
-                        </a>
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div>
+                                <div class="small text-muted">Pengajuan Izin</div>
+                                <div class="h4 mb-0">{{ $izinPending }}</div>
+                            </div>
+                            <a href="{{ route('admin.izin') }}" class="btn btn-sm btn-outline-primary">Lihat</a>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <div class="small text-muted">Pengajuan Lembur</div>
+                                <div class="h4 mb-0">{{ $lemburPending }}</div>
+                            </div>
+                            <a href="{{ route('admin.lembur') }}" class="btn btn-sm btn-outline-primary">Lihat</a>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Pengumuman HRD -->
                 <div class="card">
                     <div class="card-header">
-                        <i data-feather="bell" class="me-2 text-warning"></i>
-                        Pengumuman HRD
+                        <i data-feather="bar-chart-2" class="me-2 text-success"></i>
+                        Ringkasan Bulan Ini
                     </div>
                     <div class="card-body">
-                        <div class="d-flex align-items-start mb-3">
-                            <div class="bg-warning-soft text-warning rounded p-2 me-3 flex-shrink-0">
-                                <i data-feather="alert-circle" style="width:16px;height:16px"></i>
-                            </div>
-                            <p class="text-muted small mb-0">
-                                Karyawan lembur wajib konfirmasi ke mandor sebelum pukul 10.00 setiap Sabtu.
-                            </p>
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="text-muted small">Hadir</span>
+                            <span class="badge bg-success-soft text-success">{{ $ringkasanBulanIni['hadir'] }}</span>
                         </div>
-                        <hr class="my-2">
-                        <p class="text-muted small mb-0">
-                            <i data-feather="info" class="me-1 text-primary" style="width:14px;height:14px"></i>
-                            Pastikan absensi dilakukan sebelum jam kerja dimulai.
-                        </p>
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="text-muted small">Terlambat</span>
+                            <span class="badge bg-warning-soft text-warning">{{ $ringkasanBulanIni['terlambat']
+                                }}</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="text-muted small">Izin</span>
+                            <span class="badge bg-info-soft text-info">{{ $ringkasanBulanIni['izin'] }}</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="text-muted small">Alpha</span>
+                            <span class="badge bg-danger-soft text-danger">{{ $ringkasanBulanIni['alpha'] }}</span>
+                        </div>
                     </div>
                 </div>
             </div>

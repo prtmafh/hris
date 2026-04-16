@@ -39,6 +39,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::delete('/karyawan/{id}', [DaftarKaryawanController::class, 'destroy'])->name('admin.karyawan.destroy');
     Route::post('/admin/karyawan/{id}/toggle-status', [DaftarKaryawanController::class, 'toggleStatus'])->name('admin.karyawan.toggleStatus');
     Route::post('/admin/karyawan/{id}/toggle-karyawan-status', [DaftarKaryawanController::class, 'toggleKaryawanStatus'])->name('admin.karyawan.toggleKaryawanStatus');
+    Route::post('/admin/karyawan/{id}/reset-password', [DaftarKaryawanController::class, 'resetPassword'])->name('admin.karyawan.resetPassword');
 
     Route::get('/admin/absensi', [AbsensiController::class, 'index'])->name('data_absen');
     Route::get('/admin/absensi/tambah', [AbsensiController::class, 'create'])->name('admin.absensi.create');

@@ -88,11 +88,11 @@
                             <div class="fw-bold">Riwayat Pengajuan Lembur</div>
                             <div class="small text-muted">Daftar pengajuan lembur yang pernah Anda buat.</div>
                         </div>
-                        <span class="badge bg-primary">{{ $lembur->total() }} data</span>
+                        <span class="badge bg-primary">{{ $lembur->count() }} data</span>
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
-                            <table id="datatablesSimple" class="table table-hover align-middle mb-0">
+                            <table id="datatablesSimple" data-simple-datatable class="table table-hover align-middle mb-0">
                                 <thead>
                                     <tr>
                                         <th class="text-muted small text-uppercase">Tanggal</th>
@@ -138,9 +138,6 @@
                                     @endforelse
                                 </tbody>
                             </table>
-                        </div>
-                        <div class="mt-4">
-                            {{ $lembur->links() }}
                         </div>
                     </div>
                 </div>

@@ -105,7 +105,7 @@
             </div>
             <div class="card-body">
                 <div class="table-responsive">
-                    <table id="datatablesSimple" class="table table-hover align-middle mb-0">
+                    <table id="datatablesSimple" data-simple-datatable class="table table-hover align-middle mb-0">
                         <thead>
                             <tr>
                                 <th class="text-muted small text-uppercase">No</th>
