@@ -59,6 +59,13 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::post('/admin/lembur/{id}/reject', [PengajuanController::class, 'rejectLembur'])->name('admin.lembur.reject');
 
     Route::get('/admin/penggajian', [PenggajianController::class, 'data_gaji'])->name('admin.penggajian');
+    Route::get('/admin/pengaturan', [AdminController::class, 'pengaturan'])->name('admin.pengaturan');
+    Route::get('/admin/jadwal-kerja', [AdminController::class, 'jadwalKerja'])->name('admin.jadwal_kerja');
+    Route::get('/admin/hari-libur', [AdminController::class, 'hariLibur'])->name('admin.hari_libur');
+    Route::get('/admin/kategori-reimbursement', [AdminController::class, 'kategoriReimbursement'])->name('admin.kategori_reimbursement');
+    Route::get('/admin/reimbursement', [AdminController::class, 'reimbursement'])->name('admin.reimbursement');
+    Route::get('/admin/training', [AdminController::class, 'training'])->name('admin.training');
+    Route::get('/admin/peserta-training', [AdminController::class, 'pesertaTraining'])->name('admin.peserta_training');
 });
 
 Route::middleware(['auth', 'karyawan'])->group(function () {

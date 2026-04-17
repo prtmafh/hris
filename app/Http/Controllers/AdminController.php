@@ -3,10 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Models\Absensi;
+use App\Models\HariLibur;
 use App\Models\Izin;
 use App\Models\Jabatan;
+use App\Models\JadwalKerja;
+use App\Models\KategoriReimbursement;
 use App\Models\Karyawan;
 use App\Models\Lembur;
+use App\Models\Pengaturan;
+use App\Models\PesertaTraining;
+use App\Models\Reimbursement;
+use App\Models\Training;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -136,5 +143,81 @@ class AdminController extends Controller
 
         $admin->delete();
         return redirect()->back()->with('success', 'Akun admin berhasil dihapus.');
+    }
+
+    public function pengaturan()
+    {
+        $pengaturan = Pengaturan::orderBy('grup')
+            ->orderBy('key')
+            ->get();
+
+        return view('admin.referensi.pengaturan.index', compact('pengaturan'));
+    }
+
+    public function jadwalKerja()
+    {
+        $jadwalKerja = JadwalKerja::orderByRaw("\n                CASE hari\n                    WHEN 'senin' THEN 1\n                    WHEN 'selasa' THEN 2\n                    WHEN 'rabu' THEN 3\n                    WHEN 'kamis' THEN 4\n                    WHEN 'jumat' THEN 5\n                    WHEN 'sabtu' THEN 6\n                    WHEN 'minggu' THEN 7\n                    ELSE 8\n                END\n            ")
+            ->get();
+
+        return view('admin.referensi.jadwal_kerja.index', compact('jadwalKerja'));
+    }
+
+    public function hariLibur()
+    {
+        $hariLibur = HariLibur::orderBy('tanggal', 'desc')->get();
+
+        return view('admin.referensi.hari_libur.index', compact('hariLibur'));
+    }
+
+    public function kategoriReimbursement()
+    {
+        $kategoriReimbursement = KategoriReimbursement::orderBy('nama')->get();
+
+        return view('admin.referensi.kategori_reimbursement.index', compact('kategoriReimbursement'));
+    }
+
+    public function reimbursement()
+    {
+        $reimbursement = Reimbursement::leftJoin('karyawan as k', 'reimbursement.karyawan_id', '=', 'k.id')
+            ->leftJoin('kategori_reimbursement as kr', 'reimbursement.kategori_reimbursement_id', '=', 'kr.id')
+            ->leftJoin('users as u', 'reimbursement.disetujui_oleh', '=', 'u.id')
+            ->select(
+                'reimbursement.*',
+                'k.nama as nama_karyawan',
+                'kr.nama as nama_kategori',
+                'u.nik as nik_penyetuju'
+            )
+            ->orderBy('reimbursement.tanggal_pengajuan', 'desc')
+            ->orderBy('reimbursement.created_at', 'desc')
+            ->get();
+
+        return view('admin.referensi.reimbursement.index', compact('reimbursement'));
+    }
+
+    public function training()
+    {
+        $training = Training::orderBy('tgl_mulai', 'desc')
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return view('admin.referensi.training.index', compact('training'));
+    }
+
+    public function pesertaTraining()
+    {
+        $pesertaTraining = PesertaTraining::from('peserta_training as pt')
+            ->leftJoin('training as t', 'pt.training_id', '=', 't.id')
+            ->leftJoin('karyawan as k', 'pt.karyawan_id', '=', 'k.id')
+            ->select(
+                'pt.*',
+                't.judul as judul_training',
+                't.tgl_mulai',
+                'k.nama as nama_karyawan'
+            )
+            ->orderBy('t.tgl_mulai', 'desc')
+            ->orderBy('pt.created_at', 'desc')
+            ->get();
+
+        return view('admin.referensi.peserta_training.index', compact('pesertaTraining'));
     }
 }

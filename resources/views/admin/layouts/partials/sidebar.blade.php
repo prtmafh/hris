@@ -137,6 +137,58 @@
                     </nav>
                 </div>
 
+                <a class="nav-link {{ request()->is('admin/pengaturan*') || request()->is('admin/jadwal-kerja*') || request()->is('admin/hari-libur*') ? '' : 'collapsed' }}"
+                    href="javascript:void(0);" data-bs-toggle="collapse" data-bs-target="#collapseReferensi"
+                    aria-expanded="{{ request()->is('admin/pengaturan*') || request()->is('admin/jadwal-kerja*') || request()->is('admin/hari-libur*') ? 'true' : 'false' }}"
+                    aria-controls="collapseReferensi">
+                    <div class="nav-link-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                            <path opacity="0.3" d="M4 5C4 3.9 4.9 3 6 3H18C19.1 3 20 3.9 20 5V19C20 20.1 19.1 21 18 21H6C4.9 21 4 20.1 4 19V5Z" fill="currentColor" />
+                            <path d="M8 7H16V9H8V7ZM8 11H16V13H8V11ZM8 15H13V17H8V15Z" fill="currentColor" />
+                        </svg>
+                    </div>
+                    Referensi HR
+                    <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                </a>
+                <div class="collapse {{ request()->is('admin/pengaturan*') || request()->is('admin/jadwal-kerja*') || request()->is('admin/hari-libur*') ? 'show' : '' }}"
+                    id="collapseReferensi" data-bs-parent="#accordionSidenav">
+                    <nav class="sidenav-menu-nested nav">
+                        <a class="nav-link {{ request()->is('admin/pengaturan*') ? 'active' : '' }}"
+                            href="{{ route('admin.pengaturan') }}">Pengaturan</a>
+                        <a class="nav-link {{ request()->is('admin/jadwal-kerja*') ? 'active' : '' }}"
+                            href="{{ route('admin.jadwal_kerja') }}">Jadwal Kerja</a>
+                        <a class="nav-link {{ request()->is('admin/hari-libur*') ? 'active' : '' }}"
+                            href="{{ route('admin.hari_libur') }}">Hari Libur</a>
+                    </nav>
+                </div>
+
+                <a class="nav-link {{ request()->is('admin/kategori-reimbursement*') || request()->is('admin/reimbursement*') || request()->is('admin/training*') || request()->is('admin/peserta-training*') ? '' : 'collapsed' }}"
+                    href="javascript:void(0);" data-bs-toggle="collapse" data-bs-target="#collapseBenefitTraining"
+                    aria-expanded="{{ request()->is('admin/kategori-reimbursement*') || request()->is('admin/reimbursement*') || request()->is('admin/training*') || request()->is('admin/peserta-training*') ? 'true' : 'false' }}"
+                    aria-controls="collapseBenefitTraining">
+                    <div class="nav-link-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                            <path opacity="0.3" d="M3 6C3 4.9 3.9 4 5 4H19C20.1 4 21 4.9 21 6V18C21 19.1 20.1 20 19 20H5C3.9 20 3 19.1 3 18V6Z" fill="currentColor" />
+                            <path d="M7 8H17V10H7V8ZM7 12H14V14H7V12ZM16 12H17V16H13V15H16V12Z" fill="currentColor" />
+                        </svg>
+                    </div>
+                    Benefit & Training
+                    <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                </a>
+                <div class="collapse {{ request()->is('admin/kategori-reimbursement*') || request()->is('admin/reimbursement*') || request()->is('admin/training*') || request()->is('admin/peserta-training*') ? 'show' : '' }}"
+                    id="collapseBenefitTraining" data-bs-parent="#accordionSidenav">
+                    <nav class="sidenav-menu-nested nav">
+                        <a class="nav-link {{ request()->is('admin/kategori-reimbursement*') ? 'active' : '' }}"
+                            href="{{ route('admin.kategori_reimbursement') }}">Kategori Reimbursement</a>
+                        <a class="nav-link {{ request()->is('admin/reimbursement*') ? 'active' : '' }}"
+                            href="{{ route('admin.reimbursement') }}">Reimbursement</a>
+                        <a class="nav-link {{ request()->is('admin/training*') ? 'active' : '' }}"
+                            href="{{ route('admin.training') }}">Training</a>
+                        <a class="nav-link {{ request()->is('admin/peserta-training*') ? 'active' : '' }}"
+                            href="{{ route('admin.peserta_training') }}">Peserta Training</a>
+                    </nav>
+                </div>
+
                 {{-- ======================== --}}
                 {{-- SECTION: PENGATURAN --}}
                 {{-- ======================== --}}
