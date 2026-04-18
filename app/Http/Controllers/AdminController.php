@@ -10,7 +10,6 @@ use App\Models\JadwalKerja;
 use App\Models\KategoriReimbursement;
 use App\Models\Karyawan;
 use App\Models\Lembur;
-use App\Models\Pengaturan;
 use App\Models\PesertaTraining;
 use App\Models\Reimbursement;
 use App\Models\Training;
@@ -143,15 +142,6 @@ class AdminController extends Controller
 
         $admin->delete();
         return redirect()->back()->with('success', 'Akun admin berhasil dihapus.');
-    }
-
-    public function pengaturan()
-    {
-        $pengaturan = Pengaturan::orderBy('grup')
-            ->orderBy('key')
-            ->get();
-
-        return view('admin.referensi.pengaturan.index', compact('pengaturan'));
     }
 
     public function jadwalKerja()

@@ -9,7 +9,7 @@
     <meta name="author" content="" />
     <meta name="theme-color" content="#0d6efd">
     <link rel="manifest" href="/manifest.json">
-    <title>Login | Absensi</title>
+    <title>Login | TSI GROUP</title>
     <link rel="shortcut icon" href="{{ asset('') }}assets/img/logotsi.png" />
     <link href="{{ asset('sbadmin/css/styles.css') }}" rel="stylesheet" />
     <link rel="icon" type="image/x-icon" href="{{ asset('sbadmin/assets/img/favicon.png') }}" />
@@ -22,52 +22,62 @@
     </script>
 </head>
 
-<body class="bg-primary">
+<body class="bg-gradient-primary">
     <div id="layoutAuthentication">
         <div id="layoutAuthentication_content">
             <main>
                 <div class="container-xl px-4">
                     <div class="row justify-content-center">
                         <div class="col-xl-5 col-lg-6 col-md-8 col-sm-11">
-                            <div class="card my-5">
-                                <!-- Logo -->
-                                <div class="card-body p-5 text-center">
-                                    <a href="#">
-                                        <img alt="Logo" src="{{ asset('') }}assets/img/tsilogo.svg" class="mb-2"
-                                            style="height: 40px;" />
+                            <div class="card shadow-lg border-0 rounded-lg mt-5">
+                                <div class="card-header bg-white text-center py-4">
+                                    <a href="#" class="d-block">
+                                        <img alt="Logo" src="{{ asset('') }}assets/img/tsilogo.svg" class="mb-3"
+                                            style="height: 50px;" />
                                     </a>
-                                    <div class="h3 fw-light mb-0">Masuk ke Akun Anda</div>
-                                    <div class="text-muted small mt-1">Silakan login untuk melanjutkan</div>
+                                    <h3 class="text-primary fw-bold mb-1">Selamat Datang di HRIS</h3>
+                                    <p class="text-muted small">Masuk ke Sistem HRIS untuk Admin dan Karyawan</p>
                                 </div>
                                 <hr class="my-0" />
                                 <div class="card-body p-5">
-                                    <!-- Login form -->
                                     <form action="{{ route('login.post') }}" method="post" id="kt_sign_in_form">
                                         @csrf
-                                        <!-- Form Group (nik) -->
-                                        <div class="mb-3">
-                                            <label class="text-gray-600 small" for="nik">NIK</label>
-                                            <input class="form-control form-control-solid" type="text" name="nik"
-                                                id="nik" placeholder="" autocomplete="off" />
+                                        <div class="mb-4">
+                                            <label class="form-label text-gray-600 fw-semibold" for="nik">
+                                                <i class="fas fa-id-card me-2"></i>NIK
+                                            </label>
+                                            <div class="input-group">
+                                                <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                                <input class="form-control form-control-solid" type="text" name="nik"
+                                                    id="nik" placeholder="Masukkan NIK Anda" autocomplete="off"
+                                                    required />
+                                            </div>
                                         </div>
-                                        <!-- Form Group (password) -->
-                                        <div class="mb-3">
-                                            <label class="text-gray-600 small" for="password">Password</label>
-                                            <input class="form-control form-control-solid" type="password"
-                                                name="password" id="password" placeholder="" autocomplete="off" />
+                                        <div class="mb-4">
+                                            <label class="form-label text-gray-600 fw-semibold" for="password">
+                                                <i class="fas fa-lock me-2"></i>Password
+                                            </label>
+                                            <div class="input-group">
+                                                <span class="input-group-text"><i class="fas fa-key"></i></span>
+                                                <input class="form-control form-control-solid" type="password"
+                                                    name="password" id="password" placeholder="Masukkan Password"
+                                                    autocomplete="off" required />
+                                            </div>
                                         </div>
-                                        <!-- Submit button -->
-                                        <div class="d-flex align-items-center justify-content-end mt-4 mb-0">
-                                            <button type="submit" id="kt_sign_in_submit" class="btn btn-primary w-100">
-                                                <span class="indicator-label">Masuk</span>
+                                        <div class="d-grid mt-4">
+                                            <button type="submit" id="kt_sign_in_submit" class="btn btn-primary btn-lg">
+                                                <span class="indicator-label">
+                                                    <i class="fas fa-sign-in-alt me-2"></i>Masuk
+                                                </span>
                                                 <span class="indicator-progress d-none">
-                                                    Silahkan Tunggu...
-                                                    <span
-                                                        class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                                                    <i class="fas fa-spinner fa-spin me-2"></i>Silakan Tunggu...
                                                 </span>
                                             </button>
                                         </div>
                                     </form>
+                                </div>
+                                <div class="card-footer text-center py-3 bg-light">
+                                    <small class="text-muted">Sistem HRIS &copy; {{ date('Y') }} TSI</small>
                                 </div>
                             </div>
                         </div>
@@ -80,7 +90,7 @@
                 <div class="container-xl px-4">
                     <div class="row">
                         <div class="col-md-12 text-center small">
-                            &copy; {{ date('Y') }} TSI Absensi
+                            &copy; {{ date('Y') }} TSI HRIS
                         </div>
                     </div>
                 </div>

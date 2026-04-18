@@ -65,6 +65,7 @@
                                 <th class="text-muted small text-uppercase">Total Gaji</th>
                                 <th class="text-muted small text-uppercase">Status</th>
                                 <th class="text-muted small text-uppercase">Tanggal Dibayar</th>
+                                <th class="text-muted small text-uppercase text-center">Slip</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -99,10 +100,16 @@
                                     {{ $gaji->tgl_dibayar ?
                                     \Carbon\Carbon::parse($gaji->tgl_dibayar)->translatedFormat('d M Y') : '-' }}
                                 </td>
+                                <td class="text-center">
+                                    <a href="{{ route('karyawan.slip_gaji.show', $gaji->id) }}"
+                                       class="btn btn-sm btn-outline-primary rounded-pill px-3">
+                                        <i class="fas fa-file-alt fa-xs me-1"></i> Lihat
+                                    </a>
+                                </td>
                             </tr>
                             @empty
                             <tr>
-                                <td colspan="7" class="text-center text-muted py-4">
+                                <td colspan="8" class="text-center text-muted py-4">
                                     Belum ada data slip gaji untuk tahun {{ $tahun }}.
                                 </td>
                             </tr>

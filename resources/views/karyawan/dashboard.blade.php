@@ -282,7 +282,7 @@
             </div>
 
             <div class="col-xl-4 mb-4">
-                <div class="card attendance-panel mb-4">
+                {{-- <div class="card attendance-panel mb-4">
                     <div class="card-header">
                         <div class="fw-bold">Riwayat Absensi Terbaru</div>
                     </div>
@@ -332,7 +332,7 @@
                             </table>
                         </div>
                     </div>
-                </div>
+                </div> --}}
 
                 <div class="card attendance-panel">
                     <div class="card-header">

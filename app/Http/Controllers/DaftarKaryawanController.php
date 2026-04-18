@@ -38,6 +38,9 @@ class DaftarKaryawanController extends Controller
             'gaji_pokok' => 'nullable|integer',
             'gaji_per_hari' => 'nullable|integer',
             'status' => 'required|in:aktif,nonaktif',
+        ], [
+            'nik.required' => 'NIK wajib diisi',
+            'nik.unique' => 'NIK sudah terpakai, gunakan NIK lain',
         ]);
 
         $user = User::create([

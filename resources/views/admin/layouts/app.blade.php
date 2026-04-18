@@ -104,7 +104,7 @@
         html[data-sb-theme="dark"] .text-muted,
         html[data-sb-theme="dark"] .sidenav-menu-heading,
         html[data-sb-theme="dark"] .page-header-light,
-        html[data-sb-theme="dark"] .page-header-light .breadcrumb-item + .breadcrumb-item::before,
+        html[data-sb-theme="dark"] .page-header-light .breadcrumb-item+.breadcrumb-item::before,
         html[data-sb-theme="dark"] .sidenav-footer-subtitle {
             color: var(--sb-dark-muted) !important;
         }
@@ -158,7 +158,7 @@
         html[data-sb-theme="dark"] .card,
         html[data-sb-theme="dark"] .card-header,
         html[data-sb-theme="dark"] .card-footer,
-        html[data-sb-theme="dark"] .table > :not(caption) > * > *,
+        html[data-sb-theme="dark"] .table> :not(caption)>*>*,
         html[data-sb-theme="dark"] .dropdown-divider,
         html[data-sb-theme="dark"] .list-group-item,
         html[data-sb-theme="dark"] .input-group-text,
@@ -261,6 +261,16 @@
                     text: '{{ session('error') }}',
                     showConfirmButton: true
                 });
+    </script>
+    @endif
+    @if ($errors->has('nik'))
+    <script>
+        Swal.fire({
+            icon: 'error',
+            title: 'NIK sudah digunakan',
+            text: '{{ $errors->first('nik') }}',
+            confirmButtonText: 'OK'
+        });
     </script>
     @endif
     <script>

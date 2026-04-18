@@ -19,11 +19,24 @@
                         Kelola data gaji karyawan setiap periode.
                     </div>
                 </div>
+                <div>
+                    <button type="button" class="btn btn-white btn-sm px-4" data-bs-toggle="modal" data-bs-target="#modalGenerateGaji">
+                        <i class="fas fa-magic me-2"></i> Generate Gaji
+                    </button>
+                </div>
             </div>
         </div>
     </header>
 
     <div class="container-xl px-4 mt-n10">
+
+        {{-- FLASH MESSAGE --}}
+        @if(session('success'))
+        <div class="alert alert-success alert-dismissible fade show shadow-sm mb-4" role="alert">
+            <i class="fas fa-check-circle me-2"></i>{{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        @endif
 
         {{-- FILTER --}}
         <div class="card mb-4 shadow-sm">
@@ -121,6 +134,7 @@
                                 <th class="text-muted small text-uppercase">Potongan</th>
                                 <th class="text-muted small text-uppercase">Total Gaji</th>
                                 <th class="text-muted small text-uppercase">Status</th>
+                                <th class="text-muted small text-uppercase text-center">Aksi</th>
                             </tr>
                         </thead>
 
@@ -175,14 +189,27 @@
                                 {{-- STATUS --}}
                                 <td>
                                     <span class="badge bg-{{ $g->status == 'dibayar' ? 'success' : 'warning' }}">
-                                        {{ $g->status }}
+                                        {{ $g->status === 'dibayar' ? 'Dibayar' : 'Proses' }}
                                     </span>
+                                </td>
+
+                                {{-- AKSI --}}
+                                <td class="text-center">
+                                    <a href="{{ route('admin.penggajian.show', $g->id) }}"
+                                       class="btn btn-sm btn-primary rounded-pill px-3">
+                                        <i class="fas fa-eye fa-xs me-1"></i> Detail
+                                    </a>
                                 </td>
 
                             </tr>
 
                             @empty
-
+                            <tr>
+                                <td colspan="9" class="text-center text-muted py-5">
+                                    <i class="fas fa-inbox fa-2x mb-2 d-block opacity-50"></i>
+                                    Belum ada data penggajian.
+                                </td>
+                            </tr>
                             @endforelse
                         </tbody>
                     </table>
@@ -197,4 +224,68 @@
 
     </div>
 </main>
+
+{{-- Modal Generate Gaji --}}
+<div class="modal fade" id="modalGenerateGaji" tabindex="-1" aria-labelledby="modalGenerateGajiLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <form method="POST" action="{{ route('admin.penggajian.generate') }}">
+            @csrf
+            <div class="modal-content border-0 shadow">
+                <div class="modal-header bg-gradient-primary-to-secondary text-white border-0 rounded-top">
+                    <h5 class="modal-title fw-semibold" id="modalGenerateGajiLabel">
+                        <i class="fas fa-magic me-2"></i> Generate Gaji Otomatis
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body p-4">
+                    <div class="alert alert-info d-flex gap-2 align-items-start py-2 px-3 mb-4">
+                        <i class="fas fa-info-circle mt-1 shrink-0"></i>
+                        <small>
+                            Sistem akan menghitung gaji semua karyawan aktif berdasarkan data absensi dan lembur
+                            pada periode yang dipilih. Karyawan yang sudah memiliki data gaji pada periode tersebut
+                            akan dilewati otomatis.
+                        </small>
+                    </div>
+
+                    <div class="row g-3">
+                        <div class="col-6">
+                            <label class="form-label fw-semibold">Bulan <span class="text-danger">*</span></label>
+                            <select name="bulan" class="form-select" required>
+                                @php
+                                    $namaBulan = ['', 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+                                                  'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+                                @endphp
+                                @for($i = 1; $i <= 12; $i++)
+                                    <option value="{{ $i }}" {{ $i == now()->month ? 'selected' : '' }}>
+                                        {{ $namaBulan[$i] }}
+                                    </option>
+                                @endfor
+                            </select>
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label fw-semibold">Tahun <span class="text-danger">*</span></label>
+                            <select name="tahun" class="form-select" required>
+                                @for($y = now()->year; $y >= now()->year - 3; $y--)
+                                    <option value="{{ $y }}" {{ $y == now()->year ? 'selected' : '' }}>
+                                        {{ $y }}
+                                    </option>
+                                @endfor
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer border-top bg-light rounded-bottom d-flex justify-content-between">
+                    <button type="button" class="btn btn-outline-secondary btn-sm px-4" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-1"></i> Batal
+                    </button>
+                    <button type="submit" class="btn btn-primary btn-sm px-4">
+                        <i class="fas fa-magic me-1"></i> Generate Sekarang
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
 @endsection

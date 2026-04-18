@@ -23,9 +23,13 @@ class Penggajian extends Model
         'status'
     ];
 
-    // RELASI
     public function karyawan()
     {
         return $this->belongsTo(Karyawan::class);
+    }
+
+    public function details()
+    {
+        return $this->hasMany(DetailPenggajian::class);
     }
 }

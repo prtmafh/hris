@@ -7,6 +7,7 @@ use App\Models\Izin;
 use App\Models\Karyawan;
 use App\Models\Lembur;
 use App\Models\Penggajian;
+use App\Models\Pengaturan;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -16,12 +17,6 @@ use Illuminate\Support\Facades\Storage;
 
 class KaryawanController extends Controller
 {
-    // Waktu shift default (bisa disesuaikan)
-    const SHIFT_START = '08:00:00';
-    const SHIFT_END   = '17:00:00';
-    // Toleransi keterlambatan (menit)
-    const TOLERANCE_MINUTES = 15;
-
     private function currentKaryawan(): Karyawan
     {
         /** @var User $user */
@@ -71,8 +66,8 @@ class KaryawanController extends Controller
             ->get();
 
         $namaKaryawan = $karyawan->nama;
-        $shift_start  = self::SHIFT_START;
-        $shift_end    = self::SHIFT_END;
+        $shift_start  = Pengaturan::getValue('jam_masuk', '08:00');
+        $shift_end    = Pengaturan::getValue('jam_pulang', '17:00');
 
         return view('karyawan.dashboard', compact(
             'karyawan',
@@ -232,9 +227,11 @@ class KaryawanController extends Controller
             ]);
         }
 
-        $now        = Carbon::now();
-        $batasLambat = Carbon::parse(self::SHIFT_START)->addMinutes(self::TOLERANCE_MINUTES);
-        $status     = $now->gt($batasLambat) ? 'terlambat' : 'hadir';
+        $now              = Carbon::now();
+        $jamMasuk         = Pengaturan::getValue('jam_masuk', '08:00');
+        $toleransiMenit   = Pengaturan::getValue('toleransi_keterlambatan', 10);
+        $batasLambat      = Carbon::parse($jamMasuk)->addMinutes($toleransiMenit);
+        $status           = $now->gt($batasLambat) ? 'terlambat' : 'hadir';
 
         $fotoPath = null;
         if ($request->filled('foto')) {

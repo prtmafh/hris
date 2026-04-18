@@ -6,6 +6,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DaftarKaryawanController;
 use App\Http\Controllers\JabatanController;
 use App\Http\Controllers\KaryawanController;
+use App\Http\Controllers\PengaturanController;
 use App\Http\Controllers\PengajuanController;
 use App\Http\Controllers\PenggajianController;
 use Illuminate\Support\Facades\Route;
@@ -59,7 +60,11 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::post('/admin/lembur/{id}/reject', [PengajuanController::class, 'rejectLembur'])->name('admin.lembur.reject');
 
     Route::get('/admin/penggajian', [PenggajianController::class, 'data_gaji'])->name('admin.penggajian');
-    Route::get('/admin/pengaturan', [AdminController::class, 'pengaturan'])->name('admin.pengaturan');
+    Route::post('/admin/penggajian/generate', [PenggajianController::class, 'generate'])->name('admin.penggajian.generate');
+    Route::get('/admin/penggajian/{id}', [PenggajianController::class, 'show'])->name('admin.penggajian.show');
+    Route::post('/admin/penggajian/{id}/bayar', [PenggajianController::class, 'markBayar'])->name('admin.penggajian.bayar');
+    Route::get('/admin/pengaturan', [PengaturanController::class, 'index'])->name('admin.pengaturan');
+    Route::put('/admin/pengaturan/{id}', [PengaturanController::class, 'update'])->name('admin.pengaturan.update');
     Route::get('/admin/jadwal-kerja', [AdminController::class, 'jadwalKerja'])->name('admin.jadwal_kerja');
     Route::get('/admin/hari-libur', [AdminController::class, 'hariLibur'])->name('admin.hari_libur');
     Route::get('/admin/kategori-reimbursement', [AdminController::class, 'kategoriReimbursement'])->name('admin.kategori_reimbursement');
@@ -79,4 +84,5 @@ Route::middleware(['auth', 'karyawan'])->group(function () {
     Route::get('/karyawan/lembur-saya', [KaryawanController::class, 'lemburSaya'])->name('karyawan.lembur');
     Route::post('/karyawan/lembur-saya', [KaryawanController::class, 'storeLembur'])->name('karyawan.lembur.store');
     Route::get('/karyawan/slip-gaji', [KaryawanController::class, 'slipGaji'])->name('karyawan.slip_gaji');
+    Route::get('/karyawan/slip-gaji/{id}', [PenggajianController::class, 'showSlip'])->name('karyawan.slip_gaji.show');
 });
