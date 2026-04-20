@@ -82,11 +82,12 @@ class PengajuanController extends Controller
     public function approveLembur($id)
     {
         $lembur = Lembur::findOrFail($id);
-        $lembur->update([
-            'status' => 'disetujui'
-        ]);
 
-        return redirect()->back()->with('success', 'Lembur disetujui');
+        $lembur->update(['status' => 'disetujui']);
+
+        return back()->with('success', 'Pengajuan lembur disetujui.');
+
+        // return redirect()->back()->with('success', 'Lembur disetujui');
     }
 
     public function rejectLembur($id)

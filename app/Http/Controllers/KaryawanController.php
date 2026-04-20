@@ -166,6 +166,45 @@ class KaryawanController extends Controller
         return view('karyawan.lembur-saya', compact('lembur'));
     }
 
+    // public function storeLembur(Request $request)
+    // {
+    //     $karyawan = $this->currentKaryawan();
+
+    //     $request->validate([
+    //         'tanggal'     => 'required|date',
+    //         'jam_mulai'   => 'required',
+    //         'jam_selesai' => 'required|after:jam_mulai',
+    //         'keterangan'  => 'required|string|max:500',
+    //     ]);
+
+    //     $sudahAda = Lembur::where('karyawan_id', $karyawan->id)
+    //         ->whereDate('tanggal', $request->tanggal)
+    //         ->whereIn('status', ['pending', 'disetujui'])
+    //         ->exists();
+
+    //     if ($sudahAda) {
+    //         return back()
+    //             ->withInput()
+    //             ->with('error', 'Pengajuan lembur untuk tanggal tersebut sudah ada.');
+    //     }
+
+    //     $totalJam    = Lembur::hitungTotalJam($request->tanggal, $request->jam_mulai, $request->jam_selesai);
+    //     $jamBerbayar = Lembur::hitungJamBerbayar($request->tanggal, $request->jam_mulai, $request->jam_selesai);
+    //     $totalUpah   = $jamBerbayar > 0 ? Lembur::hitungTotalUpah($jamBerbayar) : 0;
+
+    //     Lembur::create([
+    //         'karyawan_id' => $karyawan->id,
+    //         'tanggal'     => $request->tanggal,
+    //         'jam_mulai'   => $request->jam_mulai,
+    //         'jam_selesai' => $request->jam_selesai,
+    //         'total_jam'   => $totalJam,
+    //         'total_upah'  => $totalUpah,
+    //         'keterangan'  => $request->keterangan,
+    //         'status'      => 'pending',
+    //     ]);
+
+    //     return back()->with('success', 'Pengajuan lembur berhasil dikirim.');
+    // }
     public function storeLembur(Request $request)
     {
         $karyawan = $this->currentKaryawan();
@@ -177,21 +216,31 @@ class KaryawanController extends Controller
             'keterangan'  => 'required|string|max:500',
         ]);
 
-        $mulai    = Carbon::parse($request->tanggal . ' ' . $request->jam_mulai);
-        $selesai  = Carbon::parse($request->tanggal . ' ' . $request->jam_selesai);
-        $totalJam = $selesai->diffInHours($mulai);
+        $jamMulai = Carbon::parse($request->jam_mulai);
+        $jamSelesai = Carbon::parse($request->jam_selesai);
+
+        if ($jamSelesai->lessThan($jamMulai)) {
+            $jamSelesai->addDay();
+        }
+
+        $totalJam = $jamMulai->floatDiffInHours($jamSelesai);
+
+        $upahPerJam = Pengaturan::getValue('tarif_lembur_per_jam') ?? 15000;
+
+        $totalUpah = $totalJam * $upahPerJam;
 
         Lembur::create([
             'karyawan_id' => $karyawan->id,
-            'tanggal'     => $request->tanggal,
-            'jam_mulai'   => $request->jam_mulai,
+            'tanggal' => $request->tanggal,
+            'jam_mulai' => $request->jam_mulai,
             'jam_selesai' => $request->jam_selesai,
-            'total_jam'   => $totalJam,
+            'total_jam' => $totalJam,
+            'total_upah' => $totalUpah,
             'keterangan'  => $request->keterangan,
-            'status'      => 'pending',
+            'status' => 'pending',
         ]);
 
-        return back()->with('success', 'Pengajuan lembur berhasil dikirim.');
+        return redirect()->back()->with('success', 'Pengajuan lembur berhasil dikirim dan menunggu persetujuan.');
     }
 
     public function slipGaji(Request $request)

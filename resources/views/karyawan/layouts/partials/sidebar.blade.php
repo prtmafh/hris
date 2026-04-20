@@ -39,7 +39,7 @@
                     Pengajuan Lembur
                 </a>
 
-                <a class="nav-link {{ request()->routeIs('karyawan.slip_gaji') ? 'active' : '' }}"
+                <a class="nav-link {{ request()->routeIs('karyawan.slip_gaji*') ? 'active' : '' }}"
                     href="{{ route('karyawan.slip_gaji') }}">
                     <div class="nav-link-icon">
                         <i data-feather="dollar-sign"></i>

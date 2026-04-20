@@ -85,4 +85,5 @@ Route::middleware(['auth', 'karyawan'])->group(function () {
     Route::post('/karyawan/lembur-saya', [KaryawanController::class, 'storeLembur'])->name('karyawan.lembur.store');
     Route::get('/karyawan/slip-gaji', [KaryawanController::class, 'slipGaji'])->name('karyawan.slip_gaji');
     Route::get('/karyawan/slip-gaji/{id}', [PenggajianController::class, 'showSlip'])->name('karyawan.slip_gaji.show');
+    Route::get('/karyawan/slip-gaji/{id}/pdf', [PenggajianController::class, 'downloadSlipPdf'])->name('karyawan.slip_gaji.pdf');
 });

@@ -22,7 +22,7 @@
 
     <div class="container-xl px-4 mt-n10">
         <div class="row g-4">
-            <div class="col-xl-5">
+            <div class="col-xl-4">
                 <div class="card shadow-sm h-100">
                     <div class="card-header">
                         <div class="fw-bold">Form Pengajuan Lembur</div>
@@ -80,7 +80,7 @@
                 </div>
             </div>
 
-            <div class="col-xl-7">
+            <div class="col-xl-8">
                 <div class="card shadow-sm ">
                     <div
                         class="card-header d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2">
@@ -92,14 +92,16 @@
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
-                            <table id="datatablesSimple" data-simple-datatable class="table table-hover align-middle mb-0">
+                            <table id="datatablesSimple" data-simple-datatable
+                                class="table table-hover align-middle mb-0">
                                 <thead>
                                     <tr>
-                                        <th class="text-muted small text-uppercase">Tanggal</th>
-                                        <th class="text-muted small text-uppercase">Jam Mulai</th>
-                                        <th class="text-muted small text-uppercase">Jam Selesai</th>
-                                        <th class="text-muted small text-uppercase">Total Jam</th>
-                                        <th class="text-muted small text-uppercase">Status</th>
+                                        <th class="">Tanggal</th>
+                                        <th class="">Jam Mulai</th>
+                                        <th class="">Jam Selesai</th>
+                                        <th class="">Total Jam</th>
+                                        <th class="">Upah</th>
+                                        <th class="">Status</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -123,8 +125,12 @@
                                         <td>{{ $lb->jam_selesai ? \Carbon\Carbon::parse($lb->jam_selesai)->format('H:i')
                                             : '-' }}</td>
                                         <td>
-                                            <span class="badge bg-light text-dark border">{{ $lb->total_jam ?? 0 }}
-                                                jam</span>
+                                            <span class="badge bg-light text-dark border">
+                                                {{ $lb->total_jam }} jam
+                                            </span>
+                                        </td>
+                                        <td class="fw-semibold">
+                                            Rp {{ number_format($lb->total_upah, 0, ',', '.') }}
                                         </td>
                                         <td>
                                             <span class="badge bg-{{ $badge }} text-capitalize">{{ $lb->status }}</span>
@@ -132,7 +138,7 @@
                                     </tr>
                                     @empty
                                     <tr>
-                                        <td colspan="5" class="text-center text-muted py-4">Belum ada pengajuan lembur.
+                                        <td colspan="6" class="text-center text-muted py-4">Belum ada pengajuan lembur.
                                         </td>
                                     </tr>
                                     @endforelse

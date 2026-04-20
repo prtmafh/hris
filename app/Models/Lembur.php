@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -24,6 +25,8 @@ class Lembur extends Model
 
     protected $casts = [
         'tanggal' => 'date',
+        'total_jam' => 'decimal:2',
+        'total_upah' => 'decimal:2',
     ];
 
     // RELASI

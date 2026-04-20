@@ -3,13 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Models\Absensi;
-use App\Models\DetailPenggajian;
 use App\Models\Karyawan;
 use App\Models\Lembur;
 use App\Models\Penggajian;
 use App\Models\Pengaturan;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class PenggajianController extends Controller
 {
@@ -45,61 +47,68 @@ class PenggajianController extends Controller
                 ->whereYear('tanggal', $tahun)
                 ->get();
 
-            $totalHadir     = $absensi->whereIn('status', ['hadir', 'terlambat'])->count();
-            $totalTerlambat = $absensi->where('status', 'terlambat')->count();
-
-            $totalLembur = (float) Lembur::where('karyawan_id', $karyawan->id)
-                ->whereMonth('tanggal', $bulan)
-                ->whereYear('tanggal', $tahun)
-                ->where('status', 'disetujui')
-                ->sum('total_upah');
+            $totalHadir      = $absensi->whereIn('status', ['hadir', 'terlambat'])->count();
+            $totalTerlambat  = $absensi->where('status', 'terlambat')->count();
+            $ringkasanLembur = $this->hitungRingkasanLembur($karyawan->id, $bulan, $tahun);
 
             $potongan = $totalTerlambat * $dendaPerTerlambat;
 
             $gajiDasar = $karyawan->status_gaji === 'harian'
-                ? (float) $karyawan->gaji_per_hari * $totalHadir
-                : (float) $karyawan->gaji_pokok;
+                ? (float) ($karyawan->gaji_per_hari ?? 0) * $totalHadir
+                : (float) ($karyawan->gaji_pokok ?? 0);
 
-            $totalGaji = max($gajiDasar + $totalLembur - $potongan, 0);
+            $totalGaji = max($gajiDasar + $ringkasanLembur['total_upah'] - $potongan, 0);
 
-            $penggajian = Penggajian::create([
-                'karyawan_id'   => $karyawan->id,
-                'periode_bulan' => $bulan,
-                'periode_tahun' => $tahun,
-                'total_hadir'   => $totalHadir,
-                'total_lembur'  => $totalLembur,
-                'potongan'      => $potongan,
-                'total_gaji'    => $totalGaji,
-                'status'        => 'proses',
-            ]);
+            DB::transaction(function () use (
+                $karyawan,
+                $bulan,
+                $tahun,
+                $totalHadir,
+                $ringkasanLembur,
+                $potongan,
+                $totalGaji,
+                $gajiDasar,
+                $totalTerlambat
+            ) {
+                $penggajian = Penggajian::create([
+                    'karyawan_id'   => $karyawan->id,
+                    'periode_bulan' => $bulan,
+                    'periode_tahun' => $tahun,
+                    'total_hadir'   => $totalHadir,
+                    'total_lembur'  => $ringkasanLembur['total_upah'],
+                    'potongan'      => $potongan,
+                    'total_gaji'    => $totalGaji,
+                    'status'        => 'proses',
+                ]);
 
-            // Detail pemasukan
-            $labelGaji = $karyawan->status_gaji === 'harian'
-                ? "Gaji Harian ({$totalHadir} hari × Rp " . number_format($karyawan->gaji_per_hari, 0, ',', '.') . ')'
-                : 'Gaji Pokok';
+                $labelGaji = $karyawan->status_gaji === 'harian'
+                    ? 'Gaji Harian (' . $totalHadir . ' hari x Rp ' . number_format((float) ($karyawan->gaji_per_hari ?? 0), 0, ',', '.') . ')'
+                    : 'Gaji Pokok';
 
-            $penggajian->details()->create([
-                'keterangan' => $labelGaji,
-                'jumlah'     => $gajiDasar,
-                'tipe'       => 'pemasukan',
-            ]);
-
-            if ($totalLembur > 0) {
-                $penggajian->details()->create([
-                    'keterangan' => 'Tunjangan Lembur',
-                    'jumlah'     => $totalLembur,
+                $details = [[
+                    'keterangan' => $labelGaji,
+                    'jumlah'     => $gajiDasar,
                     'tipe'       => 'pemasukan',
-                ]);
-            }
+                ]];
 
-            // Detail potongan
-            if ($potongan > 0) {
-                $penggajian->details()->create([
-                    'keterangan' => "Potongan Keterlambatan ({$totalTerlambat}x)",
-                    'jumlah'     => $potongan,
-                    'tipe'       => 'potongan',
-                ]);
-            }
+                if ($ringkasanLembur['total_upah'] > 0) {
+                    $details[] = [
+                        'keterangan' => 'Upah Lembur (' . $this->formatJamLembur($ringkasanLembur['total_jam']) . ' jam)',
+                        'jumlah'     => $ringkasanLembur['total_upah'],
+                        'tipe'       => 'pemasukan',
+                    ];
+                }
+
+                if ($potongan > 0) {
+                    $details[] = [
+                        'keterangan' => "Potongan Keterlambatan ({$totalTerlambat}x)",
+                        'jumlah'     => $potongan,
+                        'tipe'       => 'potongan',
+                    ];
+                }
+
+                $penggajian->details()->createMany($details);
+            });
 
             $generated++;
         }
@@ -125,7 +134,7 @@ class PenggajianController extends Controller
     {
         $penggajian = Penggajian::findOrFail($id);
         $penggajian->update([
-            'status'     => 'dibayar',
+            'status'      => 'dibayar',
             'tgl_dibayar' => Carbon::today(),
         ]);
 
@@ -172,12 +181,61 @@ class PenggajianController extends Controller
     public function showSlip(int $id)
     {
         /** @var \App\Models\User $user */
-        $user      = auth()->user();
-        $karyawan  = $user->karyawan()->firstOrFail();
+        $user       = Auth::user();
+        $karyawan   = $user->karyawan()->firstOrFail();
         $penggajian = Penggajian::with(['details', 'karyawan.jabatan'])
             ->where('karyawan_id', $karyawan->id)
             ->findOrFail($id);
 
         return view('karyawan.slip-gaji-detail', compact('penggajian'));
+    }
+
+    public function downloadSlipPdf(int $id)
+    {
+        /** @var \App\Models\User $user */
+        $user       = Auth::user();
+        $karyawan   = $user->karyawan()->firstOrFail();
+        $penggajian = Penggajian::with(['details', 'karyawan.jabatan'])
+            ->where('karyawan_id', $karyawan->id)
+            ->findOrFail($id);
+
+        $namaBulan = ['', 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+                      'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+
+        $pdf = Pdf::loadView('pdf.slip-gaji', compact('penggajian', 'namaBulan'))
+            ->setPaper('a4', 'portrait');
+
+        $filename = 'slip-gaji-' . $penggajian->karyawan->nik . '-'
+            . $namaBulan[$penggajian->periode_bulan] . '-'
+            . $penggajian->periode_tahun . '.pdf';
+
+        return $pdf->download($filename);
+    }
+
+    private function hitungRingkasanLembur(int $karyawanId, int $bulan, int $tahun): array
+    {
+        $lemburDisetujui = Lembur::where('karyawan_id', $karyawanId)
+            ->whereMonth('tanggal', $bulan)
+            ->whereYear('tanggal', $tahun)
+            ->where('status', 'disetujui')
+            ->get();
+
+        $totalJam  = 0.0;
+        $totalUpah = 0.0;
+
+        foreach ($lemburDisetujui as $lembur) {
+            $totalJam  += (float) ($lembur->total_jam ?? 0);
+            $totalUpah += (float) ($lembur->total_upah ?? 0);
+        }
+
+        return [
+            'total_jam' => round($totalJam, 2),
+            'total_upah' => round($totalUpah, 2),
+        ];
+    }
+
+    private function formatJamLembur(float $totalJam): string
+    {
+        return rtrim(rtrim(number_format($totalJam, 2, '.', ''), '0'), '.');
     }
 }

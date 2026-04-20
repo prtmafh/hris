@@ -20,7 +20,8 @@
                     </div>
                 </div>
                 <div>
-                    <button type="button" class="btn btn-white btn-sm px-4" data-bs-toggle="modal" data-bs-target="#modalGenerateGaji">
+                    <button type="button" class="btn btn-white btn-sm px-4" data-bs-toggle="modal"
+                        data-bs-target="#modalGenerateGaji">
                         <i class="fas fa-magic me-2"></i> Generate Gaji
                     </button>
                 </div>
@@ -126,15 +127,15 @@
                     <table id="datatablesSimple" class="table table-hover align-middle mb-0">
                         <thead>
                             <tr>
-                                <th class="text-muted small text-uppercase">No</th>
-                                <th class="text-muted small text-uppercase">Karyawan</th>
-                                <th class="text-muted small text-uppercase">Periode</th>
-                                <th class="text-muted small text-uppercase">Hadir</th>
-                                <th class="text-muted small text-uppercase">Lembur</th>
-                                <th class="text-muted small text-uppercase">Potongan</th>
-                                <th class="text-muted small text-uppercase">Total Gaji</th>
-                                <th class="text-muted small text-uppercase">Status</th>
-                                <th class="text-muted small text-uppercase text-center">Aksi</th>
+                                <th class="">No</th>
+                                <th class="">Karyawan</th>
+                                <th class="">Periode</th>
+                                {{-- <th class="">Hadir</th> --}}
+                                {{-- <th class="">Lembur</th> --}}
+                                {{-- <th class="">Potongan</th> --}}
+                                {{-- <th class="">Total Gaji</th> --}}
+                                <th class="">Status</th>
+                                <th class=" text-center">Aksi</th>
                             </tr>
                         </thead>
 
@@ -165,26 +166,26 @@
                                 </td>
 
                                 {{-- HADIR --}}
-                                <td>
+                                {{-- <td>
                                     <span class="badge bg-light text-dark border">
                                         {{ $g->total_hadir }} hari
                                     </span>
-                                </td>
+                                </td> --}}
 
                                 {{-- LEMBUR --}}
-                                <td class="fw-semibold">
+                                {{-- <td class="fw-semibold">
                                     Rp {{ number_format($g->total_lembur, 0, ',', '.') }}
-                                </td>
+                                </td> --}}
 
                                 {{-- POTONGAN --}}
-                                <td class="fw-semibold text-danger">
+                                {{-- <td class="fw-semibold text-danger">
                                     Rp {{ number_format($g->potongan, 0, ',', '.') }}
-                                </td>
+                                </td> --}}
 
                                 {{-- TOTAL GAJI --}}
-                                <td class="fw-bold text-success">
+                                {{-- <td class="fw-bold text-success">
                                     Rp {{ number_format($g->total_gaji, 0, ',', '.') }}
-                                </td>
+                                </td> --}}
 
                                 {{-- STATUS --}}
                                 <td>
@@ -196,7 +197,7 @@
                                 {{-- AKSI --}}
                                 <td class="text-center">
                                     <a href="{{ route('admin.penggajian.show', $g->id) }}"
-                                       class="btn btn-sm btn-primary rounded-pill px-3">
+                                        class="btn btn-sm btn-primary rounded-pill px-3">
                                         <i class="fas fa-eye fa-xs me-1"></i> Detail
                                     </a>
                                 </td>
@@ -204,21 +205,21 @@
                             </tr>
 
                             @empty
-                            <tr>
+                            {{-- <tr>
                                 <td colspan="9" class="text-center text-muted py-5">
                                     <i class="fas fa-inbox fa-2x mb-2 d-block opacity-50"></i>
                                     Belum ada data penggajian.
                                 </td>
-                            </tr>
+                            </tr> --}}
                             @endforelse
                         </tbody>
                     </table>
                 </div>
 
                 {{-- PAGINATION --}}
-                <div class="mt-4">
+                {{-- <div class="mt-4">
                     {{ $penggajian->withQueryString()->links() }}
-                </div>
+                </div> --}}
             </div>
         </div>
 
@@ -226,7 +227,8 @@
 </main>
 
 {{-- Modal Generate Gaji --}}
-<div class="modal fade" id="modalGenerateGaji" tabindex="-1" aria-labelledby="modalGenerateGajiLabel" aria-hidden="true">
+<div class="modal fade" id="modalGenerateGaji" tabindex="-1" aria-labelledby="modalGenerateGajiLabel"
+    aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <form method="POST" action="{{ route('admin.penggajian.generate') }}">
             @csrf
@@ -253,23 +255,23 @@
                             <label class="form-label fw-semibold">Bulan <span class="text-danger">*</span></label>
                             <select name="bulan" class="form-select" required>
                                 @php
-                                    $namaBulan = ['', 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
-                                                  'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+                                $namaBulan = ['', 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+                                'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
                                 @endphp
-                                @for($i = 1; $i <= 12; $i++)
-                                    <option value="{{ $i }}" {{ $i == now()->month ? 'selected' : '' }}>
-                                        {{ $namaBulan[$i] }}
+                                @for($i = 1; $i <= 12; $i++) <option value="{{ $i }}" {{ $i==now()->month ? 'selected' :
+                                    '' }}>
+                                    {{ $namaBulan[$i] }}
                                     </option>
-                                @endfor
+                                    @endfor
                             </select>
                         </div>
                         <div class="col-6">
                             <label class="form-label fw-semibold">Tahun <span class="text-danger">*</span></label>
                             <select name="tahun" class="form-select" required>
                                 @for($y = now()->year; $y >= now()->year - 3; $y--)
-                                    <option value="{{ $y }}" {{ $y == now()->year ? 'selected' : '' }}>
-                                        {{ $y }}
-                                    </option>
+                                <option value="{{ $y }}" {{ $y==now()->year ? 'selected' : '' }}>
+                                    {{ $y }}
+                                </option>
                                 @endfor
                             </select>
                         </div>

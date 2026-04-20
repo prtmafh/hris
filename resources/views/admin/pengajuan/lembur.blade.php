@@ -100,15 +100,16 @@
                     <table id="datatablesSimple" class="table table-hover align-middle mb-0">
                         <thead>
                             <tr>
-                                <th class="text-muted small text-uppercase">No</th>
-                                <th class="text-muted small text-uppercase">Karyawan</th>
-                                <th class="text-muted small text-uppercase">Tanggal</th>
-                                <th class="text-muted small text-uppercase">Jam Mulai</th>
-                                <th class="text-muted small text-uppercase">Jam Selesai</th>
-                                <th class="text-muted small text-uppercase">Total Jam</th>
-                                <th class="text-muted small text-uppercase">Upah</th>
-                                <th class="text-muted small text-uppercase">Status</th>
-                                <th class="text-muted small text-uppercase text-center">Aksi</th>
+                                <th class="">No</th>
+                                <th class="">Karyawan</th>
+                                <th class="">Tanggal</th>
+                                <th class="">Jam Mulai</th>
+                                <th class="">Jam Selesai</th>
+                                <th class="">Total Jam</th>
+                                <th class="">Keterangan</th>
+                                <th class="">Upah</th>
+                                <th class="">Status</th>
+                                <th class=" text-center">Aksi</th>
                             </tr>
                         </thead>
 
@@ -134,7 +135,7 @@
                                         {{ $l->karyawan->nama ?? '-' }}
                                     </div>
                                     <div class="small text-muted">
-                                        Lembur #{{ $l->id }}
+                                        {{-- Lembur #{{ $l->id }} --}}
                                     </div>
                                 </td>
 
@@ -143,7 +144,7 @@
                                         {{ $l->tanggal->format('d/m/Y') }}
                                     </div>
                                     <div class="small text-muted">
-                                        {{ $l->tanggal->translatedFormat('l') }}
+                                        {{-- {{ $l->tanggal->translatedFormat('l') }} --}}
                                     </div>
                                 </td>
 
@@ -164,6 +165,10 @@
                                 </td>
 
                                 <td class="fw-semibold">
+                                    {{ $l->keterangan }}
+                                </td>
+
+                                <td class="fw-semibold">
                                     Rp {{ number_format($l->total_upah, 0, ',', '.') }}
                                 </td>
 
@@ -177,14 +182,14 @@
                                     @if($l->status === 'pending')
                                     <div class="d-inline-flex gap-2">
 
-                                        <form action="{{ route('lembur.approve', $l->id) }}" method="POST">
+                                        <form action="{{ route('admin.lembur.approve', $l->id) }}" method="POST">
                                             @csrf
                                             <button type="submit" class="btn btn-success btn-sm">
                                                 <i data-feather="check"></i>
                                             </button>
                                         </form>
 
-                                        <form action="{{ route('lembur.reject', $l->id) }}" method="POST">
+                                        <form action="{{ route('admin.lembur.reject', $l->id) }}" method="POST">
                                             @csrf
                                             <button type="submit" class="btn btn-danger btn-sm">
                                                 <i data-feather="x"></i>
