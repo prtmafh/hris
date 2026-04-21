@@ -39,6 +39,14 @@
                     Pengajuan Lembur
                 </a>
 
+                <a class="nav-link {{ request()->routeIs('karyawan.reimbursement*') ? 'active' : '' }}"
+                    href="{{ route('karyawan.reimbursement') }}">
+                    <div class="nav-link-icon">
+                        <i data-feather="credit-card"></i>
+                    </div>
+                    Reimbursement
+                </a>
+
                 <a class="nav-link {{ request()->routeIs('karyawan.slip_gaji*') ? 'active' : '' }}"
                     href="{{ route('karyawan.slip_gaji') }}">
                     <div class="nav-link-icon">

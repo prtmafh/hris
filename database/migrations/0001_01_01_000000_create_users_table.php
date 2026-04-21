@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('nik', 50)->unique();
             $table->string('password');
-            $table->enum('role', ['admin', 'karyawan']);
+            $table->enum('role', ['admin', 'karyawan', 'pimpinan']);
             $table->enum('status', ['aktif', 'nonaktif'])->default('aktif');
             $table->timestamps();
         });

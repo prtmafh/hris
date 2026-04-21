@@ -23,4 +23,9 @@ class KategoriReimbursement extends Model
     protected $casts = [
         'perlu_bukti' => 'boolean',
     ];
+
+    public function reimbursement()
+    {
+        return $this->hasMany(Reimbursement::class, 'kategori_reimbursement_id');
+    }
 }

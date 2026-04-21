@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Controller;
 use App\Models\Jabatan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -14,7 +15,7 @@ class JabatanController extends Controller
         $user = Auth::user();
         return view('admin.data_karyawan.jabatan.index', compact('jabatan', 'user'));
     }
-    public function storeJabatan(Request $request)
+    public function store(Request $request)
     {
         $validated = $request->validate([
 
@@ -27,7 +28,7 @@ class JabatanController extends Controller
         return redirect()->back()->with('success', 'Data Jabatan berhasil ditambahkan.');
     }
 
-    public function updateJabatan(Request $request, $id)
+    public function update(Request $request, $id)
     {
         $jabatan = Jabatan::findOrFail($id);
 
@@ -40,7 +41,7 @@ class JabatanController extends Controller
         return redirect()->back()->with('success', 'Data Jabatan berhasil diperbarui.');
     }
 
-    public function destroyJabatan($id)
+    public function destroy($id)
     {
         $jabatan = Jabatan::findOrFail($id);
 

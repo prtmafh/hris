@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Controller;
 use App\Models\Absensi;
-use App\Models\Izin;
 use App\Models\Karyawan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
-class AbsensiController extends Controller
+class DataAbsensiController extends Controller
 {
     public function index(Request $request)
     {

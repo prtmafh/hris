@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Controller;
 use App\Models\Jabatan;
 use App\Models\Karyawan;
 use App\Models\User;
@@ -75,7 +76,7 @@ class DaftarKaryawanController extends Controller
         return redirect()->route('admin.daftar_karyawan')->with('success', 'Karyawan berhasil ditambahkan');
     }
 
-    public function tambah()
+    public function storeView()
     {
         $jabatan = Jabatan::all();
         // $jenis_gaji = JenisGaji::all();
@@ -88,12 +89,14 @@ class DaftarKaryawanController extends Controller
         $jabatan  = Jabatan::all();
         return view('admin.data_karyawan.daftar_karyawan.detail', compact('karyawan', 'jabatan'));
     }
-    public function edit($id)
+
+    public function updateView($id)
     {
         $karyawan = Karyawan::with(['jabatan', 'user'])->findOrFail($id);
         $jabatan  = Jabatan::all();
         return view('admin.data_karyawan.daftar_karyawan.edit', compact('karyawan', 'jabatan'));
     }
+
     public function update(Request $request, $id)
     {
         $karyawan = Karyawan::findOrFail($id);

@@ -1,20 +1,54 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Controller;
 use App\Models\Absensi;
 use App\Models\Karyawan;
 use App\Models\Lembur;
-use App\Models\Penggajian;
 use App\Models\Pengaturan;
-use Barryvdh\DomPDF\Facade\Pdf;
+use App\Models\Penggajian;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
-class PenggajianController extends Controller
+class DataGajiController extends Controller
 {
+    public function index(Request $request)
+    {
+        $query = Penggajian::with('karyawan');
+
+        if ($request->filled('bulan')) {
+            $query->where('periode_bulan', $request->bulan);
+        }
+
+        if ($request->filled('tahun')) {
+            $query->where('periode_tahun', $request->tahun);
+        }
+
+        if ($request->filled('karyawan_id')) {
+            $query->where('karyawan_id', $request->karyawan_id);
+        }
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        $penggajian   = $query->latest()->paginate(10);
+        $karyawanList = Karyawan::orderBy('nama')->get();
+
+        $hasFilter = $request->filled('bulan')
+            || $request->filled('tahun')
+            || $request->filled('karyawan_id')
+            || $request->filled('status');
+
+        return view('admin.penggajian.data_gaji', compact(
+            'penggajian',
+            'karyawanList',
+            'hasFilter'
+        ));
+    }
+
     public function generate(Request $request)
     {
         $request->validate([
@@ -123,95 +157,6 @@ class PenggajianController extends Controller
             ->with('success', $msg);
     }
 
-    public function show(int $id)
-    {
-        $penggajian = Penggajian::with(['karyawan.jabatan', 'details'])->findOrFail($id);
-
-        return view('admin.penggajian.show', compact('penggajian'));
-    }
-
-    public function markBayar(int $id)
-    {
-        $penggajian = Penggajian::findOrFail($id);
-        $penggajian->update([
-            'status'      => 'dibayar',
-            'tgl_dibayar' => Carbon::today(),
-        ]);
-
-        return redirect()
-            ->route('admin.penggajian.show', $id)
-            ->with('success', 'Gaji berhasil ditandai sebagai dibayar.');
-    }
-
-    public function data_gaji(Request $request)
-    {
-        $query = Penggajian::with('karyawan');
-
-        if ($request->filled('bulan')) {
-            $query->where('periode_bulan', $request->bulan);
-        }
-
-        if ($request->filled('tahun')) {
-            $query->where('periode_tahun', $request->tahun);
-        }
-
-        if ($request->filled('karyawan_id')) {
-            $query->where('karyawan_id', $request->karyawan_id);
-        }
-
-        if ($request->filled('status')) {
-            $query->where('status', $request->status);
-        }
-
-        $penggajian   = $query->latest()->paginate(10);
-        $karyawanList = Karyawan::orderBy('nama')->get();
-
-        $hasFilter = $request->filled('bulan')
-            || $request->filled('tahun')
-            || $request->filled('karyawan_id')
-            || $request->filled('status');
-
-        return view('admin.penggajian.data_gaji', compact(
-            'penggajian',
-            'karyawanList',
-            'hasFilter'
-        ));
-    }
-
-    public function showSlip(int $id)
-    {
-        /** @var \App\Models\User $user */
-        $user       = Auth::user();
-        $karyawan   = $user->karyawan()->firstOrFail();
-        $penggajian = Penggajian::with(['details', 'karyawan.jabatan'])
-            ->where('karyawan_id', $karyawan->id)
-            ->findOrFail($id);
-
-        return view('karyawan.slip-gaji-detail', compact('penggajian'));
-    }
-
-    public function downloadSlipPdf(int $id)
-    {
-        /** @var \App\Models\User $user */
-        $user       = Auth::user();
-        $karyawan   = $user->karyawan()->firstOrFail();
-        $penggajian = Penggajian::with(['details', 'karyawan.jabatan'])
-            ->where('karyawan_id', $karyawan->id)
-            ->findOrFail($id);
-
-        $namaBulan = ['', 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
-                      'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
-
-        $pdf = Pdf::loadView('pdf.slip-gaji', compact('penggajian', 'namaBulan'))
-            ->setPaper('a4', 'portrait');
-
-        $filename = 'slip-gaji-' . $penggajian->karyawan->nik . '-'
-            . $namaBulan[$penggajian->periode_bulan] . '-'
-            . $penggajian->periode_tahun . '.pdf';
-
-        return $pdf->download($filename);
-    }
-
     private function hitungRingkasanLembur(int $karyawanId, int $bulan, int $tahun): array
     {
         $lemburDisetujui = Lembur::where('karyawan_id', $karyawanId)
@@ -237,5 +182,25 @@ class PenggajianController extends Controller
     private function formatJamLembur(float $totalJam): string
     {
         return rtrim(rtrim(number_format($totalJam, 2, '.', ''), '0'), '.');
+    }
+
+    public function show(int $id)
+    {
+        $penggajian = Penggajian::with(['karyawan.jabatan', 'details'])->findOrFail($id);
+
+        return view('admin.penggajian.show', compact('penggajian'));
+    }
+
+    public function markBayar(int $id)
+    {
+        $penggajian = Penggajian::findOrFail($id);
+        $penggajian->update([
+            'status'      => 'dibayar',
+            'tgl_dibayar' => Carbon::today(),
+        ]);
+
+        return redirect()
+            ->route('admin.penggajian.show', $id)
+            ->with('success', 'Gaji berhasil ditandai sebagai dibayar.');
     }
 }
