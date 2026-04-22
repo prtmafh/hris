@@ -5,7 +5,7 @@ $pengajuan = request()->is(['admin/lembur*','admin/izin*']);
 $gaji = request()->is(['admin/penggajian*']);
 
 $reimbursement = request()->is(['admin/kategori-reimbursement*','admin/reimbursement*']);
-$training = request()->is(['admin/training*','admin/peserta-training*']);
+$rekrutmen = request()->is(['admin/lowongan*','admin/pelamar*']);
 
 $pengaturan = request()->is(['admin/pengaturan*','admin/jadwal-kerja*','admin/hari-libur*']);
 @endphp
@@ -110,20 +110,19 @@ $pengaturan = request()->is(['admin/pengaturan*','admin/jadwal-kerja*','admin/ha
                     </nav>
                 </div>
 
-                <a class="nav-link {{ $training ? '' : 'collapsed' }}" href="#" data-bs-toggle="collapse"
-                    data-bs-target="#collapseTraining">
-                    <div class="nav-link-icon"><i data-feather="book-open"></i></div>
-                    Training
+                <a class="nav-link {{ $rekrutmen ? '' : 'collapsed' }}" href="#" data-bs-toggle="collapse"
+                    data-bs-target="#collapseRekrutmen">
+                    <div class="nav-link-icon"><i data-feather="user-plus"></i></div>
+                    Rekrutmen
                     <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                 </a>
 
-                <div class="collapse {{ $training ? 'show' : '' }}" id="collapseTraining">
+                <div class="collapse {{ $rekrutmen ? 'show' : '' }}" id="collapseRekrutmen">
                     <nav class="sidenav-menu-nested nav">
-                        <a class="nav-link {{ request()->is('admin/training*') ? 'active' : '' }}"
-                            href="{{ route('admin.training') }}">Data Training</a>
-
-                        <a class="nav-link {{ request()->is('admin/peserta-training*') ? 'active' : '' }}"
-                            href="{{ route('admin.peserta_training') }}">Peserta Training</a>
+                        <a class="nav-link {{ request()->is('admin/lowongan*') ? 'active' : '' }}"
+                            href="{{ route('admin.lowongan') }}">Lowongan</a>
+                        <a class="nav-link {{ request()->is('admin/pelamar*') ? 'active' : '' }}"
+                            href="{{ route('admin.pelamar') }}">Pelamar</a>
                     </nav>
                 </div>
 

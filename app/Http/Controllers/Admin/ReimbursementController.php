@@ -37,7 +37,7 @@ class ReimbursementController extends Controller
         $karyawanList = Karyawan::orderBy('nama')->get();
         $kategoriList = KategoriReimbursement::where('status', 'aktif')->orderBy('nama')->get();
 
-        return view('admin.referensi.reimbursement.index', compact('reimbursement', 'karyawanList', 'kategoriList'));
+        return view('admin.reimbursement.index', compact('reimbursement', 'karyawanList', 'kategoriList'));
     }
 
     public function store(Request $request)
@@ -173,8 +173,7 @@ class ReimbursementController extends Controller
         int $karyawanId,
         $tanggalTransaksi,
         ?int $ignoreId = null
-    ): void
-    {
+    ): void {
         if ($kategori->plafon_per_pengajuan && $jumlah > $kategori->plafon_per_pengajuan) {
             throw ValidationException::withMessages([
                 'jumlah_disetujui' => 'Jumlah melebihi plafon per pengajuan kategori.',

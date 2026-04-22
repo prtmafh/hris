@@ -15,7 +15,7 @@ class PengaturanController extends Controller
             ->orderBy('key')
             ->get();
 
-        return view('admin.referensi.pengaturan.index', compact('pengaturan'));
+        return view('admin.pengaturan.index', compact('pengaturan'));
     }
 
     public function update(Request $request, $id)

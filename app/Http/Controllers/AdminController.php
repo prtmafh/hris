@@ -149,14 +149,14 @@ class AdminController extends Controller
         $jadwalKerja = JadwalKerja::orderByRaw("\n                CASE hari\n                    WHEN 'senin' THEN 1\n                    WHEN 'selasa' THEN 2\n                    WHEN 'rabu' THEN 3\n                    WHEN 'kamis' THEN 4\n                    WHEN 'jumat' THEN 5\n                    WHEN 'sabtu' THEN 6\n                    WHEN 'minggu' THEN 7\n                    ELSE 8\n                END\n            ")
             ->get();
 
-        return view('admin.referensi.jadwal_kerja.index', compact('jadwalKerja'));
+        return view('admin.jadwal_kerja.index', compact('jadwalKerja'));
     }
 
     public function hariLibur()
     {
         $hariLibur = HariLibur::orderBy('tanggal', 'desc')->get();
 
-        return view('admin.referensi.hari_libur.index', compact('hariLibur'));
+        return view('admin.hari_libur.index', compact('hariLibur'));
     }
 
     public function kategoriReimbursement()

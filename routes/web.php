@@ -9,6 +9,8 @@ use App\Http\Controllers\Admin\IzinController;
 use App\Http\Controllers\Admin\JabatanController;
 use App\Http\Controllers\Admin\KategoriReimbursementController;
 use App\Http\Controllers\Admin\LemburController;
+use App\Http\Controllers\Admin\LowonganController;
+use App\Http\Controllers\Admin\PelamarController;
 use App\Http\Controllers\Admin\PengaturanController;
 use App\Http\Controllers\Admin\ReimbursementController as AdminReimbursementController;
 use App\Http\Controllers\AdminController;
@@ -19,6 +21,7 @@ use App\Http\Controllers\Karyawan\IzinController as KaryawanIzinController;
 use App\Http\Controllers\Karyawan\LemburController as KaryawanLemburController;
 use App\Http\Controllers\Karyawan\ReimbursementController as KaryawanReimbursementController;
 use App\Http\Controllers\Karyawan\SlipGajiController;
+use App\Http\Controllers\landing\HomeController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -26,6 +29,11 @@ Route::get('/', [AuthController::class, 'loginForm'])->name('login');
 Route::get('/login', [AuthController::class, 'loginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login.post');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+Route::get('/tsi-group', [HomeController::class, 'index'])->name('tsi-group');
+Route::get('/tsi-group/karir', [HomeController::class, 'karir'])->name('tsi-group.karir');
+Route::post('/tsi-group/karir/tracking', [HomeController::class, 'tracking'])->name('tsi-group.karir.tracking');
+Route::post('/tsi-group/karir/{id}/lamar', [HomeController::class, 'lamar'])->name('tsi-group.karir.lamar');
 
 Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
@@ -91,6 +99,19 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::post('/admin/reimbursement/{id}/reject', [AdminReimbursementController::class, 'reject'])->name('admin.reimbursement.reject');
     Route::post('/admin/reimbursement/{id}/bayar', [AdminReimbursementController::class, 'markPaid'])->name('admin.reimbursement.bayar');
     Route::delete('/admin/reimbursement/{id}', [AdminReimbursementController::class, 'destroy'])->name('admin.reimbursement.destroy');
+
+    Route::get('/admin/lowongan', [LowonganController::class, 'index'])->name('admin.lowongan');
+    Route::post('/admin/lowongan', [LowonganController::class, 'store'])->name('admin.lowongan.store');
+    Route::put('/admin/lowongan/{id}', [LowonganController::class, 'update'])->name('admin.lowongan.update');
+    Route::post('/admin/lowongan/{id}/toggle', [LowonganController::class, 'toggle'])->name('admin.lowongan.toggle');
+    Route::delete('/admin/lowongan/{id}', [LowonganController::class, 'destroy'])->name('admin.lowongan.destroy');
+
+    Route::get('/admin/pelamar', [PelamarController::class, 'index'])->name('admin.pelamar');
+    Route::put('/admin/pelamar/{id}', [PelamarController::class, 'update'])->name('admin.pelamar.update');
+    Route::post('/admin/pelamar/{id}/kirim-panggilan', [PelamarController::class, 'kirimPanggilan'])->name('admin.pelamar.kirim-panggilan');
+    Route::post('/admin/pelamar/{id}/kirim-update-proses', [PelamarController::class, 'kirimUpdateProses'])->name('admin.pelamar.kirim-update-proses');
+    Route::delete('/admin/pelamar/{id}', [PelamarController::class, 'destroy'])->name('admin.pelamar.destroy');
+
     Route::get('/admin/training', [AdminController::class, 'training'])->name('admin.training');
     Route::get('/admin/peserta-training', [AdminController::class, 'pesertaTraining'])->name('admin.peserta_training');
 });

@@ -12,7 +12,7 @@ class KategoriReimbursementController extends Controller
     {
         $data = KategoriReimbursement::orderBy('nama')->get();
 
-        return view('admin.referensi.kategori_reimbursement.index', compact('data'));
+        return view('admin.kategori_reimbursement.index', compact('data'));
     }
 
     public function store(Request $request)
