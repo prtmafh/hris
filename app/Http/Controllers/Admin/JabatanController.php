@@ -11,7 +11,7 @@ class JabatanController extends Controller
 {
     public function index()
     {
-        $jabatan = Jabatan::all();
+        $jabatan = Jabatan::withCount('karyawan')->get();
         $user = Auth::user();
         return view('admin.data_karyawan.jabatan.index', compact('jabatan', 'user'));
     }

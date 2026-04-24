@@ -61,6 +61,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::post('/admin/karyawan/{id}/reset-password', [DaftarKaryawanController::class, 'resetPassword'])->name('admin.karyawan.resetPassword');
 
     Route::get('/admin/absensi', [DataAbsensiController::class, 'index'])->name('data_absen');
+    Route::get('/admin/absensi/export', [DataAbsensiController::class, 'export'])->name('admin.absensi.export');
     Route::get('/admin/absensi/tambah', [DataAbsensiController::class, 'create'])->name('admin.absensi.create');
     Route::post('/admin/absensi', [DataAbsensiController::class, 'store'])->name('admin.absensi.store');
     Route::get('/admin/absensi/{id}', [DataAbsensiController::class, 'show'])->name('admin.absensi.show');

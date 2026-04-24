@@ -5,34 +5,30 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Absensi;
 use App\Models\Karyawan;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Storage;
+use App\Exports\AbsensiExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class DataAbsensiController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Absensi::with(['karyawan.jabatan'])
-            ->orderBy('tanggal', 'desc')
-            ->orderBy('jam_masuk', 'desc');
-
-        if ($request->filled('tanggal_dari')) {
-            $query->whereDate('tanggal', '>=', $request->tanggal_dari);
-        }
-        if ($request->filled('tanggal_sampai')) {
-            $query->whereDate('tanggal', '<=', $request->tanggal_sampai);
-        }
-        if ($request->filled('karyawan_id')) {
-            $query->where('karyawan_id', $request->karyawan_id);
-        }
-        if ($request->filled('status')) {
-            $query->where('status', $request->status);
-        }
-
+        $query = $this->buildFilteredQuery($request);
         $absensi = $query->paginate(20)->withQueryString();
         $karyawanList = Karyawan::orderBy('nama')->get();
 
         return view('admin.absensi.index', compact('absensi', 'karyawanList'));
+    }
+
+    public function export(Request $request)
+    {
+        return Excel::download(
+            new AbsensiExport($request),
+            'data-absensi.xlsx'
+        );
     }
 
     public function create()
@@ -147,5 +143,24 @@ class DataAbsensiController extends Controller
         $tahunList = range(now()->year, now()->year - 5);
 
         return view('admin.absensi.rekap', compact('rekap', 'tahun', 'bulan', 'tahunList'));
+    }
+
+    private function buildFilteredQuery(Request $request): Builder
+    {
+        return Absensi::with(['karyawan.jabatan'])
+            ->when($request->filled('tanggal_dari'), function (Builder $query) use ($request) {
+                $query->whereDate('tanggal', '>=', $request->tanggal_dari);
+            })
+            ->when($request->filled('tanggal_sampai'), function (Builder $query) use ($request) {
+                $query->whereDate('tanggal', '<=', $request->tanggal_sampai);
+            })
+            ->when($request->filled('karyawan_id'), function (Builder $query) use ($request) {
+                $query->where('karyawan_id', $request->karyawan_id);
+            })
+            ->when($request->filled('status'), function (Builder $query) use ($request) {
+                $query->where('status', $request->status);
+            })
+            ->orderBy('tanggal', 'desc')
+            ->orderBy('jam_masuk', 'desc');
     }
 }

@@ -34,7 +34,7 @@ class LemburController extends Controller
         return view('admin.pengajuan.lembur', compact('lembur', 'karyawanList', 'hasFilter'));
     }
 
-    public function approveLembur($id)
+    public function approve($id)
     {
         $lembur = Lembur::findOrFail($id);
 
@@ -43,7 +43,7 @@ class LemburController extends Controller
         return back()->with('success', 'Pengajuan lembur disetujui.');
     }
 
-    public function rejectLembur($id)
+    public function reject($id)
     {
         $lembur = Lembur::findOrFail($id);
         $lembur->update([
