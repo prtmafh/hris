@@ -25,11 +25,26 @@
 
     <div class="container-xl px-4">
 
+        {{-- TAB NAVIGATION --}}
+        <nav class="nav nav-borders mb-4">
+            <a class="nav-link {{ request('type') !== 'sesi' ? 'active' : '' }}"
+                href="{{ route('data_absen', array_merge(request()->query(), ['type' => 'biasa'])) }}">
+                <i data-feather="clock" class="me-2" style="width: 16px;"></i>
+                Absensi Biasa
+            </a>
+            <a class="nav-link {{ request('type') === 'sesi' ? 'active' : '' }}"
+                href="{{ route('data_absen', array_merge(request()->query(), ['type' => 'sesi'])) }}">
+                <i data-feather="layers" class="me-2" style="width: 16px;"></i>
+                Absensi Sesi
+            </a>
+        </nav>
+
         {{-- FILTER --}}
         <div class="card mb-4">
             <div class="card-body">
 
                 <form method="GET" action="{{ route('data_absen') }}" class="row gx-2 gy-2 align-items-end">
+                    <input type="hidden" name="type" value="{{ request('type', 'biasa') }}">
 
                     <div class="col-md-3">
                         <label class="small mb-1">Dari Tanggal</label>
@@ -90,7 +105,13 @@
         {{-- TABLE --}}
         <div class="card mb-4">
 
-            <div class="card-header">Data Absensi</div>
+            <div class="card-header">
+                @if(request('type') === 'sesi')
+                Data Absensi Sesi
+                @else
+                Data Absensi Biasa
+                @endif
+            </div>
 
             <div class="card-body">
 
@@ -102,14 +123,97 @@
                             <th>Karyawan</th>
                             <th>Jabatan</th>
                             <th>Tanggal</th>
+                            @if(request('type') === 'sesi')
+                            <th>Sesi</th>
+                            <th>Check In</th>
+                            <th>Check Out</th>
+                            @else
                             <th>Masuk</th>
                             <th>Keluar</th>
+                            @endif
                             <th>Status</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
 
                     <tbody>
+                        @if(request('type') === 'sesi')
+                        @forelse($absensi as $index => $sesi)
+                        <tr>
+                            <td>{{ $absensi->firstItem() + $index }}</td>
+
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="avatar me-2">
+                                        <img class="avatar-img img-fluid"
+                                            src="{{ $sesi->absensi->karyawan->foto
+                                                    ? asset('storage/'.$sesi->absensi->karyawan->foto)
+                                                    : 'https://ui-avatars.com/api/?name='.urlencode($sesi->absensi->karyawan->nama) }}">
+                                    </div>
+                                    <div class="fw-semibold text-capitalize">
+                                        {{ $sesi->absensi->karyawan->nama }}
+                                    </div>
+                                </div>
+                            </td>
+
+                            <td class="text-capitalize">
+                                {{ optional($sesi->absensi->karyawan->jabatan)->nama_jabatan ?? '-' }}
+                            </td>
+
+                            <td>{{ $sesi->absensi->tanggal->format('d M Y') }}</td>
+
+                            <td class="fw-semibold">Sesi {{ $sesi->sesi_ke }}</td>
+                            <td>{{ $sesi->jam_checkin ?? '-' }}</td>
+                            <td>{{ $sesi->jam_checkout ?? '-' }}</td>
+
+                            <td>
+                                @php
+                                $badge = match($sesi->status) {
+                                'hadir' => 'green',
+                                'terlambat' => 'yellow',
+                                'izin' => 'blue',
+                                'alpha' => 'red',
+                                default => 'secondary',
+                                };
+                                @endphp
+
+                                <span class="badge bg-{{ $badge }}-soft text-{{ $badge }} text-capitalize">
+                                    {{ $sesi->status }}
+                                </span>
+                            </td>
+
+                            <td>
+                                <a href="{{ route('admin.absensi-sesi.show', $sesi->id) }}"
+                                    class="btn btn-datatable btn-icon btn-transparent-dark me-2">
+                                    <i data-feather="eye"></i>
+                                </a>
+
+                                <a href="{{ route('admin.absensi-sesi.edit', $sesi->id) }}"
+                                    class="btn btn-datatable btn-icon btn-transparent-dark me-2">
+                                    <i data-feather="edit"></i>
+                                </a>
+
+                                <button class="btn btn-datatable btn-icon btn-transparent-dark text-danger"
+                                    onclick="confirmDeleteSesi({{ $sesi->id }})">
+                                    <i data-feather="trash-2"></i>
+                                </button>
+
+                                <form id="delete-form-{{ $sesi->id }}"
+                                    action="{{ route('admin.absensi-sesi.destroy', $sesi->id) }}" method="POST"
+                                    style="display:none;">
+                                    @csrf
+                                    @method('DELETE')
+                                </form>
+                            </td>
+                        </tr>
+                        @empty
+                        <tr>
+                            <td colspan="9" class="text-center text-muted py-4">
+                                Tidak ada data absensi sesi
+                            </td>
+                        </tr>
+                        @endforelse
+                        @else
                         @forelse($absensi as $index => $a)
                         <tr>
 
@@ -120,9 +224,9 @@
                                 <div class="d-flex align-items-center">
                                     <div class="avatar me-2">
                                         <img class="avatar-img img-fluid"
-                                            src="{{ $a->karyawan->foto 
-                                                ? asset('storage/'.$a->karyawan->foto) 
-                                                : 'https://ui-avatars.com/api/?name='.urlencode($a->karyawan->nama) }}">
+                                            src="{{ $a->karyawan->foto
+                                                    ? asset('storage/'.$a->karyawan->foto)
+                                                    : 'https://ui-avatars.com/api/?name='.urlencode($a->karyawan->nama) }}">
                                     </div>
                                     <div class="fw-semibold text-capitalize">
                                         {{ $a->karyawan->nama }}
@@ -187,10 +291,11 @@
                         @empty
                         <tr>
                             <td colspan="8" class="text-center text-muted py-4">
-                                Tidak ada data absensi
+                                Tidak ada data absensi biasa
                             </td>
                         </tr>
                         @endforelse
+                        @endif
                     </tbody>
 
                 </table>
@@ -205,3 +310,13 @@
     </div>
 </main>
 @endsection
+
+@push('scripts')
+<script>
+    function confirmDeleteSesi(id) {
+        if (confirm('Apakah Anda yakin ingin menghapus data absensi sesi ini?')) {
+            document.getElementById('delete-form-' + id).submit();
+        }
+    }
+</script>
+@endpush

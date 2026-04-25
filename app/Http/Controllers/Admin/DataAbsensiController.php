@@ -11,13 +11,22 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Storage;
 use App\Exports\AbsensiExport;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Models\AbsensiSesi;
 
 class DataAbsensiController extends Controller
 {
     public function index(Request $request)
     {
-        $query = $this->buildFilteredQuery($request);
-        $absensi = $query->paginate(20)->withQueryString();
+        $type = $request->get('type', 'biasa');
+
+        if ($type === 'sesi') {
+            $query = $this->buildFilteredQuerySesi($request);
+            $absensi = $query->paginate(20)->withQueryString();
+        } else {
+            $query = $this->buildFilteredQuery($request);
+            $absensi = $query->paginate(20)->withQueryString();
+        }
+
         $karyawanList = Karyawan::orderBy('nama')->get();
 
         return view('admin.absensi.index', compact('absensi', 'karyawanList'));
@@ -148,6 +157,7 @@ class DataAbsensiController extends Controller
     private function buildFilteredQuery(Request $request): Builder
     {
         return Absensi::with(['karyawan.jabatan'])
+            ->whereDoesntHave('sesi')  // Hanya absensi yang TIDAK punya sesi
             ->when($request->filled('tanggal_dari'), function (Builder $query) use ($request) {
                 $query->whereDate('tanggal', '>=', $request->tanggal_dari);
             })
@@ -162,5 +172,23 @@ class DataAbsensiController extends Controller
             })
             ->orderBy('tanggal', 'desc')
             ->orderBy('jam_masuk', 'desc');
+    }
+
+    private function buildFilteredQuerySesi(Request $request)
+    {
+        return AbsensiSesi::with(['absensi.karyawan.jabatan'])
+            ->when($request->filled('tanggal_dari'), function ($query) use ($request) {
+                $query->whereHas('absensi', fn($q) => $q->whereDate('tanggal', '>=', $request->tanggal_dari));
+            })
+            ->when($request->filled('tanggal_sampai'), function ($query) use ($request) {
+                $query->whereHas('absensi', fn($q) => $q->whereDate('tanggal', '<=', $request->tanggal_sampai));
+            })
+            ->when($request->filled('karyawan_id'), function ($query) use ($request) {
+                $query->whereHas('absensi', fn($q) => $q->where('karyawan_id', $request->karyawan_id));
+            })
+            ->when($request->filled('status'), function ($query) use ($request) {
+                $query->where('status', $request->status);
+            })
+            ->orderByDesc('created_at');
     }
 }

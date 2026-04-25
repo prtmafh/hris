@@ -6,34 +6,31 @@
 @php
 $namaBulan = ['', 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
-$pemasukan      = $penggajian->details->where('tipe', 'pemasukan');
-$potongan       = $penggajian->details->where('tipe', 'potongan');
+$pemasukan = $penggajian->details->where('tipe', 'pemasukan');
+$potongan = $penggajian->details->where('tipe', 'potongan');
 $totalPemasukan = $pemasukan->sum('jumlah');
-$totalPotongan  = $potongan->sum('jumlah');
-$k              = $penggajian->karyawan;
+$totalPotongan = $potongan->sum('jumlah');
+$k = $penggajian->karyawan;
 @endphp
 
 <main>
-    <header class="page-header page-header-dark bg-gradient-primary-to-secondary pb-10">
+    <header class="page-header page-header-compact page-header-light border-bottom bg-white mb-4 py-2">
         <div class="container-xl px-4">
-            <div class="page-header-content pt-4">
-                <div class="row align-items-center justify-content-between">
-                    <div class="col-auto mt-4">
+            <div class="page-header-content">
+                <div class="row align-items-center justify-content-between pt-3">
+                    <div class="col-auto mb-3">
                         <h1 class="page-header-title">
-                            <div class="page-header-icon"><i data-feather="credit-card"></i></div>
-                            Slip Gaji
+                            <div class="page-header-icon"><i data-feather="file-text"></i></div>
+                            Slip Gaji — {{ $namaBulan[$penggajian->periode_bulan] }} {{ $penggajian->periode_tahun }}
                         </h1>
-                        <div class="page-header-subtitle">
-                            {{ $namaBulan[$penggajian->periode_bulan] }} {{ $penggajian->periode_tahun }}
-                        </div>
                     </div>
-                    <div class="col-auto mt-4 d-flex gap-2">
-                        <a href="{{ route('karyawan.slip_gaji') }}" class="btn btn-white btn-sm">
-                            <i class="fas fa-arrow-left me-1"></i> Kembali
+                    <div class="col-auto mb-3 d-flex gap-2">
+                        <a href="{{ route('karyawan.slip_gaji') }}" class="btn btn-sm btn-light">
+                            <i data-feather="arrow-left" class="me-1"></i> Kembali
                         </a>
                         <a href="{{ route('karyawan.slip_gaji.pdf', $penggajian->id) }}"
-                           class="btn btn-success btn-sm" target="_blank">
-                            <i class="fas fa-file-pdf me-1"></i> Unduh PDF
+                            class="btn btn-sm btn-light text-success" target="_blank">
+                            <i data-feather="download" class="me-1"></i> Unduh PDF
                         </a>
                     </div>
                 </div>
@@ -41,7 +38,7 @@ $k              = $penggajian->karyawan;
         </div>
     </header>
 
-    <div class="container-xl px-4 mt-n10 pb-5">
+    <div class="container-xl px-4 pb-4">
         <div style="max-width: 760px; margin: 0 auto;">
 
             {{-- ── Slip Card ── --}}
@@ -57,15 +54,15 @@ $k              = $penggajian->karyawan;
                             <div class="text-muted small">Sistem Manajemen Sumber Daya Manusia</div>
                         </div>
                         <div class="col-auto text-end">
-                            <div class="text-muted small text-uppercase fw-semibold mb-1"
-                                style="letter-spacing:.06em;">Slip Gaji Karyawan</div>
+                            <div class="text-muted small text-uppercase fw-semibold mb-1" style="letter-spacing:.06em;">
+                                Slip Gaji Karyawan</div>
                             <div class="fw-semibold small">
                                 Periode: {{ $namaBulan[$penggajian->periode_bulan] }} {{ $penggajian->periode_tahun }}
                             </div>
                             @if($penggajian->status === 'dibayar')
-                            <span class="badge bg-success rounded-pill mt-1 px-3">Sudah Dibayar</span>
+                            <span class="badge bg-green-soft text-green rounded-pill mt-1 px-3">Sudah Dibayar</span>
                             @else
-                            <span class="badge bg-warning text-dark rounded-pill mt-1 px-3">Dalam Proses</span>
+                            <span class="badge bg-yellow-soft text-yellow rounded-pill mt-1 px-3">Dalam Proses</span>
                             @endif
                         </div>
                     </div>
@@ -122,8 +119,10 @@ $k              = $penggajian->karyawan;
                     <table class="table table-hover align-middle small mb-0">
                         <thead class="table-light">
                             <tr>
-                                <th class="py-2 text-muted fw-semibold" style="font-size:.7rem;letter-spacing:.05em;">KETERANGAN</th>
-                                <th class="py-2 text-end text-muted fw-semibold" style="font-size:.7rem;letter-spacing:.05em;">JUMLAH</th>
+                                <th class="py-2 text-muted fw-semibold" style="font-size:.7rem;letter-spacing:.05em;">
+                                    KETERANGAN</th>
+                                <th class="py-2 text-end text-muted fw-semibold"
+                                    style="font-size:.7rem;letter-spacing:.05em;">JUMLAH</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -162,8 +161,10 @@ $k              = $penggajian->karyawan;
                     <table class="table table-hover align-middle small mb-0">
                         <thead class="table-light">
                             <tr>
-                                <th class="py-2 text-muted fw-semibold" style="font-size:.7rem;letter-spacing:.05em;">KETERANGAN</th>
-                                <th class="py-2 text-end text-muted fw-semibold" style="font-size:.7rem;letter-spacing:.05em;">JUMLAH</th>
+                                <th class="py-2 text-muted fw-semibold" style="font-size:.7rem;letter-spacing:.05em;">
+                                    KETERANGAN</th>
+                                <th class="py-2 text-end text-muted fw-semibold"
+                                    style="font-size:.7rem;letter-spacing:.05em;">JUMLAH</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -213,12 +214,11 @@ $k              = $penggajian->karyawan;
             {{-- Footer note --}}
             <div class="text-center mt-3 mb-2">
                 <p class="text-muted small mb-1">
-                    <i class="fas fa-info-circle me-1"></i>
                     Slip gaji ini diterbitkan secara otomatis oleh sistem dan sah tanpa tanda tangan.
                 </p>
                 <a href="{{ route('karyawan.slip_gaji.pdf', $penggajian->id) }}"
-                   class="btn btn-outline-primary btn-sm rounded-pill px-4 mt-1" target="_blank">
-                    <i class="fas fa-file-pdf me-1"></i> Unduh Slip PDF
+                    class="btn btn-sm btn-light text-success rounded-pill px-4 mt-1" target="_blank">
+                    <i data-feather="download" class="me-1"></i> Unduh Slip PDF
                 </a>
             </div>
 

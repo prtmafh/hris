@@ -4,23 +4,22 @@
 
 @section('content')
 <main>
-    <header class="page-header page-header-dark bg-gradient-primary-to-secondary pb-10">
+    <header class="page-header page-header-compact page-header-light border-bottom bg-white mb-4 py-2">
         <div class="container-xl px-4">
-            <div
-                class="page-header-content pt-4 d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3">
-                <div>
-                    <h1 class="page-header-title">
-                        <div class="page-header-icon"><i data-feather="credit-card"></i></div>
-                        Slip Gaji
-                    </h1>
-                    <div class="page-header-subtitle">Lihat riwayat penggajian Anda berdasarkan tahun yang dipilih.
+            <div class="page-header-content">
+                <div class="row align-items-center justify-content-between pt-3">
+                    <div class="col-auto mb-3">
+                        <h1 class="page-header-title">
+                            <div class="page-header-icon"><i data-feather="file-text"></i></div>
+                            Slip Gaji
+                        </h1>
                     </div>
                 </div>
             </div>
         </div>
     </header>
 
-    <div class="container-xl px-4 mt-n10">
+    <div class="container-xl px-4">
         {{-- <div class="card mb-4 shadow-sm">
             <div class="card-header">
                 <div class="fw-bold">Filter Slip Gaji</div>
@@ -45,7 +44,7 @@
             </div>
         </div> --}}
 
-        <div class="card shadow-sm">
+        <div class="card">
             <div class="card-header d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2">
                 <div>
                     <div class="fw-bold">Riwayat Slip Gaji</div>
@@ -58,13 +57,13 @@
                     <table id="datatablesSimple" data-simple-datatable class="table table-hover align-middle mb-0">
                         <thead>
                             <tr>
-                                <th class="text-muted small text-uppercase">Periode</th>
-                                <th class="text-muted small text-uppercase">Hadir</th>
-                                <th class="text-muted small text-uppercase">Lembur</th>
-                                <th class="text-muted small text-uppercase">Potongan</th>
-                                <th class="text-muted small text-uppercase">Total Gaji</th>
-                                <th class="text-muted small text-uppercase">Status</th>
-                                <th class="text-muted small text-uppercase">Tanggal Dibayar</th>
+                                <th>Periode</th>
+                                <th>Hadir</th>
+                                <th>Lembur</th>
+                                <th>Potongan</th>
+                                <th>Total Gaji</th>
+                                <th>Status</th>
+                                <th>Tanggal Dibayar</th>
                                 <th class="text-muted small text-uppercase text-center">Slip</th>
                             </tr>
                         </thead>
@@ -92,7 +91,8 @@
                                     Rp {{ number_format($gaji->total_gaji ?? 0, 0, ',', '.') }}
                                 </td>
                                 <td>
-                                    <span class="badge bg-{{ $gaji->status === 'dibayar' ? 'success' : 'warning' }}">
+                                    @php $badgeGaji = $gaji->status === 'dibayar' ? 'green' : 'yellow'; @endphp
+                                    <span class="badge bg-{{ $badgeGaji }}-soft text-{{ $badgeGaji }} text-capitalize">
                                         {{ $gaji->status }}
                                     </span>
                                 </td>
@@ -102,8 +102,8 @@
                                 </td>
                                 <td class="text-center">
                                     <a href="{{ route('karyawan.slip_gaji.show', $gaji->id) }}"
-                                       class="btn btn-sm btn-outline-primary rounded-pill px-3">
-                                        <i class="fas fa-file-alt fa-xs me-1"></i> Lihat
+                                        class="btn btn-datatable btn-icon btn-transparent-dark" title="Lihat Slip">
+                                        <i data-feather="eye"></i>
                                     </a>
                                 </td>
                             </tr>

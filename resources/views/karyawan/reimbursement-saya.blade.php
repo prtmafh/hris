@@ -4,22 +4,25 @@
 
 @section('content')
 <main>
-    <header class="page-header page-header-dark bg-gradient-primary-to-secondary pb-10">
+    <header class="page-header page-header-compact page-header-light border-bottom bg-white mb-4 py-2">
         <div class="container-xl px-4">
-            <div class="page-header-content pt-4">
-                <h1 class="page-header-title">
-                    <div class="page-header-icon"><i data-feather="credit-card"></i></div>
-                    Reimbursement Saya
-                </h1>
-                <div class="page-header-subtitle">Ajukan penggantian biaya dan pantau status persetujuannya.</div>
+            <div class="page-header-content">
+                <div class="row align-items-center justify-content-between pt-3">
+                    <div class="col-auto mb-3">
+                        <h1 class="page-header-title">
+                            <div class="page-header-icon"><i data-feather="credit-card"></i></div>
+                            Reimbursement Saya
+                        </h1>
+                    </div>
+                </div>
             </div>
         </div>
     </header>
 
-    <div class="container-xl px-4 mt-n10">
+    <div class="container-xl px-4">
         <div class="row g-4">
             <div class="col-xl-4">
-                <div class="card shadow-sm">
+                <div class="card">
                     <div class="card-header">
                         <div class="fw-bold">Form Pengajuan</div>
                         <div class="small text-muted">Lengkapi data reimbursement untuk diproses admin.</div>
@@ -104,7 +107,7 @@
             </div>
 
             <div class="col-xl-8">
-                <div class="card shadow-sm">
+                <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <div>
                             <div class="fw-bold">Riwayat Reimbursement</div>
@@ -123,17 +126,17 @@
                                         <th>Judul</th>
                                         <th>Jumlah</th>
                                         <th>Status</th>
-                                        <th>Aksi</th>
+                                        <th class="text-center">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @forelse($reimbursement as $item)
                                     @php
                                     $badge = match($item->status) {
-                                    'pending' => 'warning',
-                                    'disetujui' => 'info',
-                                    'ditolak' => 'danger',
-                                    'dibayar' => 'success',
+                                    'pending' => 'yellow',
+                                    'disetujui' => 'blue',
+                                    'ditolak' => 'red',
+                                    'dibayar' => 'green',
                                     default => 'secondary',
                                     };
                                     @endphp
@@ -152,12 +155,14 @@
                                                 'Rp ' . number_format($item->jumlah_disetujui, 0, ',', '.') : '-' }}
                                             </div>
                                         </td>
-                                        <td><span class="badge bg-{{ $badge }} text-capitalize">{{ $item->status
-                                                }}</span></td>
-                                        <td>
+                                        <td><span
+                                                class="badge bg-{{ $badge }}-soft text-{{ $badge }} text-capitalize">{{
+                                                $item->status }}</span></td>
+                                        <td class="text-center">
                                             @if($item->bukti)
                                             <a href="{{ asset('storage/' . $item->bukti) }}" target="_blank"
-                                                class="btn btn-sm btn-outline-primary">
+                                                class="btn btn-datatable btn-icon btn-transparent-dark me-1"
+                                                title="Lihat Bukti">
                                                 <i data-feather="paperclip"></i>
                                             </a>
                                             @endif
@@ -166,8 +171,10 @@
                                                 method="POST" class="d-inline">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button class="btn btn-sm btn-danger"
-                                                    onclick="return confirm('Yakin hapus pengajuan ini?')">
+                                                <button
+                                                    class="btn btn-datatable btn-icon btn-transparent-dark text-danger"
+                                                    onclick="return confirm('Yakin hapus pengajuan ini?')"
+                                                    title="Hapus">
                                                     <i data-feather="trash-2"></i>
                                                 </button>
                                             </form>

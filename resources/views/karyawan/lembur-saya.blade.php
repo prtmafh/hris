@@ -4,26 +4,25 @@
 
 @section('content')
 <main>
-    <header class="page-header page-header-dark bg-gradient-primary-to-secondary pb-10">
+    <header class="page-header page-header-compact page-header-light border-bottom bg-white mb-4 py-2">
         <div class="container-xl px-4">
-            <div
-                class="page-header-content pt-4 d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3">
-                <div>
-                    <h1 class="page-header-title">
-                        <div class="page-header-icon"><i data-feather="clock"></i></div>
-                        Lembur Saya
-                    </h1>
-                    <div class="page-header-subtitle">Ajukan lembur dan lihat riwayat persetujuannya dalam satu halaman.
+            <div class="page-header-content">
+                <div class="row align-items-center justify-content-between pt-3">
+                    <div class="col-auto mb-3">
+                        <h1 class="page-header-title">
+                            <div class="page-header-icon"><i data-feather="clock"></i></div>
+                            Lembur Saya
+                        </h1>
                     </div>
                 </div>
             </div>
         </div>
     </header>
 
-    <div class="container-xl px-4 mt-n10">
+    <div class="container-xl px-4">
         <div class="row g-4">
             <div class="col-xl-4">
-                <div class="card shadow-sm h-100">
+                <div class="card h-100">
                     <div class="card-header">
                         <div class="fw-bold">Form Pengajuan Lembur</div>
                         <div class="small text-muted">Isi detail jam lembur agar dapat diproses oleh admin.</div>
@@ -81,7 +80,7 @@
             </div>
 
             <div class="col-xl-8">
-                <div class="card shadow-sm ">
+                <div class="card">
                     <div
                         class="card-header d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2">
                         <div>
@@ -96,21 +95,21 @@
                                 class="table table-hover align-middle mb-0">
                                 <thead>
                                     <tr>
-                                        <th class="">Tanggal</th>
-                                        <th class="">Jam Mulai</th>
-                                        <th class="">Jam Selesai</th>
-                                        <th class="">Total Jam</th>
-                                        <th class="">Upah</th>
-                                        <th class="">Status</th>
+                                        <th>Tanggal</th>
+                                        <th>Jam Mulai</th>
+                                        <th>Jam Selesai</th>
+                                        <th>Total Jam</th>
+                                        <th>Upah</th>
+                                        <th>Status</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @forelse($lembur as $lb)
                                     @php
                                     $badge = match($lb->status) {
-                                    'pending' => 'warning',
-                                    'disetujui' => 'success',
-                                    'ditolak' => 'danger',
+                                    'pending' => 'yellow',
+                                    'disetujui' => 'green',
+                                    'ditolak' => 'red',
                                     default => 'secondary',
                                     };
                                     @endphp
@@ -133,7 +132,9 @@
                                             Rp {{ number_format($lb->total_upah, 0, ',', '.') }}
                                         </td>
                                         <td>
-                                            <span class="badge bg-{{ $badge }} text-capitalize">{{ $lb->status }}</span>
+                                            <span
+                                                class="badge bg-{{ $badge }}-soft text-{{ $badge }} text-capitalize">{{
+                                                $lb->status }}</span>
                                         </td>
                                     </tr>
                                     @empty

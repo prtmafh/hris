@@ -50,9 +50,19 @@ class PengaturanController extends Controller
         session()->flash('edit_pengaturan_id', $pengaturan->id);
 
         $request->validate([
+            'key' => ['required', 'string', 'max:255', 'unique:pengaturan,key,' . $pengaturan->id],
+            'label' => ['required', 'string', 'max:255'],
+            'tipe' => ['required', 'in:string,integer,decimal,boolean,json,time,date'],
+            'grup' => ['nullable', 'string', 'max:255'],
+            'keterangan' => ['nullable', 'string'],
             'value' => ['nullable', 'string'],
         ]);
 
+        $pengaturan->key = $request->input('key');
+        $pengaturan->label = $request->input('label');
+        $pengaturan->tipe = $request->input('tipe');
+        $pengaturan->grup = $request->input('grup');
+        $pengaturan->keterangan = $request->input('keterangan');
         $pengaturan->value = $this->normalizeValueByType($pengaturan->tipe, $request->input('value'));
         $pengaturan->save();
 

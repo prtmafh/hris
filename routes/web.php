@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\DaftarAdminController;
 use App\Http\Controllers\Admin\DaftarKaryawanController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\DataAbsensiController;
+use App\Http\Controllers\Admin\AbsensiSesiController;
 use App\Http\Controllers\Admin\DataGajiController;
 use App\Http\Controllers\Admin\IzinController;
 use App\Http\Controllers\Admin\JabatanController;
@@ -69,6 +70,12 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::put('/admin/absensi/{id}', [DataAbsensiController::class, 'update'])->name('admin.absensi.update');
     Route::delete('/admin/absensi/{id}', [DataAbsensiController::class, 'destroy'])->name('admin.absensi.destroy');
     Route::get('/admin/rekap-tahunan', [DataAbsensiController::class, 'rekap'])->name('rekap.tahunan');
+
+    // AbsensiSesi Routes
+    Route::get('/admin/absensi-sesi/{id}', [AbsensiSesiController::class, 'show'])->name('admin.absensi-sesi.show');
+    Route::get('/admin/absensi-sesi/{id}/edit', [AbsensiSesiController::class, 'edit'])->name('admin.absensi-sesi.edit');
+    Route::put('/admin/absensi-sesi/{id}', [AbsensiSesiController::class, 'update'])->name('admin.absensi-sesi.update');
+    Route::delete('/admin/absensi-sesi/{id}', [AbsensiSesiController::class, 'destroy'])->name('admin.absensi-sesi.destroy');
 
     Route::get('admin/izin', [IzinController::class, 'index'])->name('admin.izin');
     Route::post('/admin/izin/{id}/approve', [IzinController::class, 'approve'])->name('izin.approve');
