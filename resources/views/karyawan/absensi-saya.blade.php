@@ -54,57 +54,103 @@
             </div>
         </div>
 
-        {{-- <div class="row g-4 mb-4">
-            <div class="col-md-6 col-xl-3">
-                <div class="card border-start border-success border-4 h-100 shadow-sm">
-                    <div class="card-body">
-                        <div class="small text-success text-uppercase fw-bold mb-1">Hadir</div>
-                        <div class="fs-3 fw-bold">{{ $totalHadir }}</div>
-                        <div class="small text-muted">Jumlah kehadiran pada periode ini</div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 col-xl-3">
-                <div class="card border-start border-warning border-4 h-100 shadow-sm">
-                    <div class="card-body">
-                        <div class="small text-warning text-uppercase fw-bold mb-1">Terlambat</div>
-                        <div class="fs-3 fw-bold">{{ $totalTerlambat }}</div>
-                        <div class="small text-muted">Total keterlambatan yang tercatat</div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 col-xl-3">
-                <div class="card border-start border-primary border-4 h-100 shadow-sm">
-                    <div class="card-body">
-                        <div class="small text-primary text-uppercase fw-bold mb-1">Izin</div>
-                        <div class="fs-3 fw-bold">{{ $totalIzin }}</div>
-                        <div class="small text-muted">Absensi berstatus izin</div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 col-xl-3">
-                <div class="card border-start border-danger border-4 h-100 shadow-sm">
-                    <div class="card-body">
-                        <div class="small text-danger text-uppercase fw-bold mb-1">Alpha</div>
-                        <div class="fs-3 fw-bold">{{ $totalAlpha }}</div>
-                        <div class="small text-muted">Ketidakhadiran tanpa keterangan</div>
-                    </div>
-                </div>
-            </div>
-        </div> --}}
-
         <div class="card shadow-sm">
             <div class="card-header d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2">
                 <div>
                     <div class="fw-bold">Riwayat Absensi</div>
                     <div class="small text-muted">
                         Periode {{ \Carbon\Carbon::create()->month($bulan)->translatedFormat('F') }} {{ $tahun }}
+                        @if($statusGaji === 'harian')
+                        &mdash; <span class="text-primary">Karyawan Harian (per sesi)</span>
+                        @endif
                     </div>
                 </div>
                 <span class="badge bg-primary">{{ $absensi->count() }} hari</span>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
+                    @if($statusGaji === 'harian')
+                    {{-- Tabel khusus karyawan harian: breakdown per sesi --}}
+                    <table id="datatablesSimple" data-simple-datatable class="table table-hover align-middle mb-0">
+                        <thead>
+                            <tr>
+                                <th class="text-muted small text-uppercase">No</th>
+                                <th class="text-muted small text-uppercase">Tanggal</th>
+                                <th class="text-muted small text-uppercase">Sesi</th>
+                                <th class="text-muted small text-uppercase">Jam Masuk</th>
+                                <th class="text-muted small text-uppercase">Jam Pulang</th>
+                                <th class="text-muted small text-uppercase">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @php $no = 1; @endphp
+                            @forelse($absensi as $a)
+                                @if($a->sesi->isEmpty())
+                                <tr>
+                                    <td class="text-muted">{{ $no++ }}</td>
+                                    <td>
+                                        <div class="fw-semibold">
+                                            {{ \Carbon\Carbon::parse($a->tanggal)->translatedFormat('d F Y') }}
+                                        </div>
+                                    </td>
+                                    <td><span class="text-muted">-</span></td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>
+                                        @php
+                                        $badge = match($a->status) {
+                                            'hadir'     => 'success',
+                                            'terlambat' => 'warning',
+                                            'izin'      => 'primary',
+                                            'alpha'     => 'danger',
+                                            default     => 'secondary',
+                                        };
+                                        @endphp
+                                        <span class="badge bg-{{ $badge }} text-capitalize">{{ $a->status }}</span>
+                                    </td>
+                                </tr>
+                                @else
+                                    @foreach($a->sesi as $idx => $sesi)
+                                    @php
+                                    $badge = match($sesi->status) {
+                                        'hadir'     => 'success',
+                                        'terlambat' => 'warning',
+                                        'izin'      => 'primary',
+                                        'alpha'     => 'danger',
+                                        default     => 'secondary',
+                                    };
+                                    @endphp
+                                    <tr>
+                                        <td class="text-muted">{{ $idx === 0 ? $no++ : '' }}</td>
+                                        <td>
+                                            @if($idx === 0)
+                                            <div class="fw-semibold">
+                                                {{ \Carbon\Carbon::parse($a->tanggal)->translatedFormat('d F Y') }}
+                                            </div>
+                                            @endif
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-secondary bg-opacity-25 text-dark">Sesi {{ $sesi->sesi_ke }}</span>
+                                        </td>
+                                        <td>{{ $sesi->jam_checkin ? \Carbon\Carbon::parse($sesi->jam_checkin)->format('H:i') : '-' }}</td>
+                                        <td>{{ $sesi->jam_checkout ? \Carbon\Carbon::parse($sesi->jam_checkout)->format('H:i') : '-' }}</td>
+                                        <td>
+                                            <span class="badge bg-{{ $badge }} text-capitalize">{{ $sesi->status }}</span>
+                                        </td>
+                                    </tr>
+                                    @endforeach
+                                @endif
+                            @empty
+                            <tr>
+                                <td colspan="6" class="text-center text-muted py-4">
+                                    Belum ada data absensi untuk periode ini.
+                                </td>
+                            </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                    @else
+                    {{-- Tabel karyawan bulanan (jam masuk/pulang per hari) --}}
                     <table id="datatablesSimple" data-simple-datatable class="table table-hover align-middle mb-0">
                         <thead>
                             <tr>
@@ -119,11 +165,11 @@
                             @forelse($absensi as $i => $a)
                             @php
                             $badge = match($a->status) {
-                            'hadir' => 'success',
-                            'terlambat' => 'warning',
-                            'izin' => 'primary',
-                            'alpha' => 'danger',
-                            default => 'secondary',
+                                'hadir'     => 'success',
+                                'terlambat' => 'warning',
+                                'izin'      => 'primary',
+                                'alpha'     => 'danger',
+                                default     => 'secondary',
                             };
                             @endphp
                             <tr>
@@ -134,8 +180,7 @@
                                     </div>
                                 </td>
                                 <td>{{ $a->jam_masuk ? \Carbon\Carbon::parse($a->jam_masuk)->format('H:i') : '-' }}</td>
-                                <td>{{ $a->jam_keluar ? \Carbon\Carbon::parse($a->jam_keluar)->format('H:i') : '-' }}
-                                </td>
+                                <td>{{ $a->jam_keluar ? \Carbon\Carbon::parse($a->jam_keluar)->format('H:i') : '-' }}</td>
                                 <td>
                                     <span class="badge bg-{{ $badge }} text-capitalize">{{ $a->status }}</span>
                                 </td>
@@ -149,6 +194,7 @@
                             @endforelse
                         </tbody>
                     </table>
+                    @endif
                 </div>
             </div>
         </div>

@@ -84,6 +84,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::post('/admin/penggajian/{id}/bayar', [DataGajiController::class, 'markBayar'])->name('admin.penggajian.bayar');
 
     Route::get('/admin/pengaturan', [PengaturanController::class, 'index'])->name('admin.pengaturan');
+    Route::post('/admin/pengaturan', [PengaturanController::class, 'store'])->name('admin.pengaturan.store');
     Route::put('/admin/pengaturan/{id}', [PengaturanController::class, 'update'])->name('admin.pengaturan.update');
 
     Route::get('/admin/jadwal-kerja', [AdminController::class, 'jadwalKerja'])->name('admin.jadwal_kerja');
@@ -121,6 +122,8 @@ Route::middleware(['auth', 'karyawan'])->group(function () {
     Route::get('/dashboard', [KaryawanDashboardController::class, 'index'])->name('dashboard.karyawan');
     Route::post('/absen/masuk', [KaryawanAbsensiController::class, 'absenMasuk'])->name('absen.masuk');
     Route::post('/absen/pulang', [KaryawanAbsensiController::class, 'absenPulang'])->name('absen.pulang');
+    Route::post('/absen/sesi/masuk', [KaryawanAbsensiController::class, 'absenMasukSesi'])->name('absen.sesi.masuk');
+    Route::post('/absen/sesi/pulang', [KaryawanAbsensiController::class, 'absenPulangSesi'])->name('absen.sesi.pulang');
 
     Route::get('/karyawan/absensi-saya', [KaryawanAbsensiController::class, 'index'])->name('karyawan.absensi');
 

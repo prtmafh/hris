@@ -3,30 +3,56 @@
 namespace App\Http\Controllers\Karyawan;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Karyawan\AbsensiController;
 use App\Models\Absensi;
+use App\Models\AbsensiSesi;
 use App\Models\Izin;
 use App\Models\Lembur;
 use App\Models\Pengaturan;
 use App\Models\Penggajian;
 use Carbon\Carbon;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
     public function index()
     {
-        /** @var User $user */
+        /** @var \App\Models\User $user */
         $user = Auth::user();
         $karyawan = $user->karyawan()->with('jabatan')->firstOrFail();
 
         $today        = Carbon::today();
         $currentMonth = $today->month;
         $currentYear  = $today->year;
+        $statusGaji   = $karyawan->status_gaji;
 
         $cek = Absensi::where('karyawan_id', $karyawan->id)
             ->whereDate('tanggal', $today)
             ->first();
+
+        // Data sesi untuk karyawan harian
+        $sesiHariIni  = collect();
+        $aktiveSesi   = null;
+        $sesiSaatIni  = null; // sesi_ke berdasarkan window waktu saat ini
+        $bisaMasukSesi = false;
+        $maxSesi      = (int) Pengaturan::getValue('max_sesi_harian', 3);
+
+        if ($statusGaji === 'harian') {
+            [$sesiSaatIni] = AbsensiController::deteksiSesiAktif(Carbon::now(), $maxSesi);
+
+            if ($cek) {
+                $sesiHariIni = AbsensiSesi::where('absensi_id', $cek->id)
+                    ->orderBy('sesi_ke')
+                    ->get();
+
+                $aktiveSesi = $sesiHariIni->first(fn($s) => $s->jam_checkin && !$s->jam_checkout);
+            }
+
+            // Bisa masuk sesi jika: ada window aktif, tidak ada sesi aktif yang belum ditutup,
+            // dan sesi tersebut belum diisi hari ini
+            $sudahMasukSesiIni = $sesiSaatIni && $sesiHariIni->contains('sesi_ke', $sesiSaatIni);
+            $bisaMasukSesi     = $sesiSaatIni && !$aktiveSesi && !$sudahMasukSesiIni;
+        }
 
         $totalHadirBulanIni = Absensi::where('karyawan_id', $karyawan->id)
             ->whereMonth('tanggal', $currentMonth)
@@ -61,6 +87,12 @@ class DashboardController extends Controller
         return view('karyawan.dashboard', compact(
             'karyawan',
             'cek',
+            'statusGaji',
+            'sesiHariIni',
+            'aktiveSesi',
+            'sesiSaatIni',
+            'bisaMasukSesi',
+            'maxSesi',
             'totalHadirBulanIni',
             'totalIzinPending',
             'totalLemburBulanIni',

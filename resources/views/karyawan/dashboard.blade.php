@@ -203,6 +203,25 @@
                             <div class="col-lg-7">
                                 <div id="map" class="mb-4"></div>
                                 <div class="action-group justify-content-center mb-4">
+                                    @if($statusGaji === 'harian')
+                                    @php
+                                    $bisaPulangSesi = !!$aktiveSesi;
+                                    $labelMasuk = $bisaMasukSesi && $sesiSaatIni
+                                    ? "Absen Masuk Sesi {$sesiSaatIni}"
+                                    : 'Absen Masuk Sesi';
+                                    $labelPulang = $aktiveSesi
+                                    ? "Absen Pulang Sesi {$aktiveSesi->sesi_ke}"
+                                    : 'Absen Pulang Sesi';
+                                    @endphp
+                                    <button id="btnMasukSesi" class="btn btn-absen btn-success-absen text-white" {{
+                                        $bisaMasukSesi ? '' : 'disabled' }}>
+                                        <i data-feather="log-in" class="me-1"></i> {{ $labelMasuk }}
+                                    </button>
+                                    <button id="btnPulangSesi" class="btn btn-absen btn-danger-absen text-white" {{
+                                        $bisaPulangSesi ? '' : 'disabled' }}>
+                                        <i data-feather="log-out" class="me-1"></i> {{ $labelPulang }}
+                                    </button>
+                                    @else
                                     <button id="btnMasuk" class="btn btn-absen btn-success-absen text-white" {{ ($cek &&
                                         $cek->jam_masuk) ? 'disabled' : '' }}>
                                         <i data-feather="log-in" class="me-1"></i> Absen Masuk
@@ -211,6 +230,7 @@
                                         || !$cek->jam_masuk || $cek->jam_keluar) ? 'disabled' : '' }}>
                                         <i data-feather="log-out" class="me-1"></i> Absen Pulang
                                     </button>
+                                    @endif
                                 </div>
                                 <div class="text-center">
                                     <div id="clock" class="clock-display mb-1"></div>
@@ -220,6 +240,50 @@
                             <div class="col-lg-5">
                                 <div class="info-box p-4 mb-4">
                                     <div class="small text-uppercase text-muted fw-bold mb-3">Keterangan Hari Ini</div>
+                                    @if($statusGaji === 'harian')
+                                    @if($sesiHariIni->isEmpty())
+                                    <div class="text-center text-muted py-2">
+                                        <span class="badge bg-danger px-3 py-2">Belum Ada Sesi</span>
+                                    </div>
+                                    @else
+                                    <div class="table-responsive">
+                                        <table class="table table-sm mb-0">
+                                            <thead>
+                                                <tr>
+                                                    <th class="small text-muted">Sesi</th>
+                                                    <th class="small text-muted">Masuk</th>
+                                                    <th class="small text-muted">Pulang</th>
+                                                    <th class="small text-muted">Status</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach($sesiHariIni as $sesi)
+                                                @php
+                                                $sBadge = match($sesi->status) {
+                                                'hadir' => 'success',
+                                                'terlambat' => 'warning',
+                                                'izin' => 'info',
+                                                'alpha' => 'danger',
+                                                default => 'secondary',
+                                                };
+                                                @endphp
+                                                <tr>
+                                                    <td class="fw-semibold">{{ $sesi->sesi_ke }}</td>
+                                                    <td>{{ $sesi->jam_checkin ?
+                                                        \Carbon\Carbon::parse($sesi->jam_checkin)->format('H:i') :
+                                                        '--:--' }}</td>
+                                                    <td>{{ $sesi->jam_checkout ?
+                                                        \Carbon\Carbon::parse($sesi->jam_checkout)->format('H:i') :
+                                                        '--:--' }}</td>
+                                                    <td><span class="badge bg-{{ $sBadge }} text-capitalize">{{
+                                                            $sesi->status }}</span></td>
+                                                </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    @endif
+                                    @else
                                     <div class="list-group list-group-flush status-list">
                                         <div
                                             class="list-group-item px-0 d-flex justify-content-between align-items-center bg-transparent">
@@ -246,17 +310,16 @@
                                             class="list-group-item px-0 d-flex justify-content-between align-items-center bg-transparent">
                                             <span class="fw-semibold text-gray-700">Waktu Datang</span>
                                             <span class="badge bg-light text-dark border px-3 py-2">{{ $cek->jam_masuk
-                                                ??
-                                                '--:--:--' }}</span>
+                                                ?? '--:--:--' }}</span>
                                         </div>
                                         <div
                                             class="list-group-item px-0 d-flex justify-content-between align-items-center bg-transparent">
                                             <span class="fw-semibold text-gray-700">Waktu Pulang</span>
                                             <span class="badge bg-light text-dark border px-3 py-2">{{ $cek->jam_keluar
-                                                ??
-                                                '--:--:--' }}</span>
+                                                ?? '--:--:--' }}</span>
                                         </div>
                                     </div>
+                                    @endif
                                 </div>
 
                                 <div class="info-box p-4">
@@ -658,6 +721,22 @@
     }
 
     // --- EVENT TOMBOL ---
+    @if($statusGaji === 'harian')
+    const btnMasukSesi = document.getElementById('btnMasukSesi');
+    const btnPulangSesi = document.getElementById('btnPulangSesi');
+    if (btnMasukSesi) {
+        btnMasukSesi.addEventListener('click', () => {
+            if (btnMasukSesi.disabled) return;
+            bukaKameraPopup(btnMasukSesi.textContent.trim(), '{{ route("absen.sesi.masuk") }}');
+        });
+    }
+    if (btnPulangSesi) {
+        btnPulangSesi.addEventListener('click', () => {
+            if (btnPulangSesi.disabled) return;
+            bukaKameraPopup(btnPulangSesi.textContent.trim(), '{{ route("absen.sesi.pulang") }}');
+        });
+    }
+    @else
     document.getElementById('btnMasuk').addEventListener('click', () => {
         if (document.getElementById('btnMasuk').disabled) return;
         bukaKameraPopup('Absen Masuk', '{{ route("absen.masuk") }}');
@@ -667,5 +746,6 @@
         if (document.getElementById('btnPulang').disabled) return;
         bukaKameraPopup('Absen Pulang', '{{ route("absen.pulang") }}');
     });
+    @endif
 </script>
 @endpush

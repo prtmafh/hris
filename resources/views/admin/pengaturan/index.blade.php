@@ -85,6 +85,10 @@
                     <i class="fas fa-list-ul text-primary"></i>
                     <span class="fw-semibold">Daftar Pengaturan</span>
                 </div>
+                <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
+                    data-bs-target="#modalTambahPengaturan">
+                    <i class="fas fa-plus me-1"></i> Tambah Pengaturan
+                </button>
             </div>
             <div class="card-body p-0">
                 <div class="table-responsive">
@@ -307,5 +311,171 @@
             );
         @endif
     @endif
+
+    // Handle tipe change for tambah modal
+    document.getElementById('tambah_tipe').addEventListener('change', function() {
+        const tipe = this.value;
+        const valueInput = document.getElementById('tambah_value');
+        const placeholder = getPlaceholderForType(tipe);
+        valueInput.placeholder = placeholder;
+
+        // Set input type based on tipe
+        if (tipe === 'integer') {
+            valueInput.type = 'number';
+            valueInput.step = '1';
+        } else if (tipe === 'decimal') {
+            valueInput.type = 'number';
+            valueInput.step = '0.01';
+        } else if (tipe === 'date') {
+            valueInput.type = 'date';
+            valueInput.removeAttribute('step');
+        } else if (tipe === 'time') {
+            valueInput.type = 'time';
+            valueInput.removeAttribute('step');
+        } else {
+            valueInput.type = 'text';
+            valueInput.removeAttribute('step');
+        }
+    });
+
+    function getPlaceholderForType(tipe) {
+        switch(tipe) {
+            case 'string': return 'Masukkan teks...';
+            case 'integer': return 'Masukkan bilangan bulat (contoh: 100)';
+            case 'decimal': return 'Masukkan bilangan desimal (contoh: 15.50)';
+            case 'boolean': return 'Masukkan 1 (ya) atau 0 (tidak)';
+            case 'json': return 'Masukkan JSON valid (contoh: {"key": "value"})';
+            case 'time': return 'Masukkan waktu (contoh: 08:00)';
+            case 'date': return 'Masukkan tanggal (contoh: 2024-01-01)';
+            default: return 'Masukkan nilai default';
+        }
+    }
+
+    // Reset form when modal is hidden
+    document.getElementById('modalTambahPengaturan').addEventListener('hidden.bs.modal', function() {
+        document.getElementById('formTambahPengaturan').reset();
+        document.getElementById('tambah_value').type = 'text';
+        document.getElementById('tambah_value').removeAttribute('step');
+    });
 </script>
+
+{{-- Modal Tambah Pengaturan --}}
+<div class="modal fade" id="modalTambahPengaturan" tabindex="-1" aria-labelledby="modalTambahPengaturanLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <form id="formTambahPengaturan" method="POST" action="{{ route('admin.pengaturan.store') }}">
+            @csrf
+            <div class="modal-content border-0 shadow">
+                <div class="modal-header bg-primary text-white border-0 rounded-top">
+                    <h5 class="modal-title fw-semibold" id="modalTambahPengaturanLabel">
+                        <i class="fas fa-plus me-2"></i>
+                        Tambah Pengaturan Baru
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Tutup"></button>
+                </div>
+
+                <div class="modal-body p-4">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="tambah_key" class="form-label fw-semibold">
+                                Key Pengaturan <span class="text-danger">*</span>
+                            </label>
+                            <input type="text" class="form-control @error('key') is-invalid @enderror" id="tambah_key"
+                                name="key" placeholder="Masukkan key pengaturan (contoh: jam_masuk)"
+                                value="{{ old('key') }}" required>
+                            <div class="form-text">Key unik untuk identifikasi pengaturan</div>
+                            @error('key')
+                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label for="tambah_label" class="form-label fw-semibold">
+                                Label Pengaturan <span class="text-danger">*</span>
+                            </label>
+                            <input type="text" class="form-control @error('label') is-invalid @enderror"
+                                id="tambah_label" name="label" placeholder="Masukkan label pengaturan"
+                                value="{{ old('label') }}" required>
+                            <div class="form-text">Nama tampilan yang mudah dipahami</div>
+                            @error('label')
+                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="tambah_tipe" class="form-label fw-semibold">
+                                Tipe Data <span class="text-danger">*</span>
+                            </label>
+                            <select class="form-select @error('tipe') is-invalid @enderror" id="tambah_tipe" name="tipe"
+                                required>
+                                <option value="">Pilih tipe data</option>
+                                <option value="string" {{ old('tipe')=='string' ? 'selected' : '' }}>String (Teks)
+                                </option>
+                                <option value="integer" {{ old('tipe')=='integer' ? 'selected' : '' }}>Integer (Bilangan
+                                    Bulat)</option>
+                                <option value="decimal" {{ old('tipe')=='decimal' ? 'selected' : '' }}>Decimal (Bilangan
+                                    Desimal)</option>
+                                <option value="boolean" {{ old('tipe')=='boolean' ? 'selected' : '' }}>Boolean
+                                    (Ya/Tidak)</option>
+                                <option value="json" {{ old('tipe')=='json' ? 'selected' : '' }}>JSON</option>
+                                <option value="time" {{ old('tipe')=='time' ? 'selected' : '' }}>Time (HH:MM)</option>
+                                <option value="date" {{ old('tipe')=='date' ? 'selected' : '' }}>Date (YYYY-MM-DD)
+                                </option>
+                            </select>
+                            <div class="form-text">Tipe data yang akan disimpan</div>
+                            @error('tipe')
+                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label for="tambah_grup" class="form-label fw-semibold">Grup Pengaturan</label>
+                            <input type="text" class="form-control @error('grup') is-invalid @enderror" id="tambah_grup"
+                                name="grup" placeholder="Masukkan grup (contoh: sistem, absensi)"
+                                value="{{ old('grup') }}">
+                            <div class="form-text">Kategori pengaturan (opsional)</div>
+                            @error('grup')
+                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="tambah_keterangan" class="form-label fw-semibold">Keterangan</label>
+                        <textarea class="form-control @error('keterangan') is-invalid @enderror" id="tambah_keterangan"
+                            name="keterangan" rows="2"
+                            placeholder="Penjelasan singkat tentang pengaturan ini">{{ old('keterangan') }}</textarea>
+                        <div class="form-text">Penjelasan fungsi pengaturan (opsional)</div>
+                        @error('keterangan')
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <div class="mb-0">
+                        <label for="tambah_value" class="form-label fw-semibold">Nilai Default</label>
+                        <input type="text" class="form-control @error('value') is-invalid @enderror" id="tambah_value"
+                            name="value" placeholder="Masukkan nilai default" value="{{ old('value') }}">
+                        <div class="form-text">Nilai awal pengaturan (opsional)</div>
+                        @error('value')
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                        @enderror
+                    </div>
+                </div>
+
+                <div class="modal-footer border-top bg-light rounded-bottom d-flex justify-content-between">
+                    <button type="button" class="btn btn-outline-secondary btn-sm px-4" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-1"></i> Batal
+                    </button>
+                    <button type="submit" class="btn btn-primary btn-sm px-4">
+                        <i class="fas fa-save me-1"></i> Simpan Pengaturan
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
 @endpush

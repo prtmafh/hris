@@ -33,4 +33,9 @@ class Absensi extends Model
     {
         return $this->belongsTo(Karyawan::class);
     }
+
+    public function sesi()
+    {
+        return $this->hasMany(AbsensiSesi::class)->orderBy('sesi_ke');
+    }
 }

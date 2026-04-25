@@ -18,6 +18,31 @@ class PengaturanController extends Controller
         return view('admin.pengaturan.index', compact('pengaturan'));
     }
 
+    public function store(Request $request)
+    {
+        $request->validate([
+            'key' => ['required', 'string', 'max:255', 'unique:pengaturan,key'],
+            'label' => ['required', 'string', 'max:255'],
+            'tipe' => ['required', 'in:string,integer,decimal,boolean,json,time,date'],
+            'grup' => ['nullable', 'string', 'max:255'],
+            'keterangan' => ['nullable', 'string'],
+            'value' => ['nullable', 'string'],
+        ]);
+
+        $pengaturan = new Pengaturan();
+        $pengaturan->key = $request->input('key');
+        $pengaturan->label = $request->input('label');
+        $pengaturan->tipe = $request->input('tipe');
+        $pengaturan->grup = $request->input('grup');
+        $pengaturan->keterangan = $request->input('keterangan');
+        $pengaturan->value = $this->normalizeValueByType($request->input('tipe'), $request->input('value'));
+        $pengaturan->save();
+
+        return redirect()
+            ->route('admin.pengaturan')
+            ->with('success', 'Pengaturan baru berhasil ditambahkan.');
+    }
+
     public function update(Request $request, $id)
     {
         $pengaturan = Pengaturan::findOrFail($id);
