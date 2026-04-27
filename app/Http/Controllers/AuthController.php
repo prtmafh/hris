@@ -44,6 +44,10 @@ class AuthController extends Controller
             return redirect()->route('dashboard.karyawan');
         }
 
+        if ($user->role === 'pimpinan') {
+            return redirect()->route('pimpinan.dashboard');
+        }
+
         Auth::logout();
         return redirect()->route('login')->withErrors([
             'error' => 'Role tidak dikenali!',

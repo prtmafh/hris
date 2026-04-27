@@ -23,6 +23,9 @@ use App\Http\Controllers\Karyawan\LemburController as KaryawanLemburController;
 use App\Http\Controllers\Karyawan\ReimbursementController as KaryawanReimbursementController;
 use App\Http\Controllers\Karyawan\SlipGajiController;
 use App\Http\Controllers\landing\HomeController;
+use App\Http\Controllers\Pimpinan\DashboardController as PimpinanDashboardController;
+use App\Http\Controllers\Pimpinan\LaporanController as PimpinanLaporanController;
+use App\Http\Controllers\Pimpinan\PenilaianController as PimpinanPenilaianController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -123,6 +126,24 @@ Route::middleware(['auth', 'admin'])->group(function () {
 
     Route::get('/admin/training', [AdminController::class, 'training'])->name('admin.training');
     Route::get('/admin/peserta-training', [AdminController::class, 'pesertaTraining'])->name('admin.peserta_training');
+});
+
+Route::middleware(['auth', 'pimpinan'])->prefix('pimpinan')->group(function () {
+    Route::get('/dashboard', [PimpinanDashboardController::class, 'index'])->name('pimpinan.dashboard');
+
+    Route::get('/laporan/absensi', [PimpinanLaporanController::class, 'absensi'])->name('pimpinan.laporan.absensi');
+    Route::get('/laporan/penggajian', [PimpinanLaporanController::class, 'penggajian'])->name('pimpinan.laporan.penggajian');
+    Route::get('/laporan/izin', [PimpinanLaporanController::class, 'izin'])->name('pimpinan.laporan.izin');
+    Route::get('/laporan/lembur', [PimpinanLaporanController::class, 'lembur'])->name('pimpinan.laporan.lembur');
+    Route::get('/laporan/reimbursement', [PimpinanLaporanController::class, 'reimbursement'])->name('pimpinan.laporan.reimbursement');
+
+    Route::get('/penilaian', [PimpinanPenilaianController::class, 'index'])->name('pimpinan.penilaian.index');
+    Route::get('/penilaian/tambah', [PimpinanPenilaianController::class, 'create'])->name('pimpinan.penilaian.create');
+    Route::post('/penilaian', [PimpinanPenilaianController::class, 'store'])->name('pimpinan.penilaian.store');
+    Route::get('/penilaian/{id}', [PimpinanPenilaianController::class, 'show'])->name('pimpinan.penilaian.show');
+    Route::get('/penilaian/{id}/edit', [PimpinanPenilaianController::class, 'edit'])->name('pimpinan.penilaian.edit');
+    Route::put('/penilaian/{id}', [PimpinanPenilaianController::class, 'update'])->name('pimpinan.penilaian.update');
+    Route::delete('/penilaian/{id}', [PimpinanPenilaianController::class, 'destroy'])->name('pimpinan.penilaian.destroy');
 });
 
 Route::middleware(['auth', 'karyawan'])->group(function () {
