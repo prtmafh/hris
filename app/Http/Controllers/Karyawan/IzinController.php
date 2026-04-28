@@ -19,7 +19,19 @@ class IzinController extends Controller
             ->orderByDesc('tanggal')
             ->get();
 
-        return view('karyawan.izin-saya', compact('izin'));
+        $izinTerpakai = Izin::where('karyawan_id', $karyawan->id)
+            ->whereIn('status_approval', ['pending', 'disetujui'])
+            ->count();
+
+        $kuotaIzin = $karyawan->kuota_izin ?? 12;
+        $sisaIzin = max($kuotaIzin - $izinTerpakai, 0);
+
+        return view('karyawan.izin-saya', compact(
+            'izin',
+            'kuotaIzin',
+            'izinTerpakai',
+            'sisaIzin'
+        ));
     }
 
     public function store(Request $request)
@@ -34,12 +46,23 @@ class IzinController extends Controller
             'keterangan' => 'required|string|max:500',
         ]);
 
+        $izinTerpakai = Izin::where('karyawan_id', $karyawan->id)
+            ->whereIn('status_approval', ['pending', 'disetujui'])
+            ->count();
+
+        if ($izinTerpakai >= $karyawan->kuota_izin) {
+            return back()
+                ->with('error', 'Kuota izin tahunan Anda sudah habis (12 kali).');
+        }
         $sudahAda = Izin::where('karyawan_id', $karyawan->id)
             ->whereDate('tanggal', $request->tanggal)
             ->exists();
 
         if ($sudahAda) {
-            return back()->with('error', 'Pengajuan izin untuk tanggal tersebut sudah ada.');
+            return back()->with(
+                'error',
+                'Pengajuan izin untuk tanggal tersebut sudah ada.'
+            );
         }
 
         Izin::create([
@@ -50,6 +73,9 @@ class IzinController extends Controller
             'status_approval' => 'pending',
         ]);
 
-        return back()->with('success', 'Pengajuan izin berhasil dikirim.');
+        return back()->with(
+            'success',
+            'Pengajuan izin berhasil dikirim.'
+        );
     }
 }

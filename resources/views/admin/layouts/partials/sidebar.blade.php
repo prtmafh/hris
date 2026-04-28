@@ -140,14 +140,20 @@ $pengaturan = request()->is(['admin/pengaturan*','admin/jadwal-kerja*','admin/ha
                         <a class="nav-link {{ request()->is('admin/pengaturan*') ? 'active' : '' }}"
                             href="{{ route('admin.pengaturan') }}">Pengaturan</a>
 
-                        <a class="nav-link {{ request()->is('admin/jadwal-kerja*') ? 'active' : '' }}"
-                            href="{{ route('admin.jadwal_kerja') }}">Jadwal Kerja</a>
+                        {{-- <a class="nav-link {{ request()->is('admin/jadwal-kerja*') ? 'active' : '' }}"
+                            href="{{ route('admin.jadwal_kerja') }}">Jadwal Kerja</a> --}}
 
                         <a class="nav-link {{ request()->is('admin/hari-libur*') ? 'active' : '' }}"
                             href="{{ route('admin.hari_libur') }}">Hari Libur</a>
                     </nav>
                 </div>
 
+            </div>
+        </div>
+        <div class="sidenav-footer">
+            <div class="sidenav-footer-content">
+                <div class="sidenav-footer-subtitle">Login sebagai:</div>
+                <div class="sidenav-footer-title">{{ Auth::user()->karyawan->nama ?? Auth::user()->nik }}</div>
             </div>
         </div>
     </nav>

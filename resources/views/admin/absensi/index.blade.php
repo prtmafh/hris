@@ -109,7 +109,7 @@
                 @if(request('type') === 'sesi')
                 Data Absensi Sesi
                 @else
-                Data Absensi Biasa
+                Data Absensi
                 @endif
             </div>
 

@@ -36,6 +36,9 @@
     {{-- CONTENT --}}
     <div class="container-fluid px-4">
         <div class="card">
+            <div class="card-header">
+                Daftar Admin
+            </div>
             <div class="card-body">
 
                 <table id="datatablesSimple">

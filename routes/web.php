@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\AbsensiSesiController;
 use App\Http\Controllers\Admin\DataGajiController;
 use App\Http\Controllers\Admin\IzinController;
 use App\Http\Controllers\Admin\JabatanController;
+use App\Http\Controllers\Admin\HariLiburController;
 use App\Http\Controllers\Admin\KategoriReimbursementController;
 use App\Http\Controllers\Admin\LemburController;
 use App\Http\Controllers\Admin\LowonganController;
@@ -98,7 +99,11 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::put('/admin/pengaturan/{id}', [PengaturanController::class, 'update'])->name('admin.pengaturan.update');
 
     Route::get('/admin/jadwal-kerja', [AdminController::class, 'jadwalKerja'])->name('admin.jadwal_kerja');
-    Route::get('/admin/hari-libur', [AdminController::class, 'hariLibur'])->name('admin.hari_libur');
+    Route::get('/admin/hari-libur', [HariLiburController::class, 'index'])->name('admin.hari_libur');
+    Route::get('/admin/hari-libur/data', [HariLiburController::class, 'data'])->name('admin.hari_libur.data');
+    Route::post('/admin/hari-libur', [HariLiburController::class, 'store'])->name('admin.hari_libur.store');
+    Route::put('/admin/hari-libur/{id}', [HariLiburController::class, 'update'])->name('admin.hari_libur.update');
+    Route::delete('/admin/hari-libur/{id}', [HariLiburController::class, 'destroy'])->name('admin.hari_libur.destroy');
     Route::get('/admin/kategori-reimbursement', [KategoriReimbursementController::class, 'index'])->name('admin.kategori_reimbursement');
     Route::post('/admin/kategori-reimbursement', [KategoriReimbursementController::class, 'store'])->name('admin.kategori-reimbursement.store');
     Route::put('/admin/kategori-reimbursement/{id}', [KategoriReimbursementController::class, 'update'])->name('admin.kategori-reimbursement.update');
