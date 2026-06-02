@@ -4,23 +4,26 @@
 
 @section('content')
 <main>
-    <header class="page-header page-header-dark bg-gradient-primary-to-secondary pb-10">
-        <div class="container-xl px-4">
-            <div class="page-header-content pt-4">
-                <div class="row align-items-center justify-content-between">
-                    <div class="col-auto mt-4">
+    <header class="page-header page-header-compact page-header-light border-bottom bg-white mb-4 py-2">
+        <div class="container-fluid px-4">
+            <div class="page-header-content">
+                <div class="row align-items-center justify-content-between pt-3">
+
+                    <div class="col-auto mb-3">
                         <h1 class="page-header-title">
-                            <div class="page-header-icon"><i data-feather="dollar-sign"></i></div>
+                            <div class="page-header-icon">
+                                <i data-feather="dollar-sign"></i>
+                            </div>
                             Laporan Penggajian
                         </h1>
-                        <div class="page-header-subtitle">Rekap penggajian karyawan per periode</div>
                     </div>
+
                 </div>
             </div>
         </div>
     </header>
 
-    <div class="container-xl px-4 mt-n10">
+    <div class="container-fluid px-4">
 
         <!-- Filter -->
         <div class="card mb-4">
@@ -32,9 +35,9 @@
                             <label class="form-label">Bulan</label>
                             <select name="bulan" class="form-select">
                                 @foreach(range(1,12) as $b)
-                                    <option value="{{ $b }}" {{ $bulan == $b ? 'selected' : '' }}>
-                                        {{ \Carbon\Carbon::create()->month($b)->locale('id')->isoFormat('MMMM') }}
-                                    </option>
+                                <option value="{{ $b }}" {{ $bulan==$b ? 'selected' : '' }}>
+                                    {{ \Carbon\Carbon::create()->month($b)->locale('id')->isoFormat('MMMM') }}
+                                </option>
                                 @endforeach
                             </select>
                         </div>
@@ -42,7 +45,7 @@
                             <label class="form-label">Tahun</label>
                             <select name="tahun" class="form-select">
                                 @foreach($tahunList as $t)
-                                    <option value="{{ $t }}" {{ $tahun == $t ? 'selected' : '' }}>{{ $t }}</option>
+                                <option value="{{ $t }}" {{ $tahun==$t ? 'selected' : '' }}>{{ $t }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -87,7 +90,7 @@
             <div class="card-header">
                 Data Penggajian —
                 {{ \Carbon\Carbon::create()->month($bulan)->locale('id')->isoFormat('MMMM') }} {{ $tahun }}
-                <span class="badge bg-primary ms-2">{{ $penggajian->count() }} karyawan</span>
+                {{-- <span class="badge bg-primary ms-2">{{ $penggajian->count() }} karyawan</span> --}}
             </div>
             <div class="card-body p-0">
                 <div class="table-responsive">
@@ -113,12 +116,13 @@
                                 <td>{{ $p->total_hadir }} hari</td>
                                 <td>{{ $p->total_lembur ?? 0 }} jam</td>
                                 <td class="text-danger">Rp {{ number_format($p->potongan ?? 0, 0, ',', '.') }}</td>
-                                <td class="fw-bold text-success">Rp {{ number_format($p->total_gaji, 0, ',', '.') }}</td>
+                                <td class="fw-bold text-success">Rp {{ number_format($p->total_gaji, 0, ',', '.') }}
+                                </td>
                                 <td>
                                     @if($p->status === 'dibayar')
-                                        <span class="badge bg-success-soft text-success">Dibayar</span>
+                                    <span class="badge bg-success-soft text-success">Dibayar</span>
                                     @else
-                                        <span class="badge bg-warning-soft text-warning">Proses</span>
+                                    <span class="badge bg-warning-soft text-warning">Proses</span>
                                     @endif
                                 </td>
                             </tr>

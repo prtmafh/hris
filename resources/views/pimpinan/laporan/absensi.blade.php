@@ -4,23 +4,26 @@
 
 @section('content')
 <main>
-    <header class="page-header page-header-dark bg-gradient-primary-to-secondary pb-10">
-        <div class="container-xl px-4">
-            <div class="page-header-content pt-4">
-                <div class="row align-items-center justify-content-between">
-                    <div class="col-auto mt-4">
+    <header class="page-header page-header-compact page-header-light border-bottom bg-white mb-4 py-2">
+        <div class="container-fluid px-4">
+            <div class="page-header-content">
+                <div class="row align-items-center justify-content-between pt-3">
+
+                    <div class="col-auto mb-3">
                         <h1 class="page-header-title">
-                            <div class="page-header-icon"><i data-feather="calendar"></i></div>
+                            <div class="page-header-icon">
+                                <i data-feather="calendar"></i>
+                            </div>
                             Laporan Absensi
                         </h1>
-                        <div class="page-header-subtitle">Data kehadiran karyawan per periode</div>
                     </div>
+
                 </div>
             </div>
         </div>
     </header>
 
-    <div class="container-xl px-4 mt-n10">
+    <div class="container-fluid px-4">
 
         <!-- Filter -->
         <div class="card mb-4">
@@ -32,9 +35,9 @@
                             <label class="form-label">Bulan</label>
                             <select name="bulan" class="form-select">
                                 @foreach(range(1,12) as $b)
-                                    <option value="{{ $b }}" {{ $bulan == $b ? 'selected' : '' }}>
-                                        {{ \Carbon\Carbon::create()->month($b)->locale('id')->isoFormat('MMMM') }}
-                                    </option>
+                                <option value="{{ $b }}" {{ $bulan==$b ? 'selected' : '' }}>
+                                    {{ \Carbon\Carbon::create()->month($b)->locale('id')->isoFormat('MMMM') }}
+                                </option>
                                 @endforeach
                             </select>
                         </div>
@@ -42,7 +45,7 @@
                             <label class="form-label">Tahun</label>
                             <select name="tahun" class="form-select">
                                 @foreach($tahunList as $t)
-                                    <option value="{{ $t }}" {{ $tahun == $t ? 'selected' : '' }}>{{ $t }}</option>
+                                <option value="{{ $t }}" {{ $tahun==$t ? 'selected' : '' }}>{{ $t }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -51,7 +54,8 @@
                             <select name="jabatan_id" class="form-select">
                                 <option value="">Semua Jabatan</option>
                                 @foreach($jabatan as $j)
-                                    <option value="{{ $j->id }}" {{ $jabatanId == $j->id ? 'selected' : '' }}>{{ $j->nama_jabatan }}</option>
+                                <option value="{{ $j->id }}" {{ $jabatanId==$j->id ? 'selected' : '' }}>{{
+                                    $j->nama_jabatan }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -60,7 +64,8 @@
                             <select name="karyawan_id" class="form-select">
                                 <option value="">Semua Karyawan</option>
                                 @foreach($karyawan as $k)
-                                    <option value="{{ $k->id }}" {{ $karyawanId == $k->id ? 'selected' : '' }}>{{ $k->nama }}</option>
+                                <option value="{{ $k->id }}" {{ $karyawanId==$k->id ? 'selected' : '' }}>{{ $k->nama }}
+                                </option>
                                 @endforeach
                             </select>
                         </div>
@@ -78,7 +83,7 @@
                 <div class="card border-start-lg border-success h-100">
                     <div class="card-body">
                         <div class="small text-muted">Hadir</div>
-                        <div class="h3 fw-bold text-success">{{ $rekap['hadir'] }}</div>
+                        <div class="h3 fw-bold text-success">{{ number_format($rekap['hadir'], 2) }}%</div>
                     </div>
                 </div>
             </div>
@@ -86,7 +91,7 @@
                 <div class="card border-start-lg border-warning h-100">
                     <div class="card-body">
                         <div class="small text-muted">Terlambat</div>
-                        <div class="h3 fw-bold text-warning">{{ $rekap['terlambat'] }}</div>
+                        <div class="h3 fw-bold text-warning">{{ number_format($rekap['terlambat'], 2) }}%</div>
                     </div>
                 </div>
             </div>
@@ -94,7 +99,7 @@
                 <div class="card border-start-lg border-info h-100">
                     <div class="card-body">
                         <div class="small text-muted">Izin</div>
-                        <div class="h3 fw-bold text-info">{{ $rekap['izin'] }}</div>
+                        <div class="h3 fw-bold text-info">{{ number_format($rekap['izin'], 2) }}%</div>
                     </div>
                 </div>
             </div>
@@ -102,7 +107,7 @@
                 <div class="card border-start-lg border-danger h-100">
                     <div class="card-body">
                         <div class="small text-muted">Alpha</div>
-                        <div class="h3 fw-bold text-danger">{{ $rekap['alpha'] }}</div>
+                        <div class="h3 fw-bold text-danger">{{ number_format($rekap['alpha'], 2) }}%</div>
                     </div>
                 </div>
             </div>
@@ -111,9 +116,8 @@
         <!-- Tabel -->
         <div class="card">
             <div class="card-header">
-                Data Absensi —
+                Persentase Kehadiran -
                 {{ \Carbon\Carbon::create()->month($bulan)->locale('id')->isoFormat('MMMM') }} {{ $tahun }}
-                <span class="badge bg-primary ms-2">{{ $absensi->count() }} record</span>
             </div>
             <div class="card-body p-0">
                 <div class="table-responsive">
@@ -121,45 +125,36 @@
                         <thead class="table-light">
                             <tr>
                                 <th class="ps-4">No</th>
-                                <th>Tanggal</th>
                                 <th>Nama Karyawan</th>
                                 <th>Jabatan</th>
-                                <th>Jam Masuk</th>
-                                <th>Jam Keluar</th>
-                                <th>Status</th>
+                                <th>Persentase Kehadiran</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @forelse($absensi as $i => $a)
+                            @forelse($rekapKaryawan as $i => $row)
                             <tr>
                                 <td class="ps-4">{{ $i + 1 }}</td>
-                                <td>{{ \Carbon\Carbon::parse($a->tanggal)->locale('id')->isoFormat('D MMM YYYY') }}</td>
-                                <td class="text-capitalize fw-semibold">{{ $a->karyawan->nama ?? '-' }}</td>
-                                <td class="text-muted small">{{ $a->karyawan->jabatan->nama_jabatan ?? '-' }}</td>
-                                <td>
-                                    <span class="badge bg-light text-dark border">
-                                        {{ $a->jam_masuk ? \Illuminate\Support\Str::of($a->jam_masuk)->limit(5, '') : '-' }}
-                                    </span>
-                                </td>
-                                <td>
-                                    <span class="badge bg-light text-dark border">
-                                        {{ $a->jam_keluar ? \Illuminate\Support\Str::of($a->jam_keluar)->limit(5, '') : '-' }}
-                                    </span>
-                                </td>
-                                <td>
-                                    @switch($a->status)
-                                        @case('hadir') <span class="badge bg-success-soft text-success">Hadir</span> @break
-                                        @case('terlambat') <span class="badge bg-warning-soft text-warning">Terlambat</span> @break
-                                        @case('izin') <span class="badge bg-info-soft text-info">Izin</span> @break
-                                        @case('alpha') <span class="badge bg-danger-soft text-danger">Alpha</span> @break
-                                        @default <span class="badge bg-secondary-soft text-secondary">-</span>
-                                    @endswitch
+                                <td class="text-capitalize fw-semibold">{{ $row['nama'] }}</td>
+                                <td class="text-muted small">{{ $row['jabatan'] }}</td>
+                                <td style="min-width: 260px;">
+                                    <div class="d-flex flex-column">
+                                        <div class="d-flex align-items-center mb-1">
+                                            <span class="fw-bold me-2">{{ number_format($row['persentase'], 2) }}%</span>
+                                        </div>
+                                        <div class="progress" style="height: 8px; max-width: 320px;">
+                                            <div class="progress-bar bg-success" role="progressbar"
+                                                style="width: {{ $row['persentase'] }}%;"
+                                                aria-valuenow="{{ $row['persentase'] }}" aria-valuemin="0"
+                                                aria-valuemax="100">
+                                            </div>
+                                        </div>
+                                    </div>
                                 </td>
                             </tr>
                             @empty
                             <tr>
-                                <td colspan="7" class="text-center text-muted py-5">
-                                    <i data-feather="inbox" class="mb-2"></i><br>Tidak ada data absensi
+                                <td colspan="4" class="text-center text-muted py-5">
+                                    <i data-feather="inbox" class="mb-2"></i><br>Tidak ada data karyawan
                                 </td>
                             </tr>
                             @endforelse

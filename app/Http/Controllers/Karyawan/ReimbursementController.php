@@ -6,10 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\KategoriReimbursement;
 use App\Models\Reimbursement;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Validation\ValidationException;
 
 class ReimbursementController extends Controller
 {
@@ -44,17 +42,6 @@ class ReimbursementController extends Controller
         ]);
 
         $kategori = KategoriReimbursement::where('status', 'aktif')->findOrFail($validated['kategori_reimbursement_id']);
-
-        if ($kategori->plafon_per_pengajuan && $validated['jumlah_diajukan'] > $kategori->plafon_per_pengajuan) {
-            return back()->with('error', 'Jumlah pengajuan melebihi plafon per pengajuan kategori.')->withInput();
-        }
-
-        $this->validatePlafonBulanan(
-            $validated['jumlah_diajukan'],
-            $kategori,
-            $karyawan->id,
-            $validated['tanggal_transaksi']
-        );
 
         if ($kategori->perlu_bukti && !$request->hasFile('bukti')) {
             return back()->withErrors(['bukti' => 'Bukti wajib diunggah untuk kategori ini.'])->withInput();
@@ -91,30 +78,5 @@ class ReimbursementController extends Controller
         $reimbursement->delete();
 
         return back()->with('success', 'Pengajuan reimbursement berhasil dihapus.');
-    }
-
-    private function validatePlafonBulanan(
-        float $jumlah,
-        KategoriReimbursement $kategori,
-        int $karyawanId,
-        $tanggalTransaksi
-    ): void {
-        if (!$kategori->plafon_per_bulan) {
-            return;
-        }
-
-        $tanggal = \Carbon\Carbon::parse($tanggalTransaksi);
-        $totalBulanIni = (float) Reimbursement::where('karyawan_id', $karyawanId)
-            ->where('kategori_reimbursement_id', $kategori->id)
-            ->whereIn('status', ['pending', 'disetujui', 'dibayar'])
-            ->whereMonth('tanggal_transaksi', $tanggal->month)
-            ->whereYear('tanggal_transaksi', $tanggal->year)
-            ->sum(DB::raw('COALESCE(jumlah_disetujui, jumlah_diajukan)'));
-
-        if (($totalBulanIni + $jumlah) > $kategori->plafon_per_bulan) {
-            throw ValidationException::withMessages([
-                'jumlah_diajukan' => 'Total reimbursement bulan ini melebihi plafon bulanan kategori.',
-            ]);
-        }
     }
 }

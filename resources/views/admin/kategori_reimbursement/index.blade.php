@@ -48,9 +48,6 @@
                         <tr>
                             <th width="60">#</th>
                             <th>Kategori Reimbursement</th>
-                            <th style="min-width:260px">
-                                Benefit & Plafon
-                            </th>
                             <th>Persyaratan Dokumen</th>
                             <th>Status</th>
                             <th width="150" class="text-center">
@@ -83,42 +80,6 @@
                                 </div>
 
                             </td>
-
-
-                            {{-- plafon --}}
-                            <td>
-
-                                <div class="mb-3 pb-2 border-bottom">
-                                    <div class="small text-muted text-uppercase">
-                                        Plafon Bulanan
-                                    </div>
-
-                                    <div class="fw-semibold">
-                                        @if($item->plafon_per_bulan)
-                                        Rp {{ number_format($item->plafon_per_bulan,0,',','.') }}
-                                        @else
-                                        Tidak dibatasi
-                                        @endif
-                                    </div>
-                                </div>
-
-
-                                <div>
-                                    <div class="small text-muted text-uppercase">
-                                        Maksimum per Pengajuan
-                                    </div>
-
-                                    <div class="fw-semibold">
-                                        @if($item->plafon_per_pengajuan)
-                                        Rp {{ number_format($item->plafon_per_pengajuan,0,',','.') }}
-                                        @else
-                                        Tidak dibatasi
-                                        @endif
-                                    </div>
-                                </div>
-
-                            </td>
-
 
 
                             {{-- bukti --}}
@@ -258,26 +219,6 @@
 
                                             <div class="mb-3">
                                                 <label class="small mb-1">
-                                                    Plafon per Bulan
-                                                </label>
-
-                                                <input type="number" name="plafon_per_bulan" class="form-control"
-                                                    value="{{ $item->plafon_per_bulan }}">
-                                            </div>
-
-
-                                            <div class="mb-3">
-                                                <label class="small mb-1">
-                                                    Plafon per Pengajuan
-                                                </label>
-
-                                                <input type="number" name="plafon_per_pengajuan" class="form-control"
-                                                    value="{{ $item->plafon_per_pengajuan }}">
-                                            </div>
-
-
-                                            <div class="mb-3">
-                                                <label class="small mb-1">
                                                     Status
                                                 </label>
 
@@ -325,7 +266,7 @@
                         @empty
 
                         <tr>
-                            <td colspan="6" class="text-center text-muted py-5">
+                            <td colspan="5" class="text-center text-muted py-5">
                                 Belum ada data kategori reimbursement
                             </td>
                         </tr>
@@ -381,24 +322,6 @@
                         </label>
 
                         <textarea name="deskripsi" class="form-control"></textarea>
-                    </div>
-
-
-                    <div class="mb-3">
-                        <label class="small mb-1">
-                            Plafon per Bulan
-                        </label>
-
-                        <input type="number" name="plafon_per_bulan" class="form-control">
-                    </div>
-
-
-                    <div class="mb-3">
-                        <label class="small mb-1">
-                            Plafon per Pengajuan
-                        </label>
-
-                        <input type="number" name="plafon_per_pengajuan" class="form-control">
                     </div>
 
 

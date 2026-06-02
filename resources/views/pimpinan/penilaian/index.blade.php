@@ -4,28 +4,33 @@
 
 @section('content')
 <main>
-    <header class="page-header page-header-dark bg-gradient-primary-to-secondary pb-10">
-        <div class="container-xl px-4">
-            <div class="page-header-content pt-4">
-                <div class="row align-items-center justify-content-between">
-                    <div class="col-auto mt-4">
+    <header class="page-header page-header-compact page-header-light border-bottom bg-white mb-4 ">
+        <div class="container-fluid px-4">
+            <div class="page-header-content">
+                <div class="row align-items-center justify-content-between pt-3">
+
+                    <div class="col-auto mb-3">
                         <h1 class="page-header-title">
-                            <div class="page-header-icon"><i data-feather="star"></i></div>
+                            <div class="page-header-icon">
+                                <i data-feather="star"></i>
+                            </div>
                             Penilaian Karyawan
                         </h1>
-                        <div class="page-header-subtitle">Evaluasi kinerja karyawan per periode</div>
                     </div>
-                    <div class="col-auto mt-4">
-                        <a href="{{ route('pimpinan.penilaian.create') }}" class="btn btn-light btn-sm">
-                            <i data-feather="plus" style="width:16px;height:16px;"></i> Beri Penilaian
+
+                    <div class="col-12 col-xl-auto mb-3">
+                        <a href="{{ route('pimpinan.penilaian.create') }}" class="btn btn-sm btn-light text-primary">
+                            <i class="me-1" data-feather="plus"></i>
+                            Beri Penilaian
                         </a>
                     </div>
+
                 </div>
             </div>
         </div>
     </header>
 
-    <div class="container-xl px-4 mt-n10">
+    <div class="container-fluid px-4">
 
         <!-- Filter -->
         <div class="card mb-4">
@@ -37,9 +42,9 @@
                             <label class="form-label">Bulan</label>
                             <select name="bulan" class="form-select">
                                 @foreach(range(1,12) as $b)
-                                    <option value="{{ $b }}" {{ $bulan == $b ? 'selected' : '' }}>
-                                        {{ \Carbon\Carbon::create()->month($b)->locale('id')->isoFormat('MMMM') }}
-                                    </option>
+                                <option value="{{ $b }}" {{ $bulan==$b ? 'selected' : '' }}>
+                                    {{ \Carbon\Carbon::create()->month($b)->locale('id')->isoFormat('MMMM') }}
+                                </option>
                                 @endforeach
                             </select>
                         </div>
@@ -47,7 +52,7 @@
                             <label class="form-label">Tahun</label>
                             <select name="tahun" class="form-select">
                                 @foreach($tahunList as $t)
-                                    <option value="{{ $t }}" {{ $tahun == $t ? 'selected' : '' }}>{{ $t }}</option>
+                                <option value="{{ $t }}" {{ $tahun==$t ? 'selected' : '' }}>{{ $t }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -56,7 +61,8 @@
                             <select name="jabatan_id" class="form-select">
                                 <option value="">Semua Jabatan</option>
                                 @foreach($jabatan as $j)
-                                    <option value="{{ $j->id }}" {{ $jabatanId == $j->id ? 'selected' : '' }}>{{ $j->nama_jabatan }}</option>
+                                <option value="{{ $j->id }}" {{ $jabatanId==$j->id ? 'selected' : '' }}>{{
+                                    $j->nama_jabatan }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -70,7 +76,9 @@
 
         <!-- Rekap Grade -->
         <div class="row mb-4">
-            @foreach(['A'=>['success','Sangat Baik'],'B'=>['primary','Baik'],'C'=>['warning','Cukup'],'D'=>['danger','Kurang']] as $grade => [$color, $label])
+            @foreach(['A'=>['success','Sangat
+            Baik'],'B'=>['primary','Baik'],'C'=>['warning','Cukup'],'D'=>['danger','Kurang']] as $grade => [$color,
+            $label])
             <div class="col-6 col-xl-3 mb-3">
                 <div class="card border-start-lg border-{{ $color }} h-100">
                     <div class="card-body d-flex align-items-center justify-content-between">
@@ -128,7 +136,8 @@
                                     </div>
                                 </td>
                                 <td>
-                                    @php $gc = ['A'=>'success','B'=>'primary','C'=>'warning','D'=>'danger'][$p->grade] ?? 'secondary'; @endphp
+                                    @php $gc = ['A'=>'success','B'=>'primary','C'=>'warning','D'=>'danger'][$p->grade]
+                                    ?? 'secondary'; @endphp
                                     <span class="badge bg-{{ $gc }} fw-bold fs-6 px-2">{{ $p->grade }}</span>
                                 </td>
                                 <td>
@@ -145,7 +154,8 @@
                                             action="{{ route('pimpinan.penilaian.destroy', $p->id) }}" method="POST">
                                             @csrf @method('DELETE')
                                         </form>
-                                        <button class="btn btn-sm btn-outline-danger" onclick="confirmDelete({{ $p->id }})" title="Hapus">
+                                        <button class="btn btn-sm btn-outline-danger"
+                                            onclick="confirmDelete({{ $p->id }})" title="Hapus">
                                             <i data-feather="trash-2" style="width:14px;height:14px;"></i>
                                         </button>
                                     </div>
@@ -156,7 +166,8 @@
                                 <td colspan="9" class="text-center text-muted py-5">
                                     <i data-feather="inbox" style="width:40px;height:40px;" class="mb-2"></i>
                                     <p>Belum ada penilaian untuk periode ini</p>
-                                    <a href="{{ route('pimpinan.penilaian.create') }}" class="btn btn-primary btn-sm">Beri Penilaian</a>
+                                    <a href="{{ route('pimpinan.penilaian.create') }}"
+                                        class="btn btn-primary btn-sm">Beri Penilaian</a>
                                 </td>
                             </tr>
                             @endforelse

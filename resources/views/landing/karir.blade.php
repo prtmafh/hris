@@ -196,7 +196,7 @@
 
         <section class="career-section">
             <div class="container">
-                <div class="tracking-box mb-5">
+                {{-- <div class="tracking-box mb-5">
                     <div class="row align-items-end">
                         <div class="col-lg-5 mb-3 mb-lg-0">
                             <div class="section-header text-left mb-0">
@@ -230,12 +230,12 @@
                             @foreach($trackingPelamar as $tracking)
                             @php
                             $trackingStatusClass = [
-                                'pending' => 'secondary',
-                                'screening' => 'info',
-                                'interview' => 'primary',
-                                'offering' => 'warning',
-                                'diterima' => 'success',
-                                'ditolak' => 'danger',
+                            'pending' => 'secondary',
+                            'screening' => 'info',
+                            'interview' => 'primary',
+                            'offering' => 'warning',
+                            'diterima' => 'success',
+                            'ditolak' => 'danger',
                             ][$tracking->status] ?? 'secondary';
                             @endphp
                             <div class="col-lg-6 mb-3">
@@ -244,7 +244,8 @@
                                         <div>
                                             <h4 class="h5 mb-1">{{ $tracking->lowongan->judul ?? '-' }}</h4>
                                             <div class="text-muted">
-                                                {{ optional(optional($tracking->lowongan)->jabatan)->nama_jabatan ?? '-' }}
+                                                {{ optional(optional($tracking->lowongan)->jabatan)->nama_jabatan ?? '-'
+                                                }}
                                             </div>
                                         </div>
                                         <span class="badge badge-{{ $trackingStatusClass }}">
@@ -269,7 +270,7 @@
                         @endif
                     </div>
                     @endif
-                </div>
+                </div> --}}
 
                 <div class="section-header text-center">
                     <p>Lowongan Aktif</p>

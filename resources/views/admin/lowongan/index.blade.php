@@ -15,7 +15,7 @@
                             <div class="page-header-icon">
                                 <i data-feather="briefcase"></i>
                             </div>
-                            Recruitment Openings
+                            Lowongan Rekrutmen
                         </h1>
                     </div>
 
@@ -199,7 +199,7 @@
 
                                                     <div class="card border">
                                                         <div class="card-header">
-                                                            Recruitment Summary
+                                                            Ringkasan Rekrutmen
                                                         </div>
 
                                                         <div class="card-body">
@@ -208,7 +208,7 @@
                                                             <div
                                                                 class="d-flex justify-content-between border-bottom py-2">
                                                                 <span class="small text-muted">
-                                                                    Hiring Capacity
+                                                                    Kuota Perekrutan
                                                                 </span>
 
                                                                 <strong>
@@ -325,7 +325,7 @@
 
                                                                 <div class="col-md-6">
                                                                     <label class="small text-muted d-block mb-1">
-                                                                        Applicant Pipeline
+                                                                        Alur Pelamar
                                                                     </label>
 
                                                                     <div class="fw-semibold">
@@ -345,7 +345,7 @@
                                                     <div class="card border">
 
                                                         <div class="card-header">
-                                                            Job Description
+                                                            Deskripsi Pekerjaan
                                                         </div>
 
                                                         <div class="card-body">
@@ -437,7 +437,7 @@
                                                             </div>
 
                                                             <span class="badge bg-primary-soft text-primary">
-                                                                Recruitment Position
+                                                                Posisi Rekrutmen
                                                             </span>
 
                                                         </div>
@@ -449,7 +449,7 @@
                                                         <div class="p-4">
 
                                                             <h6 class="mb-3">
-                                                                Position Summary
+                                                                Ringkasan Posisi
                                                             </h6>
 
                                                             <div
@@ -500,7 +500,7 @@
 
                                                             <div class="mb-4">
                                                                 <h6 class="mb-1">
-                                                                    Job Vacancy Information
+                                                                    Informasi Lowongan
                                                                 </h6>
 
                                                                 <p class="small text-muted mb-0">

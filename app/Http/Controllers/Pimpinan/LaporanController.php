@@ -35,19 +35,39 @@ class LaporanController extends Controller
 
         $absensi  = $query->orderBy('tanggal', 'desc')->get();
         $jabatan  = Jabatan::orderBy('nama_jabatan')->get();
-        $karyawan = Karyawan::where('status', 'aktif')->orderBy('nama')->get();
+        $karyawan = Karyawan::with('jabatan')
+            ->where('status', 'aktif')
+            ->when($jabatanId, fn($q) => $q->where('jabatan_id', $jabatanId))
+            ->when($karyawanId, fn($q) => $q->where('id', $karyawanId))
+            ->orderBy('nama')
+            ->get();
+
+        $rekapKaryawan = $karyawan->map(function ($item) use ($absensi) {
+            $absensiKaryawan = $absensi->where('karyawan_id', $item->id);
+            $total = $absensiKaryawan->count();
+            $hadir = $absensiKaryawan->whereIn('status', ['hadir', 'terlambat'])->count();
+
+            return [
+                'karyawan_id' => $item->id,
+                'nama'        => $item->nama,
+                'jabatan'     => $item->jabatan->nama_jabatan ?? '-',
+                'persentase'  => $total > 0 ? round(($hadir / $total) * 100, 2) : 0,
+            ];
+        });
+
+        $totalAbsensi = $absensi->count();
 
         $rekap = [
-            'hadir'     => $absensi->where('status', 'hadir')->count(),
-            'terlambat' => $absensi->where('status', 'terlambat')->count(),
-            'izin'      => $absensi->where('status', 'izin')->count(),
-            'alpha'     => $absensi->where('status', 'alpha')->count(),
+            'hadir'     => $totalAbsensi > 0 ? round(($absensi->where('status', 'hadir')->count() / $totalAbsensi) * 100, 2) : 0,
+            'terlambat' => $totalAbsensi > 0 ? round(($absensi->where('status', 'terlambat')->count() / $totalAbsensi) * 100, 2) : 0,
+            'izin'      => $totalAbsensi > 0 ? round(($absensi->where('status', 'izin')->count() / $totalAbsensi) * 100, 2) : 0,
+            'alpha'     => $totalAbsensi > 0 ? round(($absensi->where('status', 'alpha')->count() / $totalAbsensi) * 100, 2) : 0,
         ];
 
         $tahunList = range(Carbon::now()->year, Carbon::now()->year - 3);
 
         return view('pimpinan.laporan.absensi', compact(
-            'absensi', 'jabatan', 'karyawan', 'rekap',
+            'absensi', 'jabatan', 'karyawan', 'rekap', 'rekapKaryawan',
             'bulan', 'tahun', 'jabatanId', 'karyawanId', 'tahunList'
         ));
     }

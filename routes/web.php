@@ -98,7 +98,6 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::post('/admin/pengaturan', [PengaturanController::class, 'store'])->name('admin.pengaturan.store');
     Route::put('/admin/pengaturan/{id}', [PengaturanController::class, 'update'])->name('admin.pengaturan.update');
 
-    Route::get('/admin/jadwal-kerja', [AdminController::class, 'jadwalKerja'])->name('admin.jadwal_kerja');
     Route::get('/admin/hari-libur', [HariLiburController::class, 'index'])->name('admin.hari_libur');
     Route::get('/admin/hari-libur/data', [HariLiburController::class, 'data'])->name('admin.hari_libur.data');
     Route::post('/admin/hari-libur', [HariLiburController::class, 'store'])->name('admin.hari_libur.store');
@@ -129,8 +128,6 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::post('/admin/pelamar/{id}/kirim-update-proses', [PelamarController::class, 'kirimUpdateProses'])->name('admin.pelamar.kirim-update-proses');
     Route::delete('/admin/pelamar/{id}', [PelamarController::class, 'destroy'])->name('admin.pelamar.destroy');
 
-    Route::get('/admin/training', [AdminController::class, 'training'])->name('admin.training');
-    Route::get('/admin/peserta-training', [AdminController::class, 'pesertaTraining'])->name('admin.peserta_training');
 });
 
 Route::middleware(['auth', 'pimpinan'])->prefix('pimpinan')->group(function () {

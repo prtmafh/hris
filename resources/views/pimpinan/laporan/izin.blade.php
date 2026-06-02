@@ -4,23 +4,26 @@
 
 @section('content')
 <main>
-    <header class="page-header page-header-dark bg-gradient-primary-to-secondary pb-10">
-        <div class="container-xl px-4">
-            <div class="page-header-content pt-4">
-                <div class="row align-items-center justify-content-between">
-                    <div class="col-auto mt-4">
+    <header class="page-header page-header-compact page-header-light border-bottom bg-white mb-4 py-2">
+        <div class="container-fluid px-4">
+            <div class="page-header-content">
+                <div class="row align-items-center justify-content-between pt-3">
+
+                    <div class="col-auto mb-3">
                         <h1 class="page-header-title">
-                            <div class="page-header-icon"><i data-feather="file-text"></i></div>
+                            <div class="page-header-icon">
+                                <i data-feather="file-text"></i>
+                            </div>
                             Laporan Izin
                         </h1>
-                        <div class="page-header-subtitle">Data pengajuan izin karyawan per periode</div>
                     </div>
+
                 </div>
             </div>
         </div>
     </header>
 
-    <div class="container-xl px-4 mt-n10">
+    <div class="container-fluid px-4">
 
         <!-- Filter -->
         <div class="card mb-4">
@@ -32,9 +35,9 @@
                             <label class="form-label">Bulan</label>
                             <select name="bulan" class="form-select">
                                 @foreach(range(1,12) as $b)
-                                    <option value="{{ $b }}" {{ $bulan == $b ? 'selected' : '' }}>
-                                        {{ \Carbon\Carbon::create()->month($b)->locale('id')->isoFormat('MMMM') }}
-                                    </option>
+                                <option value="{{ $b }}" {{ $bulan==$b ? 'selected' : '' }}>
+                                    {{ \Carbon\Carbon::create()->month($b)->locale('id')->isoFormat('MMMM') }}
+                                </option>
                                 @endforeach
                             </select>
                         </div>
@@ -42,7 +45,7 @@
                             <label class="form-label">Tahun</label>
                             <select name="tahun" class="form-select">
                                 @foreach($tahunList as $t)
-                                    <option value="{{ $t }}" {{ $tahun == $t ? 'selected' : '' }}>{{ $t }}</option>
+                                <option value="{{ $t }}" {{ $tahun==$t ? 'selected' : '' }}>{{ $t }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -50,9 +53,10 @@
                             <label class="form-label">Status</label>
                             <select name="status" class="form-select">
                                 <option value="">Semua Status</option>
-                                <option value="pending" {{ $status === 'pending' ? 'selected' : '' }}>Pending</option>
-                                <option value="disetujui" {{ $status === 'disetujui' ? 'selected' : '' }}>Disetujui</option>
-                                <option value="ditolak" {{ $status === 'ditolak' ? 'selected' : '' }}>Ditolak</option>
+                                <option value="pending" {{ $status==='pending' ? 'selected' : '' }}>Pending</option>
+                                <option value="disetujui" {{ $status==='disetujui' ? 'selected' : '' }}>Disetujui
+                                </option>
+                                <option value="ditolak" {{ $status==='ditolak' ? 'selected' : '' }}>Ditolak</option>
                             </select>
                         </div>
                         <div class="col-md-2">
@@ -96,7 +100,7 @@
             <div class="card-header">
                 Data Izin —
                 {{ \Carbon\Carbon::create()->month($bulan)->locale('id')->isoFormat('MMMM') }} {{ $tahun }}
-                <span class="badge bg-primary ms-2">{{ $izin->count() }} pengajuan</span>
+                {{-- <span class="badge bg-primary ms-2">{{ $izin->count() }} pengajuan</span> --}}
             </div>
             <div class="card-body p-0">
                 <div class="table-responsive">
@@ -116,17 +120,22 @@
                             @forelse($izin as $i => $iz)
                             <tr>
                                 <td class="ps-4">{{ $i + 1 }}</td>
-                                <td>{{ \Carbon\Carbon::parse($iz->tanggal)->locale('id')->isoFormat('D MMM YYYY') }}</td>
+                                <td>{{ \Carbon\Carbon::parse($iz->tanggal)->locale('id')->isoFormat('D MMM YYYY') }}
+                                </td>
                                 <td class="text-capitalize fw-semibold">{{ $iz->karyawan->nama ?? '-' }}</td>
                                 <td class="text-muted small">{{ $iz->karyawan->jabatan->nama_jabatan ?? '-' }}</td>
                                 <td class="text-capitalize">{{ $iz->jenis_izin ?? '-' }}</td>
-                                <td class="text-muted small">{{ \Illuminate\Support\Str::limit($iz->keterangan, 50) }}</td>
+                                <td class="text-muted small">{{ \Illuminate\Support\Str::limit($iz->keterangan, 50) }}
+                                </td>
                                 <td>
                                     @switch($iz->status_approval)
-                                        @case('pending') <span class="badge bg-warning-soft text-warning">Pending</span> @break
-                                        @case('disetujui') <span class="badge bg-success-soft text-success">Disetujui</span> @break
-                                        @case('ditolak') <span class="badge bg-danger-soft text-danger">Ditolak</span> @break
-                                        @default <span class="badge bg-secondary-soft text-secondary">-</span>
+                                    @case('pending') <span class="badge bg-warning-soft text-warning">Pending</span>
+                                    @break
+                                    @case('disetujui') <span class="badge bg-success-soft text-success">Disetujui</span>
+                                    @break
+                                    @case('ditolak') <span class="badge bg-danger-soft text-danger">Ditolak</span>
+                                    @break
+                                    @default <span class="badge bg-secondary-soft text-secondary">-</span>
                                     @endswitch
                                 </td>
                             </tr>

@@ -65,8 +65,6 @@ class KategoriReimbursementController extends Controller
         return $request->validate([
             'nama' => 'required|string|max:255',
             'deskripsi' => 'nullable|string|max:1000',
-            'plafon_per_bulan' => 'nullable|numeric|min:0',
-            'plafon_per_pengajuan' => 'nullable|numeric|min:0',
             'status' => 'required|in:aktif,nonaktif',
         ]);
     }

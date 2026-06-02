@@ -4,24 +4,27 @@
 
 @section('content')
 <main>
-    <header class="page-header page-header-dark bg-gradient-primary-to-secondary pb-10">
-        <div class="container-xl px-4">
-            <div class="page-header-content pt-4">
-                <div class="row align-items-center justify-content-between">
-                    <div class="col-auto mt-4">
+    <header class="page-header page-header-compact page-header-light border-bottom bg-white mb-4 py-2">
+        <div class="container-fluid px-4">
+            <div class="page-header-content">
+                <div class="row align-items-center justify-content-between pt-3">
+                    <div class="col-auto mb-3">
                         <h1 class="page-header-title">
-                            <div class="page-header-icon"><i data-feather="star"></i></div>
+                            <div class="page-header-icon">
+                                <i data-feather="star"></i>
+                            </div>
                             Detail Penilaian
                         </h1>
-                        <div class="page-header-subtitle">{{ $penilaian->karyawan->nama ?? '-' }} —
-                            {{ $penilaian->nama_bulan }} {{ $penilaian->periode_tahun }}</div>
                     </div>
-                    <div class="col-auto mt-4 d-flex gap-2">
+
+                    <div class="col-12 col-xl-auto mb-3 d-flex gap-2">
                         <a href="{{ route('pimpinan.penilaian.edit', $penilaian->id) }}" class="btn btn-warning btn-sm">
-                            <i data-feather="edit-2" style="width:16px;height:16px;"></i> Edit
+                            <i class="me-1" data-feather="edit-2"></i>
+                            Edit
                         </a>
-                        <a href="{{ route('pimpinan.penilaian.index') }}" class="btn btn-light btn-sm">
-                            <i data-feather="arrow-left" style="width:16px;height:16px;"></i> Kembali
+                        <a href="{{ route('pimpinan.penilaian.index') }}" class="btn btn-sm btn-light text-primary">
+                            <i class="me-1" data-feather="arrow-left"></i>
+                            Kembali
                         </a>
                     </div>
                 </div>
@@ -29,7 +32,7 @@
         </div>
     </header>
 
-    <div class="container-xl px-4 mt-n10">
+    <div class="container-fluid px-4">
         <div class="row">
             <!-- Info Karyawan & Nilai -->
             <div class="col-xl-5 mb-4">
@@ -103,8 +106,9 @@
             <div class="col-xl-7 mb-4">
                 <!-- Grade Card -->
                 @php
-                    $gradeColor = ['A'=>'success','B'=>'primary','C'=>'warning','D'=>'danger'][$penilaian->grade] ?? 'secondary';
-                    $gradeLabel = ['A'=>'Sangat Baik','B'=>'Baik','C'=>'Cukup','D'=>'Kurang'][$penilaian->grade] ?? '-';
+                $gradeColor = ['A'=>'success','B'=>'primary','C'=>'warning','D'=>'danger'][$penilaian->grade] ??
+                'secondary';
+                $gradeLabel = ['A'=>'Sangat Baik','B'=>'Baik','C'=>'Cukup','D'=>'Kurang'][$penilaian->grade] ?? '-';
                 @endphp
                 <div class="card mb-4 border-{{ $gradeColor }} border-2">
                     <div class="card-body text-center py-4">
@@ -113,8 +117,8 @@
                             {{ number_format($penilaian->nilai_total, 2) }}
                         </div>
                         <div class="progress mx-auto mt-3 mb-3" style="height:12px;max-width:300px;">
-                            <div class="progress-bar bg-{{ $gradeColor }}"
-                                style="width:{{ $penilaian->nilai_total }}%"></div>
+                            <div class="progress-bar bg-{{ $gradeColor }}" style="width:{{ $penilaian->nilai_total }}%">
+                            </div>
                         </div>
                         <span class="badge bg-{{ $gradeColor }} fs-3 px-4 py-2">{{ $penilaian->grade }}</span>
                         <div class="mt-2 text-{{ $gradeColor }} fw-semibold">{{ $gradeLabel }}</div>
@@ -133,7 +137,8 @@
                                 </span>
                             </div>
                             <div class="progress" style="height:10px;">
-                                <div class="progress-bar bg-success" style="width:{{ $penilaian->nilai_kehadiran }}%"></div>
+                                <div class="progress-bar bg-success" style="width:{{ $penilaian->nilai_kehadiran }}%">
+                                </div>
                             </div>
                         </div>
                         <div class="mb-3">
@@ -144,7 +149,8 @@
                                 </span>
                             </div>
                             <div class="progress" style="height:10px;">
-                                <div class="progress-bar bg-primary" style="width:{{ $penilaian->nilai_kedisiplinan }}%"></div>
+                                <div class="progress-bar bg-primary"
+                                    style="width:{{ $penilaian->nilai_kedisiplinan }}%"></div>
                             </div>
                         </div>
                         <div class="mb-3">
@@ -155,7 +161,8 @@
                                 </span>
                             </div>
                             <div class="progress" style="height:10px;">
-                                <div class="progress-bar bg-warning" style="width:{{ $penilaian->nilai_kinerja }}%"></div>
+                                <div class="progress-bar bg-warning" style="width:{{ $penilaian->nilai_kinerja }}%">
+                                </div>
                             </div>
                         </div>
                     </div>

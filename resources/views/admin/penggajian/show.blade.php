@@ -59,7 +59,7 @@ $totalPotongan = $potongan->sum('jumlah');
 
         <nav class="nav nav-borders">
             <a class="nav-link active ms-0">
-                Payroll Detail
+                Detail Penggajian
             </a>
         </nav>
 
@@ -73,7 +73,7 @@ $totalPotongan = $potongan->sum('jumlah');
 
                 <div class="card mb-4 mb-xl-0">
                     <div class="card-header">
-                        Employee Profile
+                        Profil Karyawan
                     </div>
 
                     <div class="card-body text-center">
@@ -106,7 +106,7 @@ $totalPotongan = $potongan->sum('jumlah');
 
                 <div class="card mt-4">
                     <div class="card-header">
-                        Payroll Info
+                        Info Penggajian
                     </div>
 
                     <div class="card-body">
@@ -161,13 +161,13 @@ $totalPotongan = $potongan->sum('jumlah');
 
                 <div class="card mt-4">
                     <div class="card-header">
-                        Net Salary
+                        Gaji Bersih
                     </div>
 
                     <div class="card-body text-center">
 
                         <div class="text-muted small mb-2">
-                            Take Home Pay
+                            Gaji yang Dibawa Pulang
                         </div>
 
                         <div class="display-6 fw-bold text-primary">
@@ -186,7 +186,7 @@ $totalPotongan = $potongan->sum('jumlah');
 
                 <div class="card mb-4">
                     <div class="card-header">
-                        Salary Components
+                        Komponen Gaji
                     </div>
 
                     <div class="card-body p-0">
@@ -237,7 +237,7 @@ $totalPotongan = $potongan->sum('jumlah');
 
                                 <tr class="border-top">
                                     <td class="text-muted">
-                                        Subtotal
+                                        Jumlah Sementara
                                     </td>
 
                                     <td class="text-end fw-bold text-success">
@@ -284,7 +284,7 @@ $totalPotongan = $potongan->sum('jumlah');
 
                                 <tr class="border-top">
                                     <td class="text-muted">
-                                        Subtotal
+                                        Jumlah Sementara
                                     </td>
 
                                     <td class="text-end fw-bold text-danger">

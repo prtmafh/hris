@@ -49,6 +49,7 @@ class PenilaianController extends Controller
         $tahun     = Carbon::now()->year;
         $karyawan  = Karyawan::with('jabatan')->where('status', 'aktif')->orderBy('nama')->get();
         $tahunList = range(Carbon::now()->year, Carbon::now()->year - 2);
+        $nilaiKehadiranMap = $this->buatMapNilaiKehadiran($karyawan->pluck('id')->all(), $tahunList);
 
         // Ambil id karyawan yang sudah dinilai bulan ini
         $sudahDinilai = PenilaianKaryawan::where('periode_bulan', $bulan)
@@ -57,7 +58,7 @@ class PenilaianController extends Controller
             ->toArray();
 
         return view('pimpinan.penilaian.create', compact(
-            'karyawan', 'bulan', 'tahun', 'tahunList', 'sudahDinilai'
+            'karyawan', 'bulan', 'tahun', 'tahunList', 'sudahDinilai', 'nilaiKehadiranMap'
         ));
     }
 
@@ -67,7 +68,6 @@ class PenilaianController extends Controller
             'karyawan_id'      => 'required|exists:karyawan,id',
             'periode_bulan'    => 'required|integer|min:1|max:12',
             'periode_tahun'    => 'required|integer|min:2020',
-            'nilai_kehadiran'  => 'required|numeric|min:0|max:100',
             'nilai_kedisiplinan' => 'required|numeric|min:0|max:100',
             'nilai_kinerja'    => 'required|numeric|min:0|max:100',
             'catatan'          => 'nullable|string|max:1000',
@@ -82,8 +82,14 @@ class PenilaianController extends Controller
             return back()->withErrors(['error' => 'Karyawan ini sudah dinilai untuk periode tersebut.'])->withInput();
         }
 
+        $nilaiKehadiran = $this->hitungNilaiKehadiran(
+            (int) $request->karyawan_id,
+            (int) $request->periode_bulan,
+            (int) $request->periode_tahun
+        );
+
         $nilaiTotal = PenilaianKaryawan::hitungNilaiTotal(
-            $request->nilai_kehadiran,
+            $nilaiKehadiran,
             $request->nilai_kedisiplinan,
             $request->nilai_kinerja
         );
@@ -93,7 +99,7 @@ class PenilaianController extends Controller
             'penilaian_oleh'    => Auth::id(),
             'periode_bulan'     => $request->periode_bulan,
             'periode_tahun'     => $request->periode_tahun,
-            'nilai_kehadiran'   => $request->nilai_kehadiran,
+            'nilai_kehadiran'   => $nilaiKehadiran,
             'nilai_kedisiplinan' => $request->nilai_kedisiplinan,
             'nilai_kinerja'     => $request->nilai_kinerja,
             'nilai_total'       => $nilaiTotal,
@@ -129,28 +135,38 @@ class PenilaianController extends Controller
     {
         $penilaian = PenilaianKaryawan::with('karyawan.jabatan')->findOrFail($id);
         $tahunList = range(Carbon::now()->year, Carbon::now()->year - 2);
+        $nilaiKehadiran = $this->hitungNilaiKehadiran(
+            (int) $penilaian->karyawan_id,
+            (int) $penilaian->periode_bulan,
+            (int) $penilaian->periode_tahun
+        );
 
-        return view('pimpinan.penilaian.edit', compact('penilaian', 'tahunList'));
+        return view('pimpinan.penilaian.edit', compact('penilaian', 'tahunList', 'nilaiKehadiran'));
     }
 
     public function update(Request $request, $id)
     {
         $request->validate([
-            'nilai_kehadiran'   => 'required|numeric|min:0|max:100',
             'nilai_kedisiplinan' => 'required|numeric|min:0|max:100',
             'nilai_kinerja'     => 'required|numeric|min:0|max:100',
             'catatan'           => 'nullable|string|max:1000',
         ]);
 
         $penilaian  = PenilaianKaryawan::findOrFail($id);
+        $nilaiKehadiran = $this->hitungNilaiKehadiran(
+            (int) $penilaian->karyawan_id,
+            (int) $penilaian->periode_bulan,
+            (int) $penilaian->periode_tahun
+        );
+
         $nilaiTotal = PenilaianKaryawan::hitungNilaiTotal(
-            $request->nilai_kehadiran,
+            $nilaiKehadiran,
             $request->nilai_kedisiplinan,
             $request->nilai_kinerja
         );
 
         $penilaian->update([
-            'nilai_kehadiran'    => $request->nilai_kehadiran,
+            'nilai_kehadiran'    => $nilaiKehadiran,
             'nilai_kedisiplinan' => $request->nilai_kedisiplinan,
             'nilai_kinerja'      => $request->nilai_kinerja,
             'nilai_total'        => $nilaiTotal,
@@ -166,5 +182,56 @@ class PenilaianController extends Controller
     {
         PenilaianKaryawan::findOrFail($id)->delete();
         return back()->with('success', 'Penilaian berhasil dihapus.');
+    }
+
+    private function hitungNilaiKehadiran(int $karyawanId, int $bulan, int $tahun): float
+    {
+        $absensi = Absensi::where('karyawan_id', $karyawanId)
+            ->whereMonth('tanggal', $bulan)
+            ->whereYear('tanggal', $tahun)
+            ->get();
+
+        $total = $absensi->count();
+        if ($total === 0) {
+            return 0;
+        }
+
+        $hadir = $absensi->whereIn('status', ['hadir', 'terlambat'])->count();
+
+        return round(($hadir / $total) * 100, 2);
+    }
+
+    private function buatMapNilaiKehadiran(array $karyawanIds, array $tahunList): array
+    {
+        if (empty($karyawanIds) || empty($tahunList)) {
+            return [];
+        }
+
+        $awal = Carbon::create(min($tahunList), 1, 1)->startOfDay();
+        $akhir = Carbon::create(max($tahunList), 12, 31)->endOfDay();
+
+        $absensi = Absensi::whereIn('karyawan_id', $karyawanIds)
+            ->whereBetween('tanggal', [$awal, $akhir])
+            ->get()
+            ->groupBy([
+                'karyawan_id',
+                fn($item) => $item->tanggal->format('Y'),
+                fn($item) => $item->tanggal->format('n'),
+            ]);
+
+        $map = [];
+        foreach ($karyawanIds as $karyawanId) {
+            foreach ($tahunList as $tahun) {
+                foreach (range(1, 12) as $bulan) {
+                    $data = $absensi[$karyawanId][$tahun][$bulan] ?? collect();
+                    $total = $data->count();
+                    $hadir = $data->whereIn('status', ['hadir', 'terlambat'])->count();
+
+                    $map[$karyawanId][$tahun][$bulan] = $total > 0 ? round(($hadir / $total) * 100, 2) : 0;
+                }
+            }
+        }
+
+        return $map;
     }
 }

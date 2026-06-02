@@ -15,8 +15,6 @@ return new class extends Migration
             $table->id();
             $table->string('nama');
             $table->text('deskripsi')->nullable();
-            $table->decimal('plafon_per_bulan', 12, 2)->nullable();
-            $table->decimal('plafon_per_pengajuan', 12, 2)->nullable();
             $table->boolean('perlu_bukti')->default(true);
             $table->enum('status', ['aktif', 'nonaktif'])->default('aktif');
             $table->timestamps();

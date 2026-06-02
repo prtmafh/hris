@@ -6,12 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Models\KategoriReimbursement;
 use App\Models\Karyawan;
 use App\Models\Reimbursement;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Validation\ValidationException;
 
 class ReimbursementController extends Controller
 {
@@ -45,13 +42,6 @@ class ReimbursementController extends Controller
         $validated = $this->validateReimbursement($request);
         $kategori = KategoriReimbursement::where('status', 'aktif')->findOrFail($validated['kategori_reimbursement_id']);
 
-        $this->validatePlafon(
-            $validated['jumlah_diajukan'],
-            $kategori,
-            $validated['karyawan_id'],
-            $validated['tanggal_transaksi']
-        );
-
         if ($kategori->perlu_bukti && !$request->hasFile('bukti')) {
             return back()->withErrors(['bukti' => 'Bukti wajib diunggah untuk kategori ini.'])->withInput();
         }
@@ -82,13 +72,6 @@ class ReimbursementController extends Controller
         ]);
 
         $jumlahDisetujui = $validated['jumlah_disetujui'] ?? $reimbursement->jumlah_diajukan;
-        $this->validatePlafon(
-            $jumlahDisetujui,
-            $reimbursement->kategoriReimbursement,
-            $reimbursement->karyawan_id,
-            $reimbursement->tanggal_transaksi,
-            $reimbursement->id
-        );
 
         $reimbursement->update([
             'jumlah_disetujui' => $jumlahDisetujui,
@@ -165,44 +148,5 @@ class ReimbursementController extends Controller
             'jumlah_diajukan' => 'required|numeric|min:1',
             'bukti' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
         ]);
-    }
-
-    private function validatePlafon(
-        float $jumlah,
-        KategoriReimbursement $kategori,
-        int $karyawanId,
-        $tanggalTransaksi,
-        ?int $ignoreId = null
-    ): void {
-        if ($kategori->plafon_per_pengajuan && $jumlah > $kategori->plafon_per_pengajuan) {
-            throw ValidationException::withMessages([
-                'jumlah_disetujui' => 'Jumlah melebihi plafon per pengajuan kategori.',
-                'jumlah_diajukan' => 'Jumlah melebihi plafon per pengajuan kategori.',
-            ]);
-        }
-
-        if (!$kategori->plafon_per_bulan) {
-            return;
-        }
-
-        $tanggal = Carbon::parse($tanggalTransaksi);
-        $query = Reimbursement::where('karyawan_id', $karyawanId)
-            ->where('kategori_reimbursement_id', $kategori->id)
-            ->whereIn('status', ['pending', 'disetujui', 'dibayar'])
-            ->whereMonth('tanggal_transaksi', $tanggal->month)
-            ->whereYear('tanggal_transaksi', $tanggal->year);
-
-        if ($ignoreId) {
-            $query->where('id', '!=', $ignoreId);
-        }
-
-        $totalBulanIni = (float) $query->sum(DB::raw('COALESCE(jumlah_disetujui, jumlah_diajukan)'));
-
-        if (($totalBulanIni + $jumlah) > $kategori->plafon_per_bulan) {
-            throw ValidationException::withMessages([
-                'jumlah_disetujui' => 'Total reimbursement bulan ini melebihi plafon bulanan kategori.',
-                'jumlah_diajukan' => 'Total reimbursement bulan ini melebihi plafon bulanan kategori.',
-            ]);
-        }
     }
 }

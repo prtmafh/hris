@@ -14,7 +14,7 @@
                             <div class="page-header-icon">
                                 <i data-feather="credit-card"></i>
                             </div>
-                            Expense Reimbursement
+                            Data Reimbursement
                         </h1>
                     </div>
                     <div class="col-auto mb-3">
@@ -118,7 +118,7 @@
                                 {{-- Karyawan --}}
                                 <td>
                                     <div class="fw-semibold">{{ $item->karyawan->nama ?? '-' }}</div>
-                                    <div class="small text-muted">ID #{{ $item->id }}</div>
+                                    {{-- <div class="small text-muted">ID #{{ $item->id }}</div> --}}
                                 </td>
 
                                 {{-- Kategori --}}
@@ -212,7 +212,7 @@
                                         <div class="modal-header border-bottom bg-white">
                                             <h5 class="modal-title d-flex align-items-center">
                                                 <i data-feather="file-text" class="me-2"></i>
-                                                Detail Reimbursement
+                                                Detail Pengajuan Reimbursement
                                             </h5>
 
                                             <button type="button" class="btn-close" data-bs-dismiss="modal">
@@ -241,7 +241,7 @@
                                                             </div>
 
                                                             <div class="small text-muted mb-3">
-                                                                Request #{{ $item->id }}
+                                                                Pengajuan #{{ $item->id }}
                                                             </div>
 
                                                             <span class="badge bg-{{ $badge }}-soft text-{{ $badge }}">
@@ -255,7 +255,7 @@
 
                                                     <div class="card border">
                                                         <div class="card-header">
-                                                            Financial Summary
+                                                            Ringkasan Keuangan
                                                         </div>
 
                                                         <div class="card-body">
@@ -292,7 +292,7 @@
 
                                                             <div class="d-flex justify-content-between py-2">
                                                                 <span class="small text-muted">
-                                                                    Approver
+                                                                    Penyetuju
                                                                 </span>
 
                                                                 <strong>
@@ -385,7 +385,7 @@
                                                     @if($item->catatan_approval)
                                                     <div class="card mb-4 border">
                                                         <div class="card-header">
-                                                            Catatan Approval
+                                                            Catatan Persetujuan
                                                         </div>
 
                                                         <div class="card-body">

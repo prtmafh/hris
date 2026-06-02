@@ -14,8 +14,6 @@ class KategoriReimbursement extends Model
     protected $fillable = [
         'nama',
         'deskripsi',
-        'plafon_per_bulan',
-        'plafon_per_pengajuan',
         'perlu_bukti',
         'status',
     ];

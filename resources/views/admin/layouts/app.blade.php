@@ -17,7 +17,7 @@
     <link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/litepicker/dist/css/litepicker.css" rel="stylesheet" />
     <link href="{{asset('sbadmin/css/styles.css')}}" rel="stylesheet" />
-    <link rel="icon" type="image/x-icon" href="{{asset('sbadmin/assets/img/favicon.png')}}" />
+    <link rel="icon" type="image/x-icon" href="{{asset('assets/img/logotsi.png')}}" />
     <script data-search-pseudo-elements defer
         src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/js/all.min.js" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.28.0/feather.min.js" crossorigin="anonymous">
@@ -206,9 +206,13 @@
 </head>
 
 <body class="nav-fixed">
+    @section('navbar')
     @include('admin.layouts.partials.navbar')
+    @show
     <div id="layoutSidenav">
+        @section('sidebar')
         @include('admin.layouts.partials.sidebar')
+        @show
         <div id="layoutSidenav_content">
             @yield('content')
             <footer class="footer-admin mt-auto footer-light">

@@ -36,7 +36,7 @@
 
         {{-- NAV SB ADMIN PRO --}}
         <nav class="nav nav-borders">
-            <a class="nav-link active ms-0">Profile</a>
+            <a class="nav-link active ms-0">Profil</a>
         </nav>
 
         <hr class="mt-0 mb-4">
@@ -47,7 +47,7 @@
             <div class="col-xl-4">
 
                 <div class="card mb-4 mb-xl-0">
-                    <div class="card-header">Profile Picture</div>
+                    <div class="card-header">Foto Profil</div>
 
                     <div class="card-body text-center">
 
@@ -113,7 +113,7 @@
 
                 {{-- RESET PASSWORD --}}
                 <div class="card mt-4">
-                    <div class="card-header">Security</div>
+                    <div class="card-header">Keamanan</div>
 
                     <div class="card-body">
 
@@ -127,7 +127,7 @@
                             @csrf
 
                             <button type="submit" class="btn btn-danger w-100">
-                                <i data-feather="refresh-cw"></i> Reset Password
+                                <i data-feather="refresh-cw"></i> Reset Kata Sandi
                             </button>
 
                         </form>
@@ -141,7 +141,7 @@
             <div class="col-xl-8">
 
                 <div class="card mb-4">
-                    <div class="card-header">Account Details</div>
+                    <div class="card-header">Detail Akun</div>
 
                     <div class="card-body">
 
@@ -233,8 +233,8 @@
         event.preventDefault();
 
         Swal.fire({
-            title: 'Reset password?',
-            text: `Password ${nama} akan direset ke tanggal lahir ${tanggalLahir}.`,
+            title: 'Reset kata sandi?',
+            text: `Kata sandi ${nama} akan direset ke tanggal lahir ${tanggalLahir}.`,
             icon: 'warning',
             showCancelButton: true,
             confirmButtonText: 'Ya, reset',

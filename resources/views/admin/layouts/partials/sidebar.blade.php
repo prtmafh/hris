@@ -7,7 +7,7 @@ $gaji = request()->is(['admin/penggajian*']);
 $reimbursement = request()->is(['admin/kategori-reimbursement*','admin/reimbursement*']);
 $rekrutmen = request()->is(['admin/lowongan*','admin/pelamar*']);
 
-$pengaturan = request()->is(['admin/pengaturan*','admin/jadwal-kerja*','admin/hari-libur*']);
+$pengaturan = request()->is(['admin/pengaturan*','admin/hari-libur*']);
 @endphp
 
 <div id="layoutSidenav_nav">
@@ -139,9 +139,6 @@ $pengaturan = request()->is(['admin/pengaturan*','admin/jadwal-kerja*','admin/ha
                     <nav class="sidenav-menu-nested nav">
                         <a class="nav-link {{ request()->is('admin/pengaturan*') ? 'active' : '' }}"
                             href="{{ route('admin.pengaturan') }}">Pengaturan</a>
-
-                        {{-- <a class="nav-link {{ request()->is('admin/jadwal-kerja*') ? 'active' : '' }}"
-                            href="{{ route('admin.jadwal_kerja') }}">Jadwal Kerja</a> --}}
 
                         <a class="nav-link {{ request()->is('admin/hari-libur*') ? 'active' : '' }}"
                             href="{{ route('admin.hari_libur') }}">Hari Libur</a>

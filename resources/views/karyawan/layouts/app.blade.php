@@ -17,7 +17,7 @@
     <link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/litepicker/dist/css/litepicker.css" rel="stylesheet" />
     <link href="{{asset('sbadmin/css/styles.css')}}" rel="stylesheet" />
-    <link rel="icon" type="image/x-icon" href="{{asset('sbadmin/assets/img/favicon.png')}}" />
+    <link rel="icon" type="image/x-icon" href="{{asset('assets/img/logotsi.png')}}" />
     <script data-search-pseudo-elements defer
         src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/js/all.min.js" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.28.0/feather.min.js" crossorigin="anonymous">
@@ -104,7 +104,7 @@
         html[data-sb-theme="dark"] .text-muted,
         html[data-sb-theme="dark"] .sidenav-menu-heading,
         html[data-sb-theme="dark"] .page-header-light,
-        html[data-sb-theme="dark"] .page-header-light .breadcrumb-item + .breadcrumb-item::before,
+        html[data-sb-theme="dark"] .page-header-light .breadcrumb-item+.breadcrumb-item::before,
         html[data-sb-theme="dark"] .sidenav-footer-subtitle {
             color: var(--sb-dark-muted) !important;
         }
@@ -158,7 +158,7 @@
         html[data-sb-theme="dark"] .card,
         html[data-sb-theme="dark"] .card-header,
         html[data-sb-theme="dark"] .card-footer,
-        html[data-sb-theme="dark"] .table > :not(caption) > * > *,
+        html[data-sb-theme="dark"] .table> :not(caption)>*>*,
         html[data-sb-theme="dark"] .dropdown-divider,
         html[data-sb-theme="dark"] .list-group-item,
         html[data-sb-theme="dark"] .input-group-text,
@@ -217,6 +217,7 @@
         }
 
         @media (max-width: 767.98px) {
+
             .dataTable-top,
             .dataTable-bottom {
                 display: flex;
@@ -225,10 +226,10 @@
                 align-items: stretch;
             }
 
-            .dataTable-top > div,
-            .dataTable-top > nav,
-            .dataTable-bottom > div,
-            .dataTable-bottom > nav {
+            .dataTable-top>div,
+            .dataTable-top>nav,
+            .dataTable-bottom>div,
+            .dataTable-bottom>nav {
                 float: none !important;
                 width: 100%;
             }

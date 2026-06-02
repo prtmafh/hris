@@ -5,7 +5,7 @@
 @section('content')
 <main>
 
-    <header class="page-header page-header-compact page-header-light border-bottom bg-white mb-4">
+    <header class="page-header page-header-compact page-header-light border-bottom bg-white mb-4 py-2">
         <div class="container-xl px-4">
             <div class="page-header-content">
                 <div class="row align-items-center justify-content-between pt-3">
@@ -44,7 +44,14 @@
                             <option value="">Semua status</option>
                             @foreach(['pending','screening','interview','offering','diterima','ditolak'] as $status)
                             <option value="{{ $status }}" {{ request('status')===$status ? 'selected' : '' }}>
-                                {{ ucfirst($status) }}
+                                {{ [
+                                'pending' => 'Menunggu',
+                                'screening' => 'Seleksi Berkas',
+                                'interview' => 'Wawancara',
+                                'offering' => 'Penawaran',
+                                'diterima' => 'Diterima',
+                                'ditolak' => 'Ditolak',
+                                ][$status] ?? ucfirst($status) }}
                             </option>
                             @endforeach
                         </select>
@@ -86,6 +93,14 @@
                             'ditolak' => 'red',
                             default => 'secondary'
                             };
+                            $statusLabel = [
+                            'pending' => 'Menunggu',
+                            'screening' => 'Seleksi Berkas',
+                            'interview' => 'Wawancara',
+                            'offering' => 'Penawaran',
+                            'diterima' => 'Diterima',
+                            'ditolak' => 'Ditolak',
+                            ][$item->status] ?? ucfirst($item->status);
                             @endphp
 
                             <tr>
@@ -110,7 +125,7 @@
                                 {{-- Status --}}
                                 <td>
                                     <span class="badge bg-{{ $badgeColor }}-soft text-{{ $badgeColor }}">
-                                        {{ ucfirst($item->status) }}
+                                        {{ $statusLabel }}
                                     </span>
                                     @if($item->jadwal_interview)
                                     <div class="small text-muted mt-1">
@@ -129,24 +144,24 @@
                                         <i data-feather="eye"></i>
                                     </button>
 
-                                    {{-- Update Status --}}
+                                    {{-- Perbarui Status --}}
                                     <button class="btn btn-datatable btn-icon btn-transparent-dark me-1"
                                         data-bs-toggle="modal" data-bs-target="#modalEdit{{ $item->id }}"
-                                        title="Update Status">
+                                        title="Perbarui Status">
                                         <i data-feather="edit"></i>
                                     </button>
 
                                     {{-- Kirim Panggilan --}}
                                     <button class="btn btn-datatable btn-icon btn-transparent-dark me-1"
                                         data-bs-toggle="modal" data-bs-target="#modalPanggilan{{ $item->id }}"
-                                        title="Kirim Panggilan Interview">
+                                        title="Kirim Panggilan Wawancara">
                                         <i data-feather="mail"></i>
                                     </button>
 
-                                    {{-- Kirim Update Proses --}}
+                                    {{-- Kirim Pembaruan Proses --}}
                                     <button class="btn btn-datatable btn-icon btn-transparent-dark me-1"
                                         data-bs-toggle="modal" data-bs-target="#modalUpdateProses{{ $item->id }}"
-                                        title="Kirim Update Proses">
+                                        title="Kirim Pembaruan Proses">
                                         <i data-feather="send"></i>
                                     </button>
 
@@ -177,7 +192,7 @@
                                         <div class="modal-header border-bottom bg-white">
                                             <h5 class="modal-title d-flex align-items-center">
                                                 <i data-feather="user" class="me-2"></i>
-                                                Candidate Profile
+                                                Profil Pelamar
                                             </h5>
 
                                             <button type="button" class="btn-close" data-bs-dismiss="modal">
@@ -211,7 +226,7 @@
 
                                                             <span
                                                                 class="badge bg-{{ $badgeColor }}-soft text-{{ $badgeColor }}">
-                                                                {{ ucfirst($item->status) }}
+                                                                {{ $statusLabel }}
                                                             </span>
 
                                                         </div>
@@ -221,7 +236,7 @@
 
                                                     <div class="card border">
                                                         <div class="card-header">
-                                                            Candidate Summary
+                                                            Ringkasan Pelamar
                                                         </div>
 
                                                         <div class="card-body">
@@ -229,7 +244,7 @@
                                                             <div
                                                                 class="d-flex justify-content-between border-bottom py-2">
                                                                 <span class="small text-muted">
-                                                                    Phone
+                                                                    Telepon
                                                                 </span>
 
                                                                 <strong>
@@ -241,7 +256,7 @@
                                                             <div
                                                                 class="d-flex justify-content-between border-bottom py-2">
                                                                 <span class="small text-muted">
-                                                                    Birth Date
+                                                                    Tanggal Lahir
                                                                 </span>
 
                                                                 <strong>
@@ -254,7 +269,7 @@
                                                             <div
                                                                 class="d-flex justify-content-between border-bottom py-2">
                                                                 <span class="small text-muted">
-                                                                    Applied Date
+                                                                    Tanggal Melamar
                                                                 </span>
 
                                                                 <strong>
@@ -266,7 +281,7 @@
 
                                                             <div class="d-flex justify-content-between py-2">
                                                                 <span class="small text-muted">
-                                                                    Interview
+                                                                    Wawancara
                                                                 </span>
 
                                                                 <strong>
@@ -282,7 +297,7 @@
                                                     @if($item->catatan_hr)
                                                     <div class="card border mt-4">
                                                         <div class="card-header">
-                                                            HR Notes
+                                                            Catatan HR
                                                         </div>
 
                                                         <div class="card-body">
@@ -305,7 +320,7 @@
                                                     <div class="card border mb-4">
 
                                                         <div class="card-header">
-                                                            Application Information
+                                                            Informasi Lamaran
                                                         </div>
 
                                                         <div class="card-body">
@@ -314,7 +329,7 @@
 
                                                                 <div class="col-md-6">
                                                                     <label class="small text-muted d-block mb-1">
-                                                                        Applied Position
+                                                                        Posisi Dilamar
                                                                     </label>
 
                                                                     <div class="fw-semibold">
@@ -333,12 +348,12 @@
 
                                                                 <div class="col-md-6">
                                                                     <label class="small text-muted d-block mb-1">
-                                                                        Recruitment Stage
+                                                                        Tahap Rekrutmen
                                                                     </label>
 
                                                                     <span
                                                                         class="badge bg-{{ $badgeColor }}-soft text-{{ $badgeColor }}">
-                                                                        {{ ucfirst($item->status) }}
+                                                                        {{ $statusLabel }}
                                                                     </span>
 
                                                                 </div>
@@ -347,7 +362,7 @@
 
                                                                 <div class="col-md-6">
                                                                     <label class="small text-muted d-block mb-1">
-                                                                        Interview Schedule
+                                                                        Jadwal Wawancara
                                                                     </label>
 
                                                                     <div class="fw-semibold">
@@ -373,7 +388,7 @@
 
                                                                 <div class="col-12">
                                                                     <label class="small text-muted d-block mb-1">
-                                                                        Address
+                                                                        Alamat
                                                                     </label>
 
                                                                     <div class="p-3 bg-light rounded">
@@ -394,7 +409,7 @@
                                                     <div class="card border">
 
                                                         <div class="card-header">
-                                                            Application Documents
+                                                            Dokumen Lamaran
                                                         </div>
 
                                                         <div class="card-body">
@@ -441,7 +456,7 @@
                                                 data-bs-target="#modalEdit{{ $item->id }}" data-bs-dismiss="modal">
 
                                                 <i data-feather="edit" class="me-1"></i>
-                                                Update Status
+                                                Perbarui Status
 
                                             </button>
 
@@ -461,7 +476,7 @@
                                         <div class="modal-header border-bottom bg-white">
                                             <h5 class="modal-title d-flex align-items-center">
                                                 <i data-feather="edit-2" class="me-2"></i>
-                                                Update Candidate Stage
+                                                Perbarui Tahap Pelamar
                                             </h5>
 
                                             <button class="btn-close" data-bs-dismiss="modal"></button>
@@ -500,15 +515,15 @@
                                                         <div class="p-4">
 
                                                             <h6 class="mb-3">
-                                                                Pipeline Status
+                                                                Status Rekrutmen
                                                             </h6>
 
                                                             <div class="small text-muted mb-2">
-                                                                Current Stage
+                                                                Tahap Saat Ini
                                                             </div>
 
                                                             <span class="badge bg-primary-soft text-primary">
-                                                                {{ ucfirst($item->status) }}
+                                                                {{ $statusLabel }}
                                                             </span>
 
                                                         </div>
@@ -523,7 +538,7 @@
 
                                                             <div class="mb-4">
                                                                 <label class="small mb-1">
-                                                                    Status Pipeline
+                                                                    Status Rekrutmen
                                                                 </label>
 
                                                                 <select name="status" class="form-select" required>
@@ -531,7 +546,14 @@
                                                                     as $statusOpt)
                                                                     <option value="{{ $statusOpt }}" {{ $item->
                                                                         status===$statusOpt?'selected':'' }}>
-                                                                        {{ ucfirst($statusOpt) }}
+                                                                        {{ [
+                                                                        'pending' => 'Menunggu',
+                                                                        'screening' => 'Seleksi Berkas',
+                                                                        'interview' => 'Wawancara',
+                                                                        'offering' => 'Penawaran',
+                                                                        'diterima' => 'Diterima',
+                                                                        'ditolak' => 'Ditolak',
+                                                                        ][$statusOpt] ?? ucfirst($statusOpt) }}
                                                                     </option>
                                                                     @endforeach
                                                                 </select>
@@ -541,7 +563,7 @@
 
                                                             <div class="mb-4">
                                                                 <label class="small mb-1">
-                                                                    Interview Schedule
+                                                                    Jadwal Wawancara
                                                                 </label>
 
                                                                 <input type="datetime-local" name="jadwal_interview"
@@ -553,7 +575,7 @@
 
                                                             <div>
                                                                 <label class="small mb-1">
-                                                                    HR Notes
+                                                                    Catatan HR
                                                                 </label>
 
                                                                 <textarea name="catatan_hr" rows="5"
@@ -596,7 +618,7 @@
                                         <div class="modal-header border-bottom bg-white">
                                             <h5 class="modal-title d-flex align-items-center">
                                                 <i data-feather="mail" class="me-2"></i>
-                                                Interview Invitation
+                                                Panggilan Wawancara
                                             </h5>
 
                                             <button class="btn-close" data-bs-dismiss="modal">
@@ -613,14 +635,14 @@
                                                 <div class="alert alert-primary-soft mb-4">
                                                     Email akan dikirim ke
                                                     <strong>{{ $item->email }}</strong><br>
-                                                    Status otomatis menjadi <strong>Interview</strong>
+                                                    Status otomatis menjadi <strong>Wawancara</strong>
                                                 </div>
 
 
 
                                                 <div class="mb-4">
                                                     <label class="small mb-1">
-                                                        Jadwal Interview
+                                                        Jadwal Wawancara
                                                     </label>
 
                                                     <input type="datetime-local" name="jadwal_interview" required
@@ -671,7 +693,7 @@
                                         <div class="modal-header border-bottom bg-white">
                                             <h5 class="modal-title d-flex align-items-center">
                                                 <i data-feather="send" class="me-2"></i>
-                                                Process Update Notification
+                                                Notifikasi Pembaruan Proses
                                             </h5>
 
                                             <button class="btn-close" data-bs-dismiss="modal">
@@ -687,7 +709,7 @@
                                             <div class="modal-body p-4">
 
                                                 <div class="alert alert-success-soft mb-4">
-                                                    Update proses akan dikirim ke
+                                                    Pembaruan proses akan dikirim ke
                                                     <strong>{{ $item->email }}</strong>
                                                 </div>
 
@@ -704,7 +726,14 @@
                                                         as $statusOpt)
                                                         <option value="{{ $statusOpt }}" {{ $item->
                                                             status===$statusOpt?'selected':'' }}>
-                                                            {{ ucfirst($statusOpt) }}
+                                                            {{ [
+                                                            'pending' => 'Menunggu',
+                                                            'screening' => 'Seleksi Berkas',
+                                                            'interview' => 'Wawancara',
+                                                            'offering' => 'Penawaran',
+                                                            'diterima' => 'Diterima',
+                                                            'ditolak' => 'Ditolak',
+                                                            ][$statusOpt] ?? ucfirst($statusOpt) }}
                                                         </option>
                                                         @endforeach
 
@@ -718,7 +747,7 @@
                                                 <div class="mb-4">
 
                                                     <label class="small mb-1">
-                                                        Jadwal Interview
+                                                        Jadwal Wawancara
                                                     </label>
 
                                                     <input type="datetime-local" name="jadwal_interview"
@@ -726,7 +755,7 @@
                                                         value="{{ $item->jadwal_interview ? $item->jadwal_interview->format('Y-m-d\\TH:i'):'' }}">
 
                                                     <div class="small text-muted mt-2">
-                                                        Isi jika berkaitan dengan jadwal interview
+                                                        Isi jika berkaitan dengan jadwal wawancara
                                                     </div>
 
                                                 </div>
@@ -755,7 +784,7 @@
 
                                                 <button class="btn btn-success">
                                                     <i data-feather="send" class="me-1"></i>
-                                                    Kirim Update
+                                                    Kirim Pembaruan
                                                 </button>
 
                                             </div>

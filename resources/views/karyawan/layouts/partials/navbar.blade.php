@@ -12,19 +12,19 @@
     </div>
 
     <ul class="navbar-nav align-items-center ms-auto ms-md-3">
-        <li class="nav-item me-2">
+        {{-- <li class="nav-item me-2">
             <button class="btn btn-sm btn-outline-secondary btn-theme-toggle d-inline-flex align-items-center gap-2"
                 type="button" data-theme-toggle aria-label="Ganti tema">
                 <i data-feather="moon"></i>
                 <span class="d-none d-sm-inline" data-theme-label>Dark mode</span>
             </button>
-        </li>
+        </li> --}}
         <li class="nav-item dropdown no-caret dropdown-user me-3 me-lg-4">
             @php
-                $authKaryawan = auth()->user()->karyawan;
-                $avatar = $authKaryawan && $authKaryawan->foto
-                    ? asset('storage/'.$authKaryawan->foto)
-                    : asset('sbadmin/assets/img/illustrations/profiles/profile-1.png');
+            $authKaryawan = auth()->user()->karyawan;
+            $avatar = $authKaryawan && $authKaryawan->foto
+            ? asset('storage/'.$authKaryawan->foto)
+            : asset('sbadmin/assets/img/illustrations/profiles/profile-1.png');
             @endphp
             <a class="btn btn-icon btn-transparent-dark dropdown-toggle" id="navbarDropdownUserImage"
                 href="javascript:void(0);" role="button" data-bs-toggle="dropdown" aria-haspopup="true"
@@ -37,7 +37,8 @@
                     <img class="dropdown-user-img" src="{{ $avatar }}" />
                     <div class="dropdown-user-details">
                         <div class="dropdown-user-details-name">{{ $authKaryawan->nama ?? auth()->user()->nik }}</div>
-                        <div class="dropdown-user-details-email">{{ $authKaryawan->jabatan->nama_jabatan ?? 'Karyawan' }}</div>
+                        <div class="dropdown-user-details-email">{{ $authKaryawan->jabatan->nama_jabatan ?? 'Karyawan'
+                            }}</div>
                     </div>
                 </h6>
                 <div class="dropdown-divider"></div>
