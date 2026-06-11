@@ -39,35 +39,35 @@
                 <form method="GET" action="{{ route('pimpinan.penilaian.index') }}">
                     <div class="row g-3 align-items-end">
                         <div class="col-md-3">
-                            <label class="form-label">Bulan</label>
-                            <select name="bulan" class="form-select">
-                                @foreach(range(1,12) as $b)
-                                <option value="{{ $b }}" {{ $bulan==$b ? 'selected' : '' }}>
-                                    {{ \Carbon\Carbon::create()->month($b)->locale('id')->isoFormat('MMMM') }}
+                            <label class="form-label">Tahun</label>
+
+                            <select name="tahun" class="form-select">
+                                @foreach($tahunList as $t)
+                                <option value="{{ $t }}" {{ $tahun==$t ? 'selected' : '' }}>
+                                    {{ $t }}
                                 </option>
                                 @endforeach
                             </select>
                         </div>
-                        <div class="col-md-2">
-                            <label class="form-label">Tahun</label>
-                            <select name="tahun" class="form-select">
-                                @foreach($tahunList as $t)
-                                <option value="{{ $t }}" {{ $tahun==$t ? 'selected' : '' }}>{{ $t }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="col-md-3">
+
+                        <div class="col-md-4">
                             <label class="form-label">Jabatan</label>
+
                             <select name="jabatan_id" class="form-select">
                                 <option value="">Semua Jabatan</option>
+
                                 @foreach($jabatan as $j)
-                                <option value="{{ $j->id }}" {{ $jabatanId==$j->id ? 'selected' : '' }}>{{
-                                    $j->nama_jabatan }}</option>
+                                <option value="{{ $j->id }}" {{ $jabatanId==$j->id ? 'selected' : '' }}>
+                                    {{ $j->nama_jabatan }}
+                                </option>
                                 @endforeach
                             </select>
                         </div>
+
                         <div class="col-md-2">
-                            <button type="submit" class="btn btn-primary w-100">Tampilkan</button>
+                            <button type="submit" class="btn btn-primary w-100">
+                                Tampilkan
+                            </button>
                         </div>
                     </div>
                 </form>
@@ -75,7 +75,7 @@
         </div>
 
         <!-- Rekap Grade -->
-        <div class="row mb-4">
+        {{-- <div class="row mb-4">
             @foreach(['A'=>['success','Sangat
             Baik'],'B'=>['primary','Baik'],'C'=>['warning','Cukup'],'D'=>['danger','Kurang']] as $grade => [$color,
             $label])
@@ -91,14 +91,13 @@
                 </div>
             </div>
             @endforeach
-        </div>
+        </div> --}}
 
         <!-- Tabel -->
         <div class="card">
             <div class="card-header card-header-actions">
-                Penilaian —
-                {{ \Carbon\Carbon::create()->month($bulan)->locale('id')->isoFormat('MMMM') }} {{ $tahun }}
-                <span class="badge bg-primary ms-2">{{ $penilaian->count() }} karyawan</span>
+                Penilaian Tahun {{ $tahun }}
+                {{-- <span class="badge bg-primary ms-2">{{ $penilaian->count() }} karyawan</span> --}}
             </div>
             <div class="card-body p-0">
                 <div class="table-responsive">
@@ -108,6 +107,7 @@
                                 <th class="ps-4">No</th>
                                 <th>Nama Karyawan</th>
                                 <th>Jabatan</th>
+                                <th>Tahun</th>
                                 <th>Kehadiran</th>
                                 <th>Kedisiplinan</th>
                                 <th>Kinerja</th>
@@ -122,6 +122,9 @@
                                 <td class="ps-4">{{ $i + 1 }}</td>
                                 <td class="text-capitalize fw-semibold">{{ $p->karyawan->nama ?? '-' }}</td>
                                 <td class="text-muted small">{{ $p->karyawan->jabatan->nama_jabatan ?? '-' }}</td>
+                                <td>
+                                    {{ $p->periode_tahun }}
+                                </td>
                                 <td>{{ number_format($p->nilai_kehadiran, 1) }}</td>
                                 <td>{{ number_format($p->nilai_kedisiplinan, 1) }}</td>
                                 <td>{{ number_format($p->nilai_kinerja, 1) }}</td>
@@ -163,7 +166,7 @@
                             </tr>
                             @empty
                             <tr>
-                                <td colspan="9" class="text-center text-muted py-5">
+                                <td colspan="10" class="text-center text-muted py-5">
                                     <i data-feather="inbox" style="width:40px;height:40px;" class="mb-2"></i>
                                     <p>Belum ada penilaian untuk periode ini</p>
                                     <a href="{{ route('pimpinan.penilaian.create') }}"

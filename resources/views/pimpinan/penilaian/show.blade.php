@@ -53,8 +53,8 @@
                                 <td>{{ $penilaian->karyawan->jabatan->nama_jabatan ?? '-' }}</td>
                             </tr>
                             <tr>
-                                <td class="text-muted small fw-semibold">Periode</td>
-                                <td>{{ $penilaian->nama_bulan }} {{ $penilaian->periode_tahun }}</td>
+                                <td class="text-muted small fw-semibold">Tahun Penilaian</td>
+                                <td>{{ $penilaian->periode_tahun }}</td>
                             </tr>
                             <tr>
                                 <td class="text-muted small fw-semibold">Dinilai Oleh</td>
@@ -70,7 +70,10 @@
 
                 <!-- Rekap Absensi Periode -->
                 <div class="card">
-                    <div class="card-header"><i data-feather="calendar" class="me-2"></i> Rekap Absensi Periode</div>
+                    <div class="card-header">
+                        <i data-feather="calendar" class="me-2"></i>
+                        Rekap Absensi Tahun {{ $penilaian->periode_tahun }}
+                    </div>
                     <div class="card-body">
                         <div class="row text-center g-2">
                             <div class="col-6">

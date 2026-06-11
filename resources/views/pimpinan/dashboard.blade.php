@@ -175,7 +175,7 @@
                         <div class="card-header card-header-actions">
                             <div>
                                 <i data-feather="star" class="me-2 text-warning"></i>
-                                Top Penilaian Karyawan — {{ $now->locale('id')->isoFormat('MMMM YYYY') }}
+                                Top Penilaian Karyawan Tahun {{ $now->locale('id')->isoFormat('YYYY') }}
                             </div>
                             {{-- <div>
                                 <span class="badge bg-primary me-2">{{ $penilaianBulanIni }} karyawan dinilai</span>
@@ -197,7 +197,7 @@
                                 <table class="table table-hover mb-0">
                                     <thead class="table-light">
                                         <tr>
-                                            <th class="ps-4">#</th>
+                                            <th class="ps-4">No</th>
                                             <th>Nama Karyawan</th>
                                             <th>Jabatan</th>
                                             <th>Nilai Total</th>

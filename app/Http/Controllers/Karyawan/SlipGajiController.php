@@ -67,7 +67,7 @@ class SlipGajiController extends Controller
         ];
 
         $pdf = Pdf::loadView('pdf.slip-gaji', compact('penggajian', 'namaBulan'))
-            ->setPaper('a4', 'portrait');
+            ->setPaper('a6', 'landscape');
 
         $filename = 'slip-gaji-' . $penggajian->karyawan->nik . '-'
             . $namaBulan[$penggajian->periode_bulan] . '-'

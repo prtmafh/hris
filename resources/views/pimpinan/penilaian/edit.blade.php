@@ -43,7 +43,7 @@
                             <div>
                                 <strong>{{ $penilaian->karyawan->nama ?? '-' }}</strong>
                                 ({{ $penilaian->karyawan->jabatan->nama_jabatan ?? '-' }}) —
-                                Periode {{ $penilaian->nama_bulan }} {{ $penilaian->periode_tahun }}
+                                Tahun Penilaian {{ $penilaian->periode_tahun }}
                             </div>
                         </div>
 
@@ -60,8 +60,7 @@
                                     <label class="form-label fw-semibold">Nilai Kehadiran <span
                                             class="text-danger">*</span></label>
                                     <div class="input-group">
-                                        <input type="number" name="nilai_kehadiran" step="0.01" min="0" max="100"
-                                            class="form-control @error('nilai_kehadiran') is-invalid @enderror"
+                                        <input type="text" id="nilai_kehadiran" class="form-control"
                                             value="{{ number_format($nilaiKehadiran, 2, '.', '') }}" readonly>
                                         <span class="input-group-text">/ 100</span>
                                         @error('nilai_kehadiran') <div class="invalid-feedback">{{ $message }}</div>
@@ -147,24 +146,61 @@
 @push('scripts')
 <script>
     function hitungTotal() {
-        const kehadiran    = parseFloat(document.querySelector('[name=nilai_kehadiran]').value) || 0;
-        const kedisiplinan = parseFloat(document.querySelector('[name=nilai_kedisiplinan]').value) || 0;
-        const kinerja      = parseFloat(document.querySelector('[name=nilai_kinerja]').value) || 0;
 
-        const total = (kehadiran * 0.4) + (kedisiplinan * 0.3) + (kinerja * 0.3);
-        document.getElementById('previewTotal').textContent = total.toFixed(2);
-        document.getElementById('progressTotal').style.width = total + '%';
+    const kehadiran =
+        parseFloat(
+            document.getElementById('nilai_kehadiran').value
+        ) || 0;
 
-        let grade = 'D', color = 'danger';
-        if (total >= 90) { grade = 'A'; color = 'success'; }
-        else if (total >= 75) { grade = 'B'; color = 'primary'; }
-        else if (total >= 60) { grade = 'C'; color = 'warning'; }
+    const kedisiplinan =
+        parseFloat(
+            document.querySelector('[name="nilai_kedisiplinan"]').value
+        ) || 0;
 
-        const badge = document.getElementById('previewGrade');
-        badge.textContent = grade;
-        badge.className = `badge fs-4 px-3 py-2 bg-${color}`;
-        document.getElementById('progressTotal').className = `progress-bar bg-${color}`;
+    const kinerja =
+        parseFloat(
+            document.querySelector('[name="nilai_kinerja"]').value
+        ) || 0;
+
+    const total =
+        (kehadiran * 0.4) +
+        (kedisiplinan * 0.3) +
+        (kinerja * 0.3);
+
+    document.getElementById('previewTotal').textContent =
+        total.toFixed(2);
+
+    document.getElementById('progressTotal').style.width =
+        total + '%';
+
+    let grade = 'D';
+    let color = 'danger';
+
+    if (total >= 90) {
+        grade = 'A';
+        color = 'success';
+    } else if (total >= 75) {
+        grade = 'B';
+        color = 'primary';
+    } else if (total >= 60) {
+        grade = 'C';
+        color = 'warning';
     }
+
+    const badge =
+        document.getElementById('previewGrade');
+
+    badge.textContent = grade;
+
+    badge.className =
+        `badge fs-4 px-3 py-2 bg-${color}`;
+
+    document.getElementById('progressTotal')
+        .className =
+        `progress-bar bg-${color}`;
+}
+
+
     hitungTotal();
 </script>
 @endpush

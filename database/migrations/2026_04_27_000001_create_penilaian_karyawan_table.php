@@ -12,7 +12,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('karyawan_id')->constrained('karyawan')->onDelete('cascade');
             $table->foreignId('penilaian_oleh')->constrained('users')->onDelete('cascade');
-            $table->unsignedTinyInteger('periode_bulan');
+            // $table->unsignedTinyInteger('periode_bulan');
             $table->unsignedSmallInteger('periode_tahun');
             $table->decimal('nilai_kehadiran', 5, 2)->default(0);
             $table->decimal('nilai_kedisiplinan', 5, 2)->default(0);

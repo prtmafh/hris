@@ -1,5 +1,5 @@
 @php
-$laporan  = request()->is('pimpinan/laporan*');
+$laporan = request()->is('pimpinan/laporan*');
 $penilaian = request()->is('pimpinan/penilaian*');
 @endphp
 
@@ -49,7 +49,7 @@ $penilaian = request()->is('pimpinan/penilaian*');
 
                 <div class="collapse {{ $penilaian ? 'show' : '' }}" id="collapsePenilaian">
                     <nav class="sidenav-menu-nested nav">
-                        <a class="nav-link {{ request()->is('pimpinan/penilaian') ? 'active' : '' }}"
+                        <a class="nav-link {{ request()->is('pimpinan/penilaian*') ? 'active' : '' }}"
                             href="{{ route('pimpinan.penilaian.index') }}">Data Penilaian</a>
                         <a class="nav-link {{ request()->is('pimpinan/penilaian/tambah*') ? 'active' : '' }}"
                             href="{{ route('pimpinan.penilaian.create') }}">Beri Penilaian</a>

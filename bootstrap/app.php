@@ -4,6 +4,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Middleware\HandleCors;
+use Illuminate\Console\Scheduling\Schedule;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -19,6 +20,9 @@ return Application::configure(basePath: dirname(__DIR__))
             'pimpinan' => \App\Http\Middleware\PimpinanMiddleware::class,
         ]);
         $middleware->append(HandleCors::class);
+    })
+    ->withSchedule(function (Schedule $schedule) {
+        $schedule->command('absensi:mark-alpha')->dailyAt('22:05')->withoutOverlapping();
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

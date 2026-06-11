@@ -1,3 +1,4 @@
+{{-- resources/views/pdf/slip-gaji.blade.php --}}
 <!DOCTYPE html>
 <html lang="id">
 
@@ -6,7 +7,8 @@
     <title>Slip Gaji</title>
     <style>
         @page {
-            margin: 18mm 20mm;
+            size: 180mm 120mm;
+            margin: 0;
         }
 
         * {
@@ -16,411 +18,400 @@
         }
 
         body {
-            font-family: 'DejaVu Sans', Arial, sans-serif;
+            width: 165mm;
+            font-family: Arial, Helvetica, sans-serif;
             font-size: 10px;
-            color: #1a202c;
-            background: #ffffff;
+            line-height: 1.15;
+            color: #000;
         }
 
-        .page {
-            width: 100%;
+        .slip {
+            width: 165mm;
+            padding: 5mm 7mm;
         }
 
-        /* ── Header ── */
-        .header-table {
+        .top-table,
+        .info-table,
+        .detail-table,
+        .total-table {
             width: 100%;
-            border-bottom: 3px solid #1a56db;
-            padding-bottom: 12px;
-            margin-bottom: 14px;
+            border-collapse: collapse;
         }
 
         .company-name {
-            font-size: 17px;
-            font-weight: bold;
-            color: #1a56db;
+            font-size: 20px;
+            font-weight: 700;
+            line-height: 1.05;
         }
 
-        .company-sub {
-            font-size: 8.5px;
-            color: #64748b;
-            margin-top: 2px;
-        }
-
-        .slip-title {
-            font-size: 12px;
-            font-weight: bold;
-            color: #1e293b;
-            text-align: right;
-        }
-
-        .slip-period {
-            font-size: 8.5px;
-            color: #64748b;
-            text-align: right;
+        .company-address {
             margin-top: 3px;
+            font-size: 11px;
+            line-height: 1.2;
         }
 
-        .badge {
+        /* .brand {
+            text-align: right;
+            white-space: nowrap;
+        }
+
+        .brand-mark {
             display: inline-block;
-            padding: 2px 10px;
-            border-radius: 20px;
-            font-size: 8px;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 0.4px;
+            width: 23px;
+            height: 24px;
+            margin-right: 6px;
+            vertical-align: middle;
+            position: relative;
         }
 
-        .badge-success {
-            background: #dcfce7;
-            color: #166534;
-            border: 1px solid #bbf7d0;
+        .brand-blue,
+        .brand-red {
+            display: block;
+            position: absolute;
+            background: #0719b8;
         }
 
-        .badge-warning {
-            background: #fef9c3;
-            color: #854d0e;
-            border: 1px solid #fef08a;
+        .brand-blue.one {
+            width: 22px;
+            height: 4px;
+            top: 0;
+            right: 0;
         }
 
-        /* ── Info Karyawan ── */
-        .info-box {
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            border-radius: 5px;
-            padding: 10px 14px;
-            margin-bottom: 14px;
+        .brand-blue.two {
+            width: 6px;
+            height: 20px;
+            top: 4px;
+            right: 6px;
         }
 
-        .info-section-title {
-            font-size: 7.5px;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 0.8px;
-            color: #64748b;
-            border-bottom: 1px solid #e2e8f0;
-            padding-bottom: 5px;
-            margin-bottom: 8px;
+        .brand-blue.three {
+            width: 13px;
+            height: 5px;
+            bottom: 0;
+            right: 6px;
         }
 
-        .info-table {
-            width: 100%;
-            border-collapse: collapse;
+        .brand-red {
+            width: 8px;
+            height: 8px;
+            left: 0;
+            bottom: 6px;
+            background: #e30613;
         }
 
-        .info-table td {
-            padding: 2.5px 4px;
-            font-size: 9px;
+        .brand-text {
+            display: inline-block;
+            vertical-align: middle;
+            font-family: "Times New Roman", Times, serif;
+            font-size: 27px;
+            font-weight: 700;
+            color: #08119b;
+            line-height: 1;
+        } */
+        .brand {
+            text-align: right;
             vertical-align: top;
         }
 
+        .company-logo {
+            width: 170px;
+            height: auto;
+        }
+
+        .title {
+            margin-top: 1px;
+            padding-bottom: 7px;
+            border-bottom: 1px solid #000;
+            text-align: center;
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: .3px;
+        }
+
+        .info-table {
+            margin-top: 13px;
+            margin-bottom: 18px;
+        }
+
+        .info-table td {
+            padding: 0;
+            font-size: 11px;
+        }
+
         .info-label {
-            color: #64748b;
-            width: 130px;
+            width: 47px;
         }
 
-        .info-sep {
-            width: 10px;
-            color: #94a3b8;
+        .info-separator {
+            width: 9px;
+            text-align: center;
         }
 
-        .info-value {
-            font-weight: bold;
-            color: #1e293b;
+        .section-head td {
+            background: #d9d9d9;
+            padding: 5px 11px;
+            font-size: 14px;
+            font-weight: 700;
         }
 
-        /* ── Section label ── */
-        .section-label {
-            font-size: 8px;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 0.7px;
-            padding: 4px 10px;
-            border-radius: 4px;
-            margin-bottom: 5px;
-            display: inline-block;
+        .section-head .right-col {
+            width: 43%;
+            padding-left: 9px;
         }
 
-        .label-income {
-            color: #166534;
-            background: #dcfce7;
+        .items td {
+            padding: 8px 11px 2px;
+            font-size: 11px;
+            vertical-align: top;
         }
 
-        .label-deduct {
-            color: #991b1b;
-            background: #fee2e2;
+        .items .amount {
+            width: 115px;
+            padding-left: 0;
+            text-align: left;
         }
 
-        /* ── Komponen table ── */
-        .komponen-table {
+        .items .spacer {
+            width: 88px;
+        }
+
+        .items .deduction-label {
+            width: 155px;
+            padding-left: 9px;
+        }
+
+        .items .deduction-amount {
+            width: 100px;
+            text-align: left;
+        }
+
+        .summary {
+            margin-top: 18px;
+            border-top: 1px solid #000;
+        }
+
+        .summary td {
+            padding: 5px 11px 0;
+            font-size: 15px;
+            font-weight: 700;
+            vertical-align: top;
+        }
+
+        .summary .summary-label {
+            width: 185px;
+        }
+
+        .summary .summary-amount {
+            width: 165px;
+        }
+
+        .summary .right-label {
+            width: 170px;
+            padding-left: 9px;
+        }
+
+        .summary .right-amount {
+            width: 100px;
+        }
+
+        .net-box {
+            width: 61mm;
+            border: 1px solid #000;
+            text-align: center;
+            padding: 3px;
+            margin-top: 8px;
+            margin-left: auto;
+        }
+
+        .net-label {
+            font-size: 11px;
+            line-height: 1.1;
+        }
+
+        .net-amount {
+            margin-top: 4px;
+            font-size: 21px;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .detail-table,
+        .summary {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 12px;
+            table-layout: fixed;
         }
 
-        .komponen-table th {
-            background: #f1f5f9;
-            font-size: 8px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: #475569;
-            padding: 5px 10px;
-            text-align: left;
-            border-bottom: 1px solid #e2e8f0;
+        .detail-table col.col-desc,
+        .summary col.col-desc {
+            width: 38%;
         }
 
-        .komponen-table th.right {
+        .detail-table col.col-amount,
+        .summary col.col-amount {
+            width: 17%;
+        }
+
+        .detail-table col.col-spacer,
+        .summary col.col-spacer {
+            width: 8%;
+        }
+
+        .detail-table col.col-deduction,
+        .summary col.col-deduction {
+            width: 25%;
+        }
+
+        .detail-table col.col-deduction-amount,
+        .summary col.col-deduction-amount {
+            width: 12%;
+        }
+
+        .amount,
+        .deduction-amount {
             text-align: right;
         }
 
-        .komponen-table td {
-            padding: 5px 10px;
-            font-size: 9px;
-            color: #334155;
-            border-bottom: 1px solid #f1f5f9;
+        .summary {
+            margin-top: 12px;
+            border-top: 1px solid #000;
         }
 
-        .komponen-table td.right {
-            text-align: right;
-        }
-
-        .subtotal-row td {
-            background: #f8fafc;
-            font-weight: bold;
-            font-size: 9px;
-            border-top: 1px solid #e2e8f0;
-            border-bottom: none;
-        }
-
-        .green {
-            color: #166534;
-        }
-
-        .red {
-            color: #991b1b;
-        }
-
-        /* ── Total Box ── */
-        .total-table {
-            width: 100%;
-            background: #1a56db;
-            border-radius: 6px;
-            margin-top: 6px;
-        }
-
-        .total-table td {
-            padding: 11px 16px;
-            color: #ffffff;
-            vertical-align: middle;
-        }
-
-        .total-label {
-            font-size: 11px;
-            font-weight: bold;
-        }
-
-        .total-amount {
-            font-size: 15px;
-            font-weight: bold;
-            text-align: right;
-        }
-
-        /* ── Footer ── */
-        .footer {
-            margin-top: 20px;
-            padding-top: 8px;
-            border-top: 1px dashed #cbd5e1;
-        }
-
-        .footer-table {
-            width: 100%;
-        }
-
-        .footer-note {
-            font-size: 7.5px;
-            color: #94a3b8;
-            line-height: 1.6;
-        }
-
-        .ttd-area {
-            text-align: right;
-        }
-
-        .ttd-label {
-            font-size: 8px;
-            color: #475569;
-        }
-
-        .ttd-space {
-            height: 38px;
-        }
-
-        .ttd-line {
-            font-size: 8.5px;
-            font-weight: bold;
-            color: #1e293b;
-            border-top: 1px solid #475569;
-            padding-top: 4px;
-            display: inline-block;
-            min-width: 110px;
+        .summary td {
+            padding: 5px 11px;
+            font-size: 14px;
+            font-weight: 700;
         }
     </style>
+
 </head>
 
 <body>
     @php
-    $namaBulan = ['', 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
-    'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
-    $pemasukan = $penggajian->details->where('tipe', 'pemasukan');
-    $potongan = $penggajian->details->where('tipe', 'potongan');
+    $pemasukan = $penggajian->details->where('tipe', 'pemasukan')->values();
+    $potongan = $penggajian->details->where('tipe', 'potongan')->values();
     $k = $penggajian->karyawan;
     $totalIn = $pemasukan->sum('jumlah');
     $totalOut = $potongan->sum('jumlah');
+    $maxRows = max($pemasukan->count(), $potongan->count(), 1);
+    $periode = sprintf('01/%02d/%d', $penggajian->periode_bulan, $penggajian->periode_tahun);
     @endphp
 
-    <div class="page">
-
-        {{-- ── HEADER ── --}}
-        <table class="header-table">
+    <div class="slip">
+        <table class="top-table">
             <tr>
-                <td style="vertical-align:middle;">
-                    <div class="company-name">TSI GROUP</div>
-                    <div class="company-sub">Sistem Manajemen Sumber Daya Manusia</div>
-                </td>
-                <td style="vertical-align:middle; text-align:right; width:45%;">
-                    <div class="slip-title">SLIP GAJI KARYAWAN</div>
-                    <div class="slip-period">Periode: {{ $namaBulan[$penggajian->periode_bulan] }} {{
-                        $penggajian->periode_tahun }}</div>
-                    <div style="margin-top:5px;">
-                        <span class="badge {{ $penggajian->status === 'dibayar' ? 'badge-success' : 'badge-warning' }}">
-                            {{ $penggajian->status === 'dibayar' ? 'Sudah Dibayar' : 'Dalam Proses' }}
-                        </span>
+                <td>
+                    <div class="company-name">PT. Tidarjaya Solidindo</div>
+                    <div class="company-address">
+                        Jl. Abdul Ghani No 105, Mustikajaya,<br>
+                        Kota Bekasi
                     </div>
                 </td>
+                <td class="brand">
+                    <img src="{{ public_path('assets/img/tsigrouplogo.png') }}" alt="TSI GROUP" class="company-logo">
+                </td>
             </tr>
         </table>
 
-        {{-- ── INFO KARYAWAN ── --}}
-        <div class="info-box">
-            <div class="info-section-title">Informasi Karyawan</div>
-            <table class="info-table">
-                <tr>
-                    <td class="info-label">Nama Karyawan</td>
-                    <td class="info-sep">:</td>
-                    <td class="info-value">{{ $k->nama }}</td>
-                    <td class="info-label">Jabatan</td>
-                    <td class="info-sep">:</td>
-                    <td class="info-value">{{ $k->jabatan->nama_jabatan ?? '-' }}</td>
-                </tr>
-                <tr>
-                    <td class="info-label">NIK</td>
-                    <td class="info-sep">:</td>
-                    <td class="info-value">{{ $k->nik ?? '-' }}</td>
-                    <td class="info-label">Status Gaji</td>
-                    <td class="info-sep">:</td>
-                    <td class="info-value" style="text-transform:capitalize;">{{ $k->status_gaji }}</td>
-                </tr>
-                <tr>
-                    <td class="info-label">Hari Hadir</td>
-                    <td class="info-sep">:</td>
-                    <td class="info-value">{{ $penggajian->total_hadir }} hari</td>
-                    <td class="info-label">Tanggal Dibayar</td>
-                    <td class="info-sep">:</td>
-                    <td class="info-value">
-                        @if($penggajian->tgl_dibayar)
-                        {{ \Carbon\Carbon::parse($penggajian->tgl_dibayar)->translatedFormat('d F Y') }}
-                        @else
-                        -
-                        @endif
-                    </td>
-                </tr>
-            </table>
-        </div>
+        <div class="title">SLIP GAJI</div>
 
-        {{-- ── PEMASUKAN ── --}}
-        <div class="section-label label-income">+ Pemasukan</div>
-        <table class="komponen-table">
-            <thead>
-                <tr>
-                    <th>Keterangan</th>
-                    <th class="right" style="width:38%;">Jumlah</th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse($pemasukan as $d)
-                <tr>
-                    <td>{{ $d->keterangan }}</td>
-                    <td class="right green">Rp {{ number_format($d->jumlah, 0, ',', '.') }}</td>
-                </tr>
-                @empty
-                <tr>
-                    <td colspan="2" style="color:#94a3b8;font-style:italic;text-align:center;">Tidak ada komponen
-                        pemasukan.</td>
-                </tr>
-                @endforelse
-            </tbody>
-            <tfoot>
-                <tr class="subtotal-row">
-                    <td>Subtotal Pemasukan</td>
-                    <td class="right green">Rp {{ number_format($totalIn, 0, ',', '.') }}</td>
-                </tr>
-            </tfoot>
-        </table>
-
-        {{-- ── POTONGAN ── --}}
-        <div class="section-label label-deduct">- Potongan</div>
-        <table class="komponen-table">
-            <thead>
-                <tr>
-                    <th>Keterangan</th>
-                    <th class="right" style="width:38%;">Jumlah</th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse($potongan as $d)
-                <tr>
-                    <td>{{ $d->keterangan }}</td>
-                    <td class="right red">Rp {{ number_format($d->jumlah, 0, ',', '.') }}</td>
-                </tr>
-                @empty
-                <tr>
-                    <td colspan="2" style="color:#94a3b8;font-style:italic;text-align:center;">Tidak ada potongan.</td>
-                </tr>
-                @endforelse
-            </tbody>
-            <tfoot>
-                <tr class="subtotal-row">
-                    <td>Subtotal Potongan</td>
-                    <td class="right red">Rp {{ number_format($totalOut, 0, ',', '.') }}</td>
-                </tr>
-            </tfoot>
-        </table>
-
-        {{-- ── TOTAL BERSIH ── --}}
-        <table class="total-table">
+        <table class="info-table">
             <tr>
-                <td class="total-label">Gaji Bersih Diterima</td>
-                <td class="total-amount">Rp {{ number_format($penggajian->total_gaji, 0, ',', '.') }}</td>
+                <td class="info-label">Nama</td>
+                <td class="info-separator">:</td>
+                <td>{{ $k->nama }}</td>
+            </tr>
+            <tr>
+                <td class="info-label">NIK</td>
+                <td class="info-separator">:</td>
+                <td>{{ $k->nik ?? '-' }}</td>
+            </tr>
+            <tr>
+                <td class="info-label">Jabatan</td>
+                <td class="info-separator">:</td>
+                <td>{{ $k->jabatan->nama_jabatan ?? '-' }}</td>
+            </tr>
+            <tr>
+                <td class="info-label">Periode</td>
+                <td class="info-separator">:</td>
+                <td>{{ $periode }}</td>
             </tr>
         </table>
 
-        {{-- ── FOOTER ── --}}
-        <div class="footer">
-            <table class="footer-table">
-                <tr>
-                    <td style="vertical-align:top; width:58%;">
-                        <p class="footer-note">
-                            Slip gaji ini diterbitkan secara otomatis oleh sistem dan sah tanpa tanda tangan.<br>
-                            Dicetak pada: {{ \Carbon\Carbon::now()->translatedFormat('d F Y, H:i') }} WIB
-                        </p>
+        <table class="detail-table">
+
+            <colgroup>
+                <col class="col-desc">
+                <col class="col-amount">
+                <col class="col-spacer">
+                <col class="col-deduction">
+                <col class="col-deduction-amount">
+            </colgroup>
+
+            <tr class="section-head">
+                <td colspan="2">Pendapatan</td>
+                <td></td>
+                <td colspan="2">Potongan</td>
+            </tr>
+
+            @for ($i = 0; $i < $maxRows; $i++) @php $income=$pemasukan->get($i);
+                $deduction = $potongan->get($i);
+                @endphp
+
+                <tr class="items">
+                    <td>{{ $income->keterangan ?? '' }}</td>
+
+                    <td class="amount">
+                        {{ $income ? number_format($income->jumlah, 0, ',', '.') : '' }}
                     </td>
-                    <td style="vertical-align:top; text-align:right;">
-                        <p class="ttd-label">Mengetahui,</p>
-                        <div class="ttd-space"></div>
-                        <span class="ttd-line">HRD / Pimpinan</span>
+
+                    <td></td>
+
+                    <td>
+                        {{ $deduction->keterangan ?? '' }}
+                    </td>
+
+                    <td class="deduction-amount">
+                        {{ $deduction ? number_format($deduction->jumlah, 0, ',', '.') : '' }}
                     </td>
                 </tr>
-            </table>
+                @endfor
+
+        </table>
+
+        <table class="summary">
+
+            <colgroup>
+                <col class="col-desc">
+                <col class="col-amount">
+                <col class="col-spacer">
+                <col class="col-deduction">
+                <col class="col-deduction-amount">
+            </colgroup>
+
+            <tr>
+                <td>Total Pendapatan</td>
+
+                <td class="amount">
+                    {{ number_format($totalIn, 0, ',', '.') }}
+                </td>
+
+                <td></td>
+
+                <td>Total Potongan</td>
+
+                <td class="deduction-amount">
+                    {{ number_format($totalOut, 0, ',', '.') }}
+                </td>
+            </tr>
+
+        </table>
+        <div class="net-box">
+            <div class="net-label">Total bersih Bulan ini</div>
+            <div class="net-amount">{{ number_format($penggajian->total_gaji, 0, ',', '.') }}</div>
         </div>
+
 
     </div>
 </body>

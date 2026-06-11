@@ -31,7 +31,7 @@
             <div class="card-body">
                 <form method="GET" action="{{ route('pimpinan.laporan.absensi') }}">
                     <div class="row g-3">
-                        <div class="col-md-3">
+                        {{-- <div class="col-md-3">
                             <label class="form-label">Bulan</label>
                             <select name="bulan" class="form-select">
                                 @foreach(range(1,12) as $b)
@@ -40,7 +40,7 @@
                                 </option>
                                 @endforeach
                             </select>
-                        </div>
+                        </div> --}}
                         <div class="col-md-2">
                             <label class="form-label">Tahun</label>
                             <select name="tahun" class="form-select">
@@ -77,6 +77,7 @@
             </div>
         </div>
 
+        {{--
         <!-- Rekap Cards -->
         <div class="row mb-4">
             <div class="col-6 col-xl-3 mb-3">
@@ -111,13 +112,13 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> --}}
 
         <!-- Tabel -->
         <div class="card">
             <div class="card-header">
                 Persentase Kehadiran -
-                {{ \Carbon\Carbon::create()->month($bulan)->locale('id')->isoFormat('MMMM') }} {{ $tahun }}
+                {{ $tahun }}
             </div>
             <div class="card-body p-0">
                 <div class="table-responsive">
@@ -139,7 +140,8 @@
                                 <td style="min-width: 260px;">
                                     <div class="d-flex flex-column">
                                         <div class="d-flex align-items-center mb-1">
-                                            <span class="fw-bold me-2">{{ number_format($row['persentase'], 2) }}%</span>
+                                            <span class="fw-bold me-2">{{ number_format($row['persentase'], 2)
+                                                }}%</span>
                                         </div>
                                         <div class="progress" style="height: 8px; max-width: 320px;">
                                             <div class="progress-bar bg-success" role="progressbar"

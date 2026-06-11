@@ -17,13 +17,13 @@ class LaporanController extends Controller
 {
     public function absensi(Request $request)
     {
-        $bulan      = $request->input('bulan', Carbon::now()->month);
+        // $bulan      = $request->input('bulan', Carbon::now()->month);
         $tahun      = $request->input('tahun', Carbon::now()->year);
         $jabatanId  = $request->input('jabatan_id');
         $karyawanId = $request->input('karyawan_id');
 
         $query = Absensi::with('karyawan.jabatan')
-            ->whereMonth('tanggal', $bulan)
+            // ->whereMonth('tanggal', $bulan)
             ->whereYear('tanggal', $tahun);
 
         if ($jabatanId) {
@@ -42,16 +42,59 @@ class LaporanController extends Controller
             ->orderBy('nama')
             ->get();
 
-        $rekapKaryawan = $karyawan->map(function ($item) use ($absensi) {
-            $absensiKaryawan = $absensi->where('karyawan_id', $item->id);
-            $total = $absensiKaryawan->count();
-            $hadir = $absensiKaryawan->whereIn('status', ['hadir', 'terlambat'])->count();
+        $today = Carbon::today();
+
+        if ($tahun == $today->year) {
+            $totalHari = Carbon::create($tahun, 1, 1)
+                ->diffInDays($today) + 1;
+        } else {
+            $totalHari = Carbon::create($tahun, 12, 31)->dayOfYear;
+        }
+
+        $rekapKaryawan = $karyawan->map(function ($item) use ($absensi, $tahun, $today) {
+
+            $tglMasuk = Carbon::parse($item->tgl_masuk);
+
+            // Tentukan tanggal mulai rekap
+            if ($tahun == $tglMasuk->year) {
+
+                // Tahun pertama kerja
+                $tanggalMulai = $tglMasuk->copy();
+            } else {
+
+                // Tahun setelahnya mulai 1 Januari
+                $tanggalMulai = Carbon::create($tahun, 1, 1);
+            }
+
+            // Tentukan tanggal akhir rekap
+            if ($tahun == $today->year) {
+
+                $tanggalAkhir = $today;
+            } else {
+
+                $tanggalAkhir = Carbon::create($tahun, 12, 31);
+            }
+
+            $totalHariKaryawan = $tanggalMulai->diffInDays($tanggalAkhir) + 1;
+
+            $hadir = $absensi
+                ->where('karyawan_id', $item->id)
+                ->whereIn('status', ['hadir', 'terlambat'])
+                ->count();
+
+            $tidakHadir = max(0, $totalHariKaryawan - $hadir);
+
+            $persentase = $totalHariKaryawan > 0
+                ? round(($hadir / $totalHariKaryawan) * 100, 2)
+                : 0;
 
             return [
-                'karyawan_id' => $item->id,
-                'nama'        => $item->nama,
-                'jabatan'     => $item->jabatan->nama_jabatan ?? '-',
-                'persentase'  => $total > 0 ? round(($hadir / $total) * 100, 2) : 0,
+                'karyawan_id'      => $item->id,
+                'nama'             => $item->nama,
+                'jabatan'          => $item->jabatan->nama_jabatan ?? '-',
+                'hari_hadir'       => $hadir,
+                'hari_tidak_hadir' => $tidakHadir,
+                'persentase'       => $persentase,
             ];
         });
 
@@ -67,8 +110,16 @@ class LaporanController extends Controller
         $tahunList = range(Carbon::now()->year, Carbon::now()->year - 3);
 
         return view('pimpinan.laporan.absensi', compact(
-            'absensi', 'jabatan', 'karyawan', 'rekap', 'rekapKaryawan',
-            'bulan', 'tahun', 'jabatanId', 'karyawanId', 'tahunList'
+            'absensi',
+            'jabatan',
+            'karyawan',
+            'rekap',
+            'rekapKaryawan',
+            // 'bulan',
+            'tahun',
+            'jabatanId',
+            'karyawanId',
+            'tahunList'
         ));
     }
 
@@ -90,8 +141,13 @@ class LaporanController extends Controller
         $tahunList = range(Carbon::now()->year, Carbon::now()->year - 3);
 
         return view('pimpinan.laporan.penggajian', compact(
-            'penggajian', 'bulan', 'tahun', 'totalGaji',
-            'sudahBayar', 'belumBayar', 'tahunList'
+            'penggajian',
+            'bulan',
+            'tahun',
+            'totalGaji',
+            'sudahBayar',
+            'belumBayar',
+            'tahunList'
         ));
     }
 
@@ -120,7 +176,12 @@ class LaporanController extends Controller
         $tahunList = range(Carbon::now()->year, Carbon::now()->year - 3);
 
         return view('pimpinan.laporan.izin', compact(
-            'izin', 'bulan', 'tahun', 'status', 'rekap', 'tahunList'
+            'izin',
+            'bulan',
+            'tahun',
+            'status',
+            'rekap',
+            'tahunList'
         ));
     }
 
@@ -151,7 +212,12 @@ class LaporanController extends Controller
         $tahunList = range(Carbon::now()->year, Carbon::now()->year - 3);
 
         return view('pimpinan.laporan.lembur', compact(
-            'lembur', 'bulan', 'tahun', 'status', 'rekap', 'tahunList'
+            'lembur',
+            'bulan',
+            'tahun',
+            'status',
+            'rekap',
+            'tahunList'
         ));
     }
 
@@ -183,7 +249,12 @@ class LaporanController extends Controller
         $tahunList = range(Carbon::now()->year, Carbon::now()->year - 3);
 
         return view('pimpinan.laporan.reimbursement', compact(
-            'reimbursement', 'bulan', 'tahun', 'status', 'rekap', 'tahunList'
+            'reimbursement',
+            'bulan',
+            'tahun',
+            'status',
+            'rekap',
+            'tahunList'
         ));
     }
 }

@@ -11,7 +11,7 @@ class PenilaianKaryawan extends Model
     protected $fillable = [
         'karyawan_id',
         'penilaian_oleh',
-        'periode_bulan',
+        // 'periode_bulan',
         'periode_tahun',
         'nilai_kehadiran',
         'nilai_kedisiplinan',
@@ -54,10 +54,18 @@ class PenilaianKaryawan extends Model
     public function getNamaBulanAttribute(): string
     {
         $bulan = [
-            1 => 'Januari', 2 => 'Februari', 3 => 'Maret',
-            4 => 'April', 5 => 'Mei', 6 => 'Juni',
-            7 => 'Juli', 8 => 'Agustus', 9 => 'September',
-            10 => 'Oktober', 11 => 'November', 12 => 'Desember',
+            1 => 'Januari',
+            2 => 'Februari',
+            3 => 'Maret',
+            4 => 'April',
+            5 => 'Mei',
+            6 => 'Juni',
+            7 => 'Juli',
+            8 => 'Agustus',
+            9 => 'September',
+            10 => 'Oktober',
+            11 => 'November',
+            12 => 'Desember',
         ];
         return $bulan[$this->periode_bulan] ?? '-';
     }

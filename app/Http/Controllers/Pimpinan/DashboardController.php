@@ -33,8 +33,7 @@ class DashboardController extends Controller
             ->where('periode_tahun', $tahun)
             ->sum('total_gaji');
 
-        $penilaianBulanIni = PenilaianKaryawan::where('periode_bulan', $bulan)
-            ->where('periode_tahun', $tahun)
+        $penilaianBulanIni = PenilaianKaryawan::where('periode_tahun', $tahun)
             ->count();
 
         $ringkasanAbsensi = [
@@ -45,16 +44,24 @@ class DashboardController extends Controller
         ];
 
         $penilaianTerakhir = PenilaianKaryawan::with('karyawan')
-            ->where('periode_bulan', $bulan)
+            // ->where('periode_bulan', $bulan)
             ->where('periode_tahun', $tahun)
             ->orderByDesc('nilai_total')
             ->limit(5)
             ->get();
 
         return view('pimpinan.dashboard', compact(
-            'now', 'totalKaryawan', 'hadirHariIni', 'terlambat', 'tidakHadir',
-            'izinPending', 'lemburPending', 'totalGajiBulanIni',
-            'penilaianBulanIni', 'ringkasanAbsensi', 'penilaianTerakhir'
+            'now',
+            'totalKaryawan',
+            'hadirHariIni',
+            'terlambat',
+            'tidakHadir',
+            'izinPending',
+            'lemburPending',
+            'totalGajiBulanIni',
+            'penilaianBulanIni',
+            'ringkasanAbsensi',
+            'penilaianTerakhir'
         ));
     }
 }
