@@ -64,77 +64,77 @@
                     <div class="card-header">Daftar Jabatan</div>
 
                     <div class="card-body">
+                        <div class="table-responsive">
+                            <table id="datatablesSimple" class="table responsive">
 
-                        <table id="datatablesSimple" class="table responsive">
+                                <thead>
+                                    <tr>
+                                        <th>No.</th>
+                                        <th>Nama Jabatan</th>
+                                        <th>Jumlah Karyawan</th>
+                                        <th>Aksi</th>
+                                    </tr>
+                                </thead>
 
-                            <thead>
-                                <tr>
-                                    <th>No.</th>
-                                    <th>Nama Jabatan</th>
-                                    <th>Jumlah Karyawan</th>
-                                    <th>Aksi</th>
-                                </tr>
-                            </thead>
+                                <tbody>
+                                    @php
+                                    $badgeClasses = ['bg-primary', 'bg-success', 'bg-info', 'bg-warning', 'bg-danger',
+                                    'bg-secondary', 'bg-dark'];
+                                    @endphp
+                                    @foreach($jabatan as $index => $j)
+                                    <tr>
 
-                            <tbody>
-                                @php
-                                $badgeClasses = ['bg-primary', 'bg-success', 'bg-info', 'bg-warning', 'bg-danger',
-                                'bg-secondary', 'bg-dark'];
-                                @endphp
-                                @foreach($jabatan as $index => $j)
-                                <tr>
+                                        <td>{{ $index + 1 }}</td>
 
-                                    <td>{{ $index + 1 }}</td>
+                                        <td>
+                                            @php $badgeClass = $badgeClasses[$index % count($badgeClasses)]; @endphp
+                                            <div class="d-flex align-items-center gap-2">
+                                                <span class="badge {{ $badgeClass }} text-capitalize jabatan-badge"
+                                                    data-id="{{ $j->id }}">
+                                                    {{ $j->nama_jabatan }}
+                                                </span>
+                                                <input type="text" id="inline-input-{{ $j->id }}"
+                                                    class="form-control form-control-sm d-none jabatan-input"
+                                                    value="{{ $j->nama_jabatan }}" aria-label="Edit nama jabatan">
+                                            </div>
+                                        </td>
 
-                                    <td>
-                                        @php $badgeClass = $badgeClasses[$index % count($badgeClasses)]; @endphp
-                                        <div class="d-flex align-items-center gap-2">
-                                            <span class="badge {{ $badgeClass }} text-capitalize jabatan-badge"
-                                                data-id="{{ $j->id }}">
-                                                {{ $j->nama_jabatan }}
+                                        <td>
+                                            <span class="badge bg-secondary text-white">
+                                                {{ $j->karyawan_count ?? 0 }} Karyawan
                                             </span>
-                                            <input type="text" id="inline-input-{{ $j->id }}"
-                                                class="form-control form-control-sm d-none jabatan-input"
-                                                value="{{ $j->nama_jabatan }}" aria-label="Edit nama jabatan">
-                                        </div>
-                                    </td>
+                                        </td>
 
-                                    <td>
-                                        <span class="badge bg-secondary text-white">
-                                            {{ $j->karyawan_count ?? 0 }} Karyawan
-                                        </span>
-                                    </td>
+                                        <td>
 
-                                    <td>
+                                            {{-- EDIT --}}
+                                            <button class="btn btn-datatable btn-icon btn-transparent-dark me-2"
+                                                data-bs-toggle="modal" data-bs-target="#modalEdit" data-id="{{ $j->id}}"
+                                                data-nama="{{ $j->nama_jabatan }}">
+                                                <i data-feather="edit"></i>
+                                            </button>
 
-                                        {{-- EDIT --}}
-                                        <button class="btn btn-datatable btn-icon btn-transparent-dark me-2"
-                                            data-bs-toggle="modal" data-bs-target="#modalEdit" data-id="{{ $j->id}}"
-                                            data-nama="{{ $j->nama_jabatan }}">
-                                            <i data-feather="edit"></i>
-                                        </button>
+                                            {{-- DELETE --}}
+                                            <button class="btn btn-datatable btn-icon btn-transparent-dark text-danger"
+                                                onclick="confirmDelete({{ $j->id }})">
+                                                <i data-feather="trash-2"></i>
+                                            </button>
 
-                                        {{-- DELETE --}}
-                                        <button class="btn btn-datatable btn-icon btn-transparent-dark text-danger"
-                                            onclick="confirmDelete({{ $j->id }})">
-                                            <i data-feather="trash-2"></i>
-                                        </button>
+                                            <form id="delete-form-{{ $j->id }}"
+                                                action="{{ route('admin.jabatan.destroy', $j->id) }}" method="POST"
+                                                style="display:none;">
+                                                @csrf
+                                                @method('DELETE')
+                                            </form>
 
-                                        <form id="delete-form-{{ $j->id }}"
-                                            action="{{ route('admin.jabatan.destroy', $j->id) }}" method="POST"
-                                            style="display:none;">
-                                            @csrf
-                                            @method('DELETE')
-                                        </form>
+                                        </td>
 
-                                    </td>
+                                    </tr>
+                                    @endforeach
+                                </tbody>
 
-                                </tr>
-                                @endforeach
-                            </tbody>
-
-                        </table>
-
+                            </table>
+                        </div>
                     </div>
                 </div>
 

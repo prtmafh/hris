@@ -97,120 +97,120 @@
             </div>
 
             <div class="card-body">
+                <div class="table-responsive">
+                    <table id="datatablesSimple" class="table ">
 
-                <table id="datatablesSimple" class="table ">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Karyawan</th>
+                                <th>Tanggal</th>
+                                <th>Mulai</th>
+                                <th>Selesai</th>
+                                <th>Total</th>
+                                <th>Keterangan</th>
+                                <th>Upah</th>
+                                <th>Status</th>
+                                <th class="text-center">Aksi</th>
+                            </tr>
+                        </thead>
 
-                    <thead>
-                        <tr>
-                            <th>No</th>
-                            <th>Karyawan</th>
-                            <th>Tanggal</th>
-                            <th>Mulai</th>
-                            <th>Selesai</th>
-                            <th>Total</th>
-                            <th>Keterangan</th>
-                            <th>Upah</th>
-                            <th>Status</th>
-                            <th class="text-center">Aksi</th>
-                        </tr>
-                    </thead>
+                        <tbody>
+                            @forelse($lembur as $index => $l)
 
-                    <tbody>
-                        @forelse($lembur as $index => $l)
+                            @php
+                            $badge = match($l->status) {
+                            'pending' => 'yellow',
+                            'disetujui' => 'green',
+                            'ditolak' => 'red',
+                            default => 'secondary',
+                            };
+                            @endphp
 
-                        @php
-                        $badge = match($l->status) {
-                        'pending' => 'yellow',
-                        'disetujui' => 'green',
-                        'ditolak' => 'red',
-                        default => 'secondary',
-                        };
-                        @endphp
+                            <tr>
 
-                        <tr>
+                                <td>{{ $lembur->firstItem() + $index }}</td>
 
-                            <td>{{ $lembur->firstItem() + $index }}</td>
+                                {{-- KARYAWAN --}}
+                                <td>
+                                    <div class="fw-semibold text-capitalize">
+                                        {{ $l->karyawan->nama ?? '-' }}
+                                    </div>
+                                </td>
 
-                            {{-- KARYAWAN --}}
-                            <td>
-                                <div class="fw-semibold text-capitalize">
-                                    {{ $l->karyawan->nama ?? '-' }}
-                                </div>
-                            </td>
+                                {{-- TANGGAL --}}
+                                <td>
+                                    <div class="fw-semibold">
+                                        {{ $l->tanggal->format('d M Y') }}
+                                    </div>
+                                </td>
 
-                            {{-- TANGGAL --}}
-                            <td>
-                                <div class="fw-semibold">
-                                    {{ $l->tanggal->format('d M Y') }}
-                                </div>
-                            </td>
+                                <td class="fw-semibold">{{ $l->jam_mulai }}</td>
+                                <td class="fw-semibold">{{ $l->jam_selesai }}</td>
 
-                            <td class="fw-semibold">{{ $l->jam_mulai }}</td>
-                            <td class="fw-semibold">{{ $l->jam_selesai }}</td>
+                                <td>
+                                    <span class="badge bg-light text-dark border">
+                                        {{ $l->total_jam }} jam
+                                    </span>
+                                </td>
 
-                            <td>
-                                <span class="badge bg-light text-dark border">
-                                    {{ $l->total_jam }} jam
-                                </span>
-                            </td>
+                                <td class="text-muted">
+                                    {{ $l->keterangan }}
+                                </td>
 
-                            <td class="text-muted">
-                                {{ $l->keterangan }}
-                            </td>
+                                <td class="fw-semibold">
+                                    Rp {{ number_format($l->total_upah, 0, ',', '.') }}
+                                </td>
 
-                            <td class="fw-semibold">
-                                Rp {{ number_format($l->total_upah, 0, ',', '.') }}
-                            </td>
+                                {{-- STATUS --}}
+                                <td>
+                                    <span class="badge bg-{{ $badge }}-soft text-{{ $badge }} text-capitalize">
+                                        {{ $l->status }}
+                                    </span>
+                                </td>
 
-                            {{-- STATUS --}}
-                            <td>
-                                <span class="badge bg-{{ $badge }}-soft text-{{ $badge }} text-capitalize">
-                                    {{ $l->status }}
-                                </span>
-                            </td>
+                                {{-- AKSI --}}
+                                <td class="text-center">
 
-                            {{-- AKSI --}}
-                            <td class="text-center">
+                                    @if($l->status === 'pending')
 
-                                @if($l->status === 'pending')
+                                    <form action="{{ route('admin.lembur.approve', $l->id) }}" method="POST"
+                                        class="d-inline">
+                                        @csrf
+                                        <button type="submit"
+                                            class="btn btn-datatable btn-icon btn-transparent-dark text-success me-1">
+                                            <i data-feather="check"></i>
+                                        </button>
+                                    </form>
 
-                                <form action="{{ route('admin.lembur.approve', $l->id) }}" method="POST"
-                                    class="d-inline">
-                                    @csrf
-                                    <button type="submit"
-                                        class="btn btn-datatable btn-icon btn-transparent-dark text-success me-1">
-                                        <i data-feather="check"></i>
-                                    </button>
-                                </form>
+                                    <form action="{{ route('admin.lembur.reject', $l->id) }}" method="POST"
+                                        class="d-inline">
+                                        @csrf
+                                        <button type="submit"
+                                            class="btn btn-datatable btn-icon btn-transparent-dark text-danger">
+                                            <i data-feather="x"></i>
+                                        </button>
+                                    </form>
 
-                                <form action="{{ route('admin.lembur.reject', $l->id) }}" method="POST"
-                                    class="d-inline">
-                                    @csrf
-                                    <button type="submit"
-                                        class="btn btn-datatable btn-icon btn-transparent-dark text-danger">
-                                        <i data-feather="x"></i>
-                                    </button>
-                                </form>
+                                    @else
+                                    <span class="small text-muted">Diproses</span>
+                                    @endif
 
-                                @else
-                                <span class="small text-muted">Diproses</span>
-                                @endif
+                                </td>
 
-                            </td>
+                            </tr>
 
-                        </tr>
+                            @empty
+                            <tr>
+                                <td colspan="10" class="text-center text-muted py-4">
+                                    Tidak ada data lembur
+                                </td>
+                            </tr>
+                            @endforelse
+                        </tbody>
 
-                        @empty
-                        <tr>
-                            <td colspan="10" class="text-center text-muted py-4">
-                                Tidak ada data lembur
-                            </td>
-                        </tr>
-                        @endforelse
-                    </tbody>
-
-                </table>
-
+                    </table>
+                </div>
                 <div class="mt-4">
                     {{ $lembur->withQueryString()->links() }}
                 </div>

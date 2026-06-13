@@ -101,116 +101,116 @@
             </div>
 
             <div class="card-body">
+                <div class="table-responsive">
+                    <table id="datatablesSimple" class="table ">
 
-                <table id="datatablesSimple" class="table ">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Karyawan</th>
+                                <th>Tanggal</th>
+                                <th>Jenis</th>
+                                <th>Keterangan</th>
+                                <th>Status</th>
+                                <th class="text-center">Aksi</th>
+                            </tr>
+                        </thead>
 
-                    <thead>
-                        <tr>
-                            <th>No</th>
-                            <th>Karyawan</th>
-                            <th>Tanggal</th>
-                            <th>Jenis</th>
-                            <th>Keterangan</th>
-                            <th>Status</th>
-                            <th class="text-center">Aksi</th>
-                        </tr>
-                    </thead>
+                        <tbody>
+                            @forelse($izin as $index => $i)
 
-                    <tbody>
-                        @forelse($izin as $index => $i)
+                            @php
+                            $badge = match($i->status_approval) {
+                            'pending' => 'yellow',
+                            'disetujui' => 'green',
+                            'ditolak' => 'red',
+                            default => 'secondary',
+                            };
+                            @endphp
 
-                        @php
-                        $badge = match($i->status_approval) {
-                        'pending' => 'yellow',
-                        'disetujui' => 'green',
-                        'ditolak' => 'red',
-                        default => 'secondary',
-                        };
-                        @endphp
+                            <tr>
 
-                        <tr>
+                                <td>{{ $izin->firstItem() + $index }}</td>
 
-                            <td>{{ $izin->firstItem() + $index }}</td>
+                                {{-- KARYAWAN --}}
+                                <td>
+                                    <div class="fw-semibold text-capitalize">
+                                        {{ $i->karyawan->nama ?? '-' }}
+                                    </div>
+                                    {{-- <div class="small text-muted">
+                                        #{{ $i->id }}
+                                    </div> --}}
+                                </td>
 
-                            {{-- KARYAWAN --}}
-                            <td>
-                                <div class="fw-semibold text-capitalize">
-                                    {{ $i->karyawan->nama ?? '-' }}
-                                </div>
-                                {{-- <div class="small text-muted">
-                                    #{{ $i->id }}
-                                </div> --}}
-                            </td>
+                                {{-- TANGGAL --}}
+                                <td>
+                                    <div class="fw-semibold">
+                                        {{ $i->tanggal->format('d M Y') }}
+                                    </div>
+                                    {{-- <div class="small text-muted">
+                                        {{ $i->tanggal->translatedFormat('l') }}
+                                    </div> --}}
+                                </td>
 
-                            {{-- TANGGAL --}}
-                            <td>
-                                <div class="fw-semibold">
-                                    {{ $i->tanggal->format('d M Y') }}
-                                </div>
-                                {{-- <div class="small text-muted">
-                                    {{ $i->tanggal->translatedFormat('l') }}
-                                </div> --}}
-                            </td>
+                                {{-- JENIS --}}
+                                <td>
+                                    <span class="badge bg-light text-dark border text-capitalize">
+                                        {{ $i->jenis_izin }}
+                                    </span>
+                                </td>
 
-                            {{-- JENIS --}}
-                            <td>
-                                <span class="badge bg-light text-dark border text-capitalize">
-                                    {{ $i->jenis_izin }}
-                                </span>
-                            </td>
+                                {{-- KETERANGAN --}}
+                                <td class="text-muted" style="min-width:200px;">
+                                    {{ $i->keterangan ?: '-' }}
+                                </td>
 
-                            {{-- KETERANGAN --}}
-                            <td class="text-muted" style="min-width:200px;">
-                                {{ $i->keterangan ?: '-' }}
-                            </td>
+                                {{-- STATUS --}}
+                                <td>
+                                    <span class="badge bg-{{ $badge }}-soft text-{{ $badge }} text-capitalize">
+                                        {{ $i->status_approval }}
+                                    </span>
+                                </td>
 
-                            {{-- STATUS --}}
-                            <td>
-                                <span class="badge bg-{{ $badge }}-soft text-{{ $badge }} text-capitalize">
-                                    {{ $i->status_approval }}
-                                </span>
-                            </td>
+                                {{-- AKSI --}}
+                                <td class="text-center">
 
-                            {{-- AKSI --}}
-                            <td class="text-center">
+                                    @if($i->status_approval === 'pending')
 
-                                @if($i->status_approval === 'pending')
+                                    <form action="{{ route('izin.approve', $i->id) }}" method="POST" class="d-inline">
+                                        @csrf
+                                        <button type="submit"
+                                            class="btn btn-datatable btn-icon btn-transparent-dark text-success me-1">
+                                            <i data-feather="check"></i>
+                                        </button>
+                                    </form>
 
-                                <form action="{{ route('izin.approve', $i->id) }}" method="POST" class="d-inline">
-                                    @csrf
-                                    <button type="submit"
-                                        class="btn btn-datatable btn-icon btn-transparent-dark text-success me-1">
-                                        <i data-feather="check"></i>
-                                    </button>
-                                </form>
+                                    <form action="{{ route('izin.reject', $i->id) }}" method="POST" class="d-inline">
+                                        @csrf
+                                        <button type="submit"
+                                            class="btn btn-datatable btn-icon btn-transparent-dark text-danger">
+                                            <i data-feather="x"></i>
+                                        </button>
+                                    </form>
 
-                                <form action="{{ route('izin.reject', $i->id) }}" method="POST" class="d-inline">
-                                    @csrf
-                                    <button type="submit"
-                                        class="btn btn-datatable btn-icon btn-transparent-dark text-danger">
-                                        <i data-feather="x"></i>
-                                    </button>
-                                </form>
+                                    @else
+                                    <span class="small text-muted">Diproses</span>
+                                    @endif
 
-                                @else
-                                <span class="small text-muted">Diproses</span>
-                                @endif
+                                </td>
 
-                            </td>
+                            </tr>
 
-                        </tr>
+                            @empty
+                            <tr>
+                                <td colspan="7" class="text-center text-muted py-4">
+                                    Tidak ada data izin
+                                </td>
+                            </tr>
+                            @endforelse
+                        </tbody>
 
-                        @empty
-                        <tr>
-                            <td colspan="7" class="text-center text-muted py-4">
-                                Tidak ada data izin
-                            </td>
-                        </tr>
-                        @endforelse
-                    </tbody>
-
-                </table>
-
+                    </table>
+                </div>
                 <div class="mt-4">
                     {{ $izin->withQueryString()->links() }}
                 </div>

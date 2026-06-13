@@ -132,93 +132,93 @@
             </div>
 
             <div class="card-body">
+                <div class="table-responsive">
+                    <table id="datatablesSimple" class="table ">
 
-                <table id="datatablesSimple" class="table ">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Karyawan</th>
+                                <th>Periode</th>
+                                <th>Status</th>
+                                <th class="text-center">Aksi</th>
+                            </tr>
+                        </thead>
 
-                    <thead>
-                        <tr>
-                            <th>No</th>
-                            <th>Karyawan</th>
-                            <th>Periode</th>
-                            <th>Status</th>
-                            <th class="text-center">Aksi</th>
-                        </tr>
-                    </thead>
+                        <tbody>
 
-                    <tbody>
+                            @forelse($penggajian as $index => $g)
+                            <tr>
 
-                        @forelse($penggajian as $index => $g)
-                        <tr>
+                                <td>
+                                    {{ $penggajian->firstItem() + $index }}
+                                </td>
 
-                            <td>
-                                {{ $penggajian->firstItem() + $index }}
-                            </td>
+                                <td>
+                                    <div class="d-flex align-items-center">
 
-                            <td>
-                                <div class="d-flex align-items-center">
-
-                                    <div class="avatar me-2">
-                                        <img class="avatar-img img-fluid" src="{{ $g->karyawan->foto
+                                        <div class="avatar me-2">
+                                            <img class="avatar-img img-fluid" src="{{ $g->karyawan->foto
                                         ? asset('storage/'.$g->karyawan->foto)
                                         : 'https://ui-avatars.com/api/?name='.urlencode($g->karyawan->nama) }}">
-                                    </div>
-
-                                    <div>
-                                        <div class="fw-semibold text-capitalize">
-                                            {{ $g->karyawan->nama }}
                                         </div>
 
-                                        <div class="small text-muted">
-                                            Payroll #{{ $g->id }}
+                                        <div>
+                                            <div class="fw-semibold text-capitalize">
+                                                {{ $g->karyawan->nama }}
+                                            </div>
+
+                                            <div class="small text-muted">
+                                                Payroll #{{ $g->id }}
+                                            </div>
                                         </div>
+
                                     </div>
+                                </td>
 
-                                </div>
-                            </td>
+                                <td>
+                                    <span class="fw-semibold">
+                                        {{ $g->periode_bulan }}/{{ $g->periode_tahun }}
+                                    </span>
+                                </td>
 
-                            <td>
-                                <span class="fw-semibold">
-                                    {{ $g->periode_bulan }}/{{ $g->periode_tahun }}
-                                </span>
-                            </td>
+                                <td>
+                                    @if($g->status=='dibayar')
+                                    <span class="badge bg-green-soft text-green">
+                                        Dibayar
+                                    </span>
+                                    @else
+                                    <span class="badge bg-yellow-soft text-yellow">
+                                        Proses
+                                    </span>
+                                    @endif
+                                </td>
 
-                            <td>
-                                @if($g->status=='dibayar')
-                                <span class="badge bg-green-soft text-green">
-                                    Dibayar
-                                </span>
-                                @else
-                                <span class="badge bg-yellow-soft text-yellow">
-                                    Proses
-                                </span>
-                                @endif
-                            </td>
+                                <td class="text-center">
 
-                            <td class="text-center">
+                                    <a href="{{ route('admin.penggajian.show',$g->id) }}"
+                                        class="btn btn-datatable btn-icon btn-transparent-dark">
+                                        <i data-feather="eye"></i>
+                                    </a>
 
-                                <a href="{{ route('admin.penggajian.show',$g->id) }}"
-                                    class="btn btn-datatable btn-icon btn-transparent-dark">
-                                    <i data-feather="eye"></i>
-                                </a>
+                                </td>
 
-                            </td>
+                            </tr>
 
-                        </tr>
+                            @empty
 
-                        @empty
+                            <tr>
+                                <td colspan="5" class="text-center text-muted py-4">
+                                    Belum ada data penggajian
+                                </td>
+                            </tr>
 
-                        <tr>
-                            <td colspan="5" class="text-center text-muted py-4">
-                                Belum ada data penggajian
-                            </td>
-                        </tr>
+                            @endforelse
 
-                        @endforelse
+                        </tbody>
 
-                    </tbody>
-
-                </table>
-
+                    </table>
+                </div>
             </div>
         </div>
 

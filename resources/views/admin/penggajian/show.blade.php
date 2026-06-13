@@ -190,139 +190,139 @@ $totalPotongan = $potongan->sum('jumlah');
                     </div>
 
                     <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0 align-middle">
 
-                        <table class="table table-hover mb-0 align-middle">
+                                <thead>
+                                    <tr>
+                                        <th>Keterangan</th>
+                                        <th class="text-end">
+                                            Jumlah
+                                        </th>
+                                        <th class="text-center">
+                                            Tipe
+                                        </th>
+                                    </tr>
+                                </thead>
 
-                            <thead>
-                                <tr>
-                                    <th>Keterangan</th>
-                                    <th class="text-end">
-                                        Jumlah
-                                    </th>
-                                    <th class="text-center">
-                                        Tipe
-                                    </th>
-                                </tr>
-                            </thead>
+                                <tbody>
 
-                            <tbody>
+                                    @if($pemasukan->isNotEmpty())
 
-                                @if($pemasukan->isNotEmpty())
-
-                                <tr>
-                                    <td colspan="3" class="bg-light text-success fw-bold">
-                                        Pemasukan
-                                    </td>
-                                </tr>
-
-                                @foreach($pemasukan as $d)
-                                <tr>
-
-                                    <td>
-                                        {{ $d->keterangan }}
-                                    </td>
-
-                                    <td class="text-end fw-semibold text-success">
-                                        Rp {{ number_format($d->jumlah,0,',','.') }}
-                                    </td>
-
-                                    <td class="text-center">
-                                        <span class="badge bg-green-soft text-green">
+                                    <tr>
+                                        <td colspan="3" class="bg-light text-success fw-bold">
                                             Pemasukan
-                                        </span>
-                                    </td>
+                                        </td>
+                                    </tr>
 
-                                </tr>
-                                @endforeach
+                                    @foreach($pemasukan as $d)
+                                    <tr>
 
-                                <tr class="border-top">
-                                    <td class="text-muted">
-                                        Jumlah Sementara
-                                    </td>
+                                        <td>
+                                            {{ $d->keterangan }}
+                                        </td>
 
-                                    <td class="text-end fw-bold text-success">
-                                        Rp {{ number_format($totalPemasukan,0,',','.') }}
-                                    </td>
+                                        <td class="text-end fw-semibold text-success">
+                                            Rp {{ number_format($d->jumlah,0,',','.') }}
+                                        </td>
 
-                                    <td></td>
-                                </tr>
+                                        <td class="text-center">
+                                            <span class="badge bg-green-soft text-green">
+                                                Pemasukan
+                                            </span>
+                                        </td>
 
-                                @endif
+                                    </tr>
+                                    @endforeach
+
+                                    <tr class="border-top">
+                                        <td class="text-muted">
+                                            Jumlah Sementara
+                                        </td>
+
+                                        <td class="text-end fw-bold text-success">
+                                            Rp {{ number_format($totalPemasukan,0,',','.') }}
+                                        </td>
+
+                                        <td></td>
+                                    </tr>
+
+                                    @endif
 
 
 
-                                @if($potongan->isNotEmpty())
+                                    @if($potongan->isNotEmpty())
 
-                                <tr>
-                                    <td colspan="3" class="bg-light text-danger fw-bold">
-                                        Potongan
-                                    </td>
-                                </tr>
-
-                                @foreach($potongan as $d)
-
-                                <tr>
-
-                                    <td>
-                                        {{ $d->keterangan }}
-                                    </td>
-
-                                    <td class="text-end fw-semibold text-danger">
-                                        Rp {{ number_format($d->jumlah,0,',','.') }}
-                                    </td>
-
-                                    <td class="text-center">
-                                        <span class="badge bg-red-soft text-red">
+                                    <tr>
+                                        <td colspan="3" class="bg-light text-danger fw-bold">
                                             Potongan
-                                        </span>
-                                    </td>
+                                        </td>
+                                    </tr>
 
-                                </tr>
+                                    @foreach($potongan as $d)
 
-                                @endforeach
+                                    <tr>
+
+                                        <td>
+                                            {{ $d->keterangan }}
+                                        </td>
+
+                                        <td class="text-end fw-semibold text-danger">
+                                            Rp {{ number_format($d->jumlah,0,',','.') }}
+                                        </td>
+
+                                        <td class="text-center">
+                                            <span class="badge bg-red-soft text-red">
+                                                Potongan
+                                            </span>
+                                        </td>
+
+                                    </tr>
+
+                                    @endforeach
 
 
-                                <tr class="border-top">
-                                    <td class="text-muted">
-                                        Jumlah Sementara
-                                    </td>
+                                    <tr class="border-top">
+                                        <td class="text-muted">
+                                            Jumlah Sementara
+                                        </td>
 
-                                    <td class="text-end fw-bold text-danger">
-                                        Rp {{ number_format($totalPotongan,0,',','.') }}
-                                    </td>
+                                        <td class="text-end fw-bold text-danger">
+                                            Rp {{ number_format($totalPotongan,0,',','.') }}
+                                        </td>
 
-                                    <td></td>
-                                </tr>
+                                        <td></td>
+                                    </tr>
 
-                                @endif
+                                    @endif
 
 
-                                @if($pemasukan->isEmpty() && $potongan->isEmpty())
-                                <tr>
-                                    <td colspan="3" class="text-center text-muted py-4">
-                                        Belum ada rincian komponen
-                                    </td>
-                                </tr>
-                                @endif
+                                    @if($pemasukan->isEmpty() && $potongan->isEmpty())
+                                    <tr>
+                                        <td colspan="3" class="text-center text-muted py-4">
+                                            Belum ada rincian komponen
+                                        </td>
+                                    </tr>
+                                    @endif
 
-                            </tbody>
+                                </tbody>
 
-                            <tfoot>
-                                <tr class="table-light">
-                                    <th>
-                                        Total Gaji Bersih
-                                    </th>
+                                <tfoot>
+                                    <tr class="table-light">
+                                        <th>
+                                            Total Gaji Bersih
+                                        </th>
 
-                                    <th class="text-end text-primary fw-bold">
-                                        Rp {{ number_format($penggajian->total_gaji,0,',','.') }}
-                                    </th>
+                                        <th class="text-end text-primary fw-bold">
+                                            Rp {{ number_format($penggajian->total_gaji,0,',','.') }}
+                                        </th>
 
-                                    <th></th>
-                                </tr>
-                            </tfoot>
+                                        <th></th>
+                                    </tr>
+                                </tfoot>
 
-                        </table>
-
+                            </table>
+                        </div>
                     </div>
                 </div>
 

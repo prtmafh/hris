@@ -40,110 +40,111 @@
                 Daftar Admin
             </div>
             <div class="card-body">
+                <div class="table-responsive">
+                    <table id="datatablesSimple">
 
-                <table id="datatablesSimple">
+                        <thead>
+                            <tr>
+                                <th>User</th>
+                                <th>NIK</th>
+                                <th>Role</th>
+                                <th>Status</th>
+                                <th>Joined Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
 
-                    <thead>
-                        <tr>
-                            <th>User</th>
-                            <th>NIK</th>
-                            <th>Role</th>
-                            <th>Status</th>
-                            <th>Joined Date</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
+                        {{-- <tfoot>
+                            <tr>
+                                <th>User</th>
+                                <th>NIK</th>
+                                <th>Role</th>
+                                <th>Status</th>
+                                <th>Joined Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </tfoot> --}}
 
-                    {{-- <tfoot>
-                        <tr>
-                            <th>User</th>
-                            <th>NIK</th>
-                            <th>Role</th>
-                            <th>Status</th>
-                            <th>Joined Date</th>
-                            <th>Actions</th>
-                        </tr>
-                    </tfoot> --}}
+                        <tbody>
+                            @forelse($admins as $admin)
+                            <tr>
 
-                    <tbody>
-                        @forelse($admins as $admin)
-                        <tr>
-
-                            <td>
-                                <div class="d-flex align-items-center">
-                                    <div class="avatar me-2">
-                                        <img class="avatar-img img-fluid"
-                                            src="https://ui-avatars.com/api/?name={{ urlencode($admin->nik) }}">
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="avatar me-2">
+                                            <img class="avatar-img img-fluid"
+                                                src="https://ui-avatars.com/api/?name={{ urlencode($admin->nik) }}">
+                                        </div>
+                                        {{ $admin->nik }}
                                     </div>
-                                    {{ $admin->nik }}
-                                </div>
-                            </td>
+                                </td>
 
-                            <td>{{ $admin->nik }}</td>
+                                <td>{{ $admin->nik }}</td>
 
-                            <td>
-                                <span class="badge bg-purple-soft text-purple">Admin</span>
-                            </td>
+                                <td>
+                                    <span class="badge bg-purple-soft text-purple">Admin</span>
+                                </td>
 
-                            <td>
-                                @if($admin->status === 'aktif')
-                                <span class="badge bg-green-soft text-green">Aktif</span>
-                                @else
-                                <span class="badge bg-red-soft text-red">Nonaktif</span>
-                                @endif
-                            </td>
+                                <td>
+                                    @if($admin->status === 'aktif')
+                                    <span class="badge bg-green-soft text-green">Aktif</span>
+                                    @else
+                                    <span class="badge bg-red-soft text-red">Nonaktif</span>
+                                    @endif
+                                </td>
 
-                            <td>{{ $admin->created_at->format('d M Y') }}</td>
+                                <td>{{ $admin->created_at->format('d M Y') }}</td>
 
-                            <td>
+                                <td>
 
-                                {{-- EDIT --}}
-                                <button class="btn btn-datatable btn-icon btn-transparent-dark me-2"
-                                    onclick="openEditAdmin({{ $admin->id }}, '{{ $admin->nik }}')">
-                                    <i data-feather="edit"></i>
-                                </button>
-
-                                {{-- TOGGLE --}}
-                                @if($admin->id !== auth()->id())
-                                <form action="{{ route('admin.daftar_admin.toggleStatus', $admin->id) }}" method="POST"
-                                    class="d-inline toggle-form-{{ $admin->id }}">
-                                    @csrf
-                                    <button type="button" class="btn btn-datatable btn-icon btn-transparent-dark me-2"
-                                        onclick="confirmToggleAdmin({{ $admin->id }}, '{{ $admin->nik }}', '{{ $admin->status === 'aktif' ? 'nonaktifkan' : 'aktifkan' }}')">
-                                        <i data-feather="power"></i>
+                                    {{-- EDIT --}}
+                                    <button class="btn btn-datatable btn-icon btn-transparent-dark me-2"
+                                        onclick="openEditAdmin({{ $admin->id }}, '{{ $admin->nik }}')">
+                                        <i data-feather="edit"></i>
                                     </button>
-                                </form>
-                                @endif
 
-                                {{-- DELETE --}}
-                                @if($admin->id !== auth()->id())
-                                <button class="btn btn-datatable btn-icon btn-transparent-dark text-danger"
-                                    onclick="confirmDeleteAdmin({{ $admin->id }}, '{{ $admin->nik }}')">
-                                    <i data-feather="trash-2"></i>
-                                </button>
+                                    {{-- TOGGLE --}}
+                                    @if($admin->id !== auth()->id())
+                                    <form action="{{ route('admin.daftar_admin.toggleStatus', $admin->id) }}"
+                                        method="POST" class="d-inline toggle-form-{{ $admin->id }}">
+                                        @csrf
+                                        <button type="button"
+                                            class="btn btn-datatable btn-icon btn-transparent-dark me-2"
+                                            onclick="confirmToggleAdmin({{ $admin->id }}, '{{ $admin->nik }}', '{{ $admin->status === 'aktif' ? 'nonaktifkan' : 'aktifkan' }}')">
+                                            <i data-feather="power"></i>
+                                        </button>
+                                    </form>
+                                    @endif
 
-                                <form id="delete-admin-{{ $admin->id }}"
-                                    action="{{ route('admin.daftar_admin.destroy', $admin->id) }}" method="POST"
-                                    style="display:none;">
-                                    @csrf
-                                    @method('DELETE')
-                                </form>
-                                @endif
+                                    {{-- DELETE --}}
+                                    @if($admin->id !== auth()->id())
+                                    <button class="btn btn-datatable btn-icon btn-transparent-dark text-danger"
+                                        onclick="confirmDeleteAdmin({{ $admin->id }}, '{{ $admin->nik }}')">
+                                        <i data-feather="trash-2"></i>
+                                    </button>
 
-                            </td>
+                                    <form id="delete-admin-{{ $admin->id }}"
+                                        action="{{ route('admin.daftar_admin.destroy', $admin->id) }}" method="POST"
+                                        style="display:none;">
+                                        @csrf
+                                        @method('DELETE')
+                                    </form>
+                                    @endif
 
-                        </tr>
-                        @empty
-                        <tr>
-                            <td colspan="6" class="text-center text-muted py-4">
-                                Tidak ada data admin
-                            </td>
-                        </tr>
-                        @endforelse
-                    </tbody>
+                                </td>
 
-                </table>
+                            </tr>
+                            @empty
+                            <tr>
+                                <td colspan="6" class="text-center text-muted py-4">
+                                    Tidak ada data admin
+                                </td>
+                            </tr>
+                            @endforelse
+                        </tbody>
 
+                    </table>
+                </div>
             </div>
         </div>
     </div>
