@@ -58,7 +58,7 @@
         </div>
 
         <!-- Rekap Cards -->
-        <div class="row mb-4">
+        {{-- <div class="row mb-4">
             <div class="col-md-4 mb-3">
                 <div class="card border-start-lg border-success h-100">
                     <div class="card-body">
@@ -83,7 +83,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> --}}
 
         <!-- Tabel -->
         <div class="card">

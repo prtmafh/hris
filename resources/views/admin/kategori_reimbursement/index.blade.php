@@ -46,7 +46,7 @@
 
                         <thead>
                             <tr>
-                                <th width="60">#</th>
+                                <th width="60">No</th>
                                 <th>Kategori Reimbursement</th>
                                 <th>Persyaratan Dokumen</th>
                                 <th>Status</th>

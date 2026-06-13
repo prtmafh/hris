@@ -114,192 +114,192 @@
             </div>
 
             <div class="card-body">
+                <div class="table-responsive">
+                    <table id="datatablesSimple" class="table responsive">
 
-                <table id="datatablesSimple" class="table responsive">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Karyawan</th>
+                                <th>Jabatan</th>
+                                <th>Tanggal</th>
+                                @if(request('type') === 'sesi')
+                                <th>Sesi</th>
+                                <th>Check In</th>
+                                <th>Check Out</th>
+                                @else
+                                <th>Masuk</th>
+                                <th>Keluar</th>
+                                @endif
+                                <th>Status</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
 
-                    <thead>
-                        <tr>
-                            <th>No</th>
-                            <th>Karyawan</th>
-                            <th>Jabatan</th>
-                            <th>Tanggal</th>
+                        <tbody>
                             @if(request('type') === 'sesi')
-                            <th>Sesi</th>
-                            <th>Check In</th>
-                            <th>Check Out</th>
-                            @else
-                            <th>Masuk</th>
-                            <th>Keluar</th>
-                            @endif
-                            <th>Status</th>
-                            <th>Aksi</th>
-                        </tr>
-                    </thead>
+                            @forelse($absensi as $index => $sesi)
+                            <tr>
+                                <td>{{ $absensi->firstItem() + $index }}</td>
 
-                    <tbody>
-                        @if(request('type') === 'sesi')
-                        @forelse($absensi as $index => $sesi)
-                        <tr>
-                            <td>{{ $absensi->firstItem() + $index }}</td>
-
-                            <td>
-                                <div class="d-flex align-items-center">
-                                    <div class="avatar me-2">
-                                        <img class="avatar-img img-fluid"
-                                            src="{{ $sesi->absensi->karyawan->foto
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="avatar me-2">
+                                            <img class="avatar-img img-fluid"
+                                                src="{{ $sesi->absensi->karyawan->foto
                                                     ? asset('storage/'.$sesi->absensi->karyawan->foto)
                                                     : 'https://ui-avatars.com/api/?name='.urlencode($sesi->absensi->karyawan->nama) }}">
+                                        </div>
+                                        <div class="fw-semibold text-capitalize">
+                                            {{ $sesi->absensi->karyawan->nama }}
+                                        </div>
                                     </div>
-                                    <div class="fw-semibold text-capitalize">
-                                        {{ $sesi->absensi->karyawan->nama }}
-                                    </div>
-                                </div>
-                            </td>
+                                </td>
 
-                            <td class="text-capitalize">
-                                {{ optional($sesi->absensi->karyawan->jabatan)->nama_jabatan ?? '-' }}
-                            </td>
+                                <td class="text-capitalize">
+                                    {{ optional($sesi->absensi->karyawan->jabatan)->nama_jabatan ?? '-' }}
+                                </td>
 
-                            <td>{{ $sesi->absensi->tanggal->format('d M Y') }}</td>
+                                <td>{{ $sesi->absensi->tanggal->format('d M Y') }}</td>
 
-                            <td class="fw-semibold">Sesi {{ $sesi->sesi_ke }}</td>
-                            <td>{{ $sesi->jam_checkin ?? '-' }}</td>
-                            <td>{{ $sesi->jam_checkout ?? '-' }}</td>
+                                <td class="fw-semibold">Sesi {{ $sesi->sesi_ke }}</td>
+                                <td>{{ $sesi->jam_checkin ?? '-' }}</td>
+                                <td>{{ $sesi->jam_checkout ?? '-' }}</td>
 
-                            <td>
-                                @php
-                                $badge = match($sesi->status) {
-                                'hadir' => 'green',
-                                'terlambat' => 'yellow',
-                                'izin' => 'blue',
-                                'alpha' => 'red',
-                                default => 'secondary',
-                                };
-                                @endphp
+                                <td>
+                                    @php
+                                    $badge = match($sesi->status) {
+                                    'hadir' => 'green',
+                                    'terlambat' => 'yellow',
+                                    'izin' => 'blue',
+                                    'alpha' => 'red',
+                                    default => 'secondary',
+                                    };
+                                    @endphp
 
-                                <span class="badge bg-{{ $badge }}-soft text-{{ $badge }} text-capitalize">
-                                    {{ $sesi->status }}
-                                </span>
-                            </td>
+                                    <span class="badge bg-{{ $badge }}-soft text-{{ $badge }} text-capitalize">
+                                        {{ $sesi->status }}
+                                    </span>
+                                </td>
 
-                            <td>
-                                <a href="{{ route('admin.absensi-sesi.show', $sesi->id) }}"
-                                    class="btn btn-datatable btn-icon btn-transparent-dark me-2">
-                                    <i data-feather="eye"></i>
-                                </a>
+                                <td>
+                                    <a href="{{ route('admin.absensi-sesi.show', $sesi->id) }}"
+                                        class="btn btn-datatable btn-icon btn-transparent-dark me-2">
+                                        <i data-feather="eye"></i>
+                                    </a>
 
-                                <a href="{{ route('admin.absensi-sesi.edit', $sesi->id) }}"
-                                    class="btn btn-datatable btn-icon btn-transparent-dark me-2">
-                                    <i data-feather="edit"></i>
-                                </a>
+                                    <a href="{{ route('admin.absensi-sesi.edit', $sesi->id) }}"
+                                        class="btn btn-datatable btn-icon btn-transparent-dark me-2">
+                                        <i data-feather="edit"></i>
+                                    </a>
 
-                                <button class="btn btn-datatable btn-icon btn-transparent-dark text-danger"
-                                    onclick="confirmDeleteSesi({{ $sesi->id }})">
-                                    <i data-feather="trash-2"></i>
-                                </button>
+                                    <button class="btn btn-datatable btn-icon btn-transparent-dark text-danger"
+                                        onclick="confirmDeleteSesi({{ $sesi->id }})">
+                                        <i data-feather="trash-2"></i>
+                                    </button>
 
-                                <form id="delete-form-{{ $sesi->id }}"
-                                    action="{{ route('admin.absensi-sesi.destroy', $sesi->id) }}" method="POST"
-                                    style="display:none;">
-                                    @csrf
-                                    @method('DELETE')
-                                </form>
-                            </td>
-                        </tr>
-                        @empty
-                        <tr>
-                            <td colspan="9" class="text-center text-muted py-4">
-                                Tidak ada data absensi sesi
-                            </td>
-                        </tr>
-                        @endforelse
-                        @else
-                        @forelse($absensi as $index => $a)
-                        <tr>
+                                    <form id="delete-form-{{ $sesi->id }}"
+                                        action="{{ route('admin.absensi-sesi.destroy', $sesi->id) }}" method="POST"
+                                        style="display:none;">
+                                        @csrf
+                                        @method('DELETE')
+                                    </form>
+                                </td>
+                            </tr>
+                            @empty
+                            <tr>
+                                <td colspan="9" class="text-center text-muted py-4">
+                                    Tidak ada data absensi sesi
+                                </td>
+                            </tr>
+                            @endforelse
+                            @else
+                            @forelse($absensi as $index => $a)
+                            <tr>
 
-                            <td>{{ $absensi->firstItem() + $index }}</td>
+                                <td>{{ $absensi->firstItem() + $index }}</td>
 
-                            {{-- KARYAWAN --}}
-                            <td>
-                                <div class="d-flex align-items-center">
-                                    <div class="avatar me-2">
-                                        <img class="avatar-img img-fluid"
-                                            src="{{ $a->karyawan->foto
+                                {{-- KARYAWAN --}}
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="avatar me-2">
+                                            <img class="avatar-img img-fluid"
+                                                src="{{ $a->karyawan->foto
                                                     ? asset('storage/'.$a->karyawan->foto)
                                                     : 'https://ui-avatars.com/api/?name='.urlencode($a->karyawan->nama) }}">
+                                        </div>
+                                        <div class="fw-semibold text-capitalize">
+                                            {{ $a->karyawan->nama }}
+                                        </div>
                                     </div>
-                                    <div class="fw-semibold text-capitalize">
-                                        {{ $a->karyawan->nama }}
-                                    </div>
-                                </div>
-                            </td>
+                                </td>
 
-                            <td class="text-capitalize">
-                                {{ optional($a->karyawan->jabatan)->nama_jabatan ?? '-' }}
-                            </td>
+                                <td class="text-capitalize">
+                                    {{ optional($a->karyawan->jabatan)->nama_jabatan ?? '-' }}
+                                </td>
 
-                            <td>{{ $a->tanggal->format('d M Y') }}</td>
+                                <td>{{ $a->tanggal->format('d M Y') }}</td>
 
-                            <td>{{ $a->jam_masuk ?? '-' }}</td>
-                            <td>{{ $a->jam_keluar ?? '-' }}</td>
+                                <td>{{ $a->jam_masuk ?? '-' }}</td>
+                                <td>{{ $a->jam_keluar ?? '-' }}</td>
 
-                            {{-- STATUS --}}
-                            <td>
-                                @php
-                                $badge = match($a->status) {
-                                'hadir' => 'green',
-                                'terlambat' => 'yellow',
-                                'izin' => 'blue',
-                                'alpha' => 'red',
-                                default => 'secondary',
-                                };
-                                @endphp
+                                {{-- STATUS --}}
+                                <td>
+                                    @php
+                                    $badge = match($a->status) {
+                                    'hadir' => 'green',
+                                    'terlambat' => 'yellow',
+                                    'izin' => 'blue',
+                                    'alpha' => 'red',
+                                    default => 'secondary',
+                                    };
+                                    @endphp
 
-                                <span class="badge bg-{{ $badge }}-soft text-{{ $badge }} text-capitalize">
-                                    {{ $a->status }}
-                                </span>
-                            </td>
+                                    <span class="badge bg-{{ $badge }}-soft text-{{ $badge }} text-capitalize">
+                                        {{ $a->status }}
+                                    </span>
+                                </td>
 
-                            {{-- AKSI --}}
-                            <td>
+                                {{-- AKSI --}}
+                                <td>
 
-                                <a href="{{ route('admin.absensi.show', $a->id) }}"
-                                    class="btn btn-datatable btn-icon btn-transparent-dark me-2">
-                                    <i data-feather="eye"></i>
-                                </a>
+                                    <a href="{{ route('admin.absensi.show', $a->id) }}"
+                                        class="btn btn-datatable btn-icon btn-transparent-dark me-2">
+                                        <i data-feather="eye"></i>
+                                    </a>
 
-                                <a href="{{ route('admin.absensi.edit', $a->id) }}"
-                                    class="btn btn-datatable btn-icon btn-transparent-dark me-2">
-                                    <i data-feather="edit"></i>
-                                </a>
+                                    <a href="{{ route('admin.absensi.edit', $a->id) }}"
+                                        class="btn btn-datatable btn-icon btn-transparent-dark me-2">
+                                        <i data-feather="edit"></i>
+                                    </a>
 
-                                <button class="btn btn-datatable btn-icon btn-transparent-dark text-danger"
-                                    onclick="confirmDelete({{ $a->id }})">
-                                    <i data-feather="trash-2"></i>
-                                </button>
+                                    <button class="btn btn-datatable btn-icon btn-transparent-dark text-danger"
+                                        onclick="confirmDelete({{ $a->id }})">
+                                        <i data-feather="trash-2"></i>
+                                    </button>
 
-                                <form id="delete-form-{{ $a->id }}"
-                                    action="{{ route('admin.absensi.destroy', $a->id) }}" method="POST"
-                                    style="display:none;">
-                                    @csrf
-                                    @method('DELETE')
-                                </form>
+                                    <form id="delete-form-{{ $a->id }}"
+                                        action="{{ route('admin.absensi.destroy', $a->id) }}" method="POST"
+                                        style="display:none;">
+                                        @csrf
+                                        @method('DELETE')
+                                    </form>
 
-                            </td>
+                                </td>
 
-                        </tr>
-                        @empty
-                        <tr>
-                            <td colspan="8" class="text-center text-muted py-4">
-                                Tidak ada data absensi biasa
-                            </td>
-                        </tr>
-                        @endforelse
-                        @endif
-                    </tbody>
+                            </tr>
+                            @empty
+                            <tr>
+                                <td colspan="8" class="text-center text-muted py-4">
+                                    Tidak ada data absensi biasa
+                                </td>
+                            </tr>
+                            @endforelse
+                            @endif
+                        </tbody>
 
-                </table>
-
+                    </table>
+                </div>
                 <div class="mt-3">
                     {{ $absensi->links() }}
                 </div>

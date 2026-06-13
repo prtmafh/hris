@@ -203,7 +203,7 @@
 
                         <thead>
                             <tr>
-                                <th width="60">#</th>
+                                <th width="60">No</th>
                                 <th>Profil Karyawan</th>
                                 <th>Jabatan</th>
                                 <th class="text-center">

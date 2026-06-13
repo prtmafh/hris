@@ -12,7 +12,7 @@
     <title>Login | TSI GROUP</title>
     <link rel="shortcut icon" href="{{ asset('') }}assets/img/logotsi.png" />
     <link href="{{ asset('sbadmin/css/styles.css') }}" rel="stylesheet" />
-    <link rel="icon" type="image/x-icon" href="{{ asset('sbadmin/assets/img/favicon.png') }}" />
+    <link rel="icon" type="image/x-icon" href="{{asset('assets/img/logotsi.png')}}" />
     {{--
     <link rel="icon" type="image/x-icon" href="{{ asset('assets/img/logotsi.png') }}" /> --}}
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
