@@ -22,7 +22,7 @@ return new class extends Migration
             $table->text('catatan')->nullable();
             $table->timestamps();
 
-            $table->unique(['karyawan_id', 'periode_bulan', 'periode_tahun'], 'unique_penilaian_periode');
+            $table->unique(['karyawan_id', 'periode_tahun'], 'unique_penilaian_periode');
         });
     }
 
