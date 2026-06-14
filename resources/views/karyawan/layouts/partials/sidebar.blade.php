@@ -22,7 +22,7 @@
                     </div>
                     Absensi Saya
                 </a>
-
+                @if (auth()->user()->karyawan?->status_gaji === 'bulanan')
                 <a class="nav-link {{ request()->routeIs('karyawan.izin*') ? 'active' : '' }}"
                     href="{{ route('karyawan.izin') }}">
                     <div class="nav-link-icon">
@@ -38,7 +38,7 @@
                     </div>
                     Pengajuan Lembur
                 </a>
-
+                @endif
                 <a class="nav-link {{ request()->routeIs('karyawan.reimbursement*') ? 'active' : '' }}"
                     href="{{ route('karyawan.reimbursement') }}">
                     <div class="nav-link-icon">

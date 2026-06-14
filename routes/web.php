@@ -127,7 +127,6 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::post('/admin/pelamar/{id}/kirim-panggilan', [PelamarController::class, 'kirimPanggilan'])->name('admin.pelamar.kirim-panggilan');
     Route::post('/admin/pelamar/{id}/kirim-update-proses', [PelamarController::class, 'kirimUpdateProses'])->name('admin.pelamar.kirim-update-proses');
     Route::delete('/admin/pelamar/{id}', [PelamarController::class, 'destroy'])->name('admin.pelamar.destroy');
-
 });
 
 Route::middleware(['auth', 'pimpinan'])->prefix('pimpinan')->group(function () {
@@ -156,10 +155,10 @@ Route::middleware(['auth', 'karyawan'])->group(function () {
     Route::post('/absen/sesi/pulang', [KaryawanAbsensiController::class, 'absenPulangSesi'])->name('absen.sesi.pulang');
 
     Route::get('/karyawan/absensi-saya', [KaryawanAbsensiController::class, 'index'])->name('karyawan.absensi');
-
-    Route::get('/karyawan/izin-saya', [KaryawanIzinController::class, 'index'])->name('karyawan.izin');
-    Route::post('/karyawan/izin-saya', [KaryawanIzinController::class, 'store'])->name('karyawan.izin.store');
-
+    Route::middleware('cekBulanan')->group(function () {
+        Route::get('/karyawan/izin-saya', [KaryawanIzinController::class, 'index'])->name('karyawan.izin');
+        Route::post('/karyawan/izin-saya', [KaryawanIzinController::class, 'store'])->name('karyawan.izin.store');
+    });
     Route::get('/karyawan/lembur-saya', [KaryawanLemburController::class, 'index'])->name('karyawan.lembur');
     Route::post('/karyawan/lembur-saya', [KaryawanLemburController::class, 'store'])->name('karyawan.lembur.store');
 
