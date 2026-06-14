@@ -38,13 +38,21 @@ return [
             'report' => false,
         ],
 
+        // 'public' => [
+        //     'driver' => 'local',
+        //     'root' => storage_path('app/public'),
+        //     'url' => rtrim(env('APP_URL', 'http://localhost'), '/') . '/storage',
+        //     'visibility' => 'public',
+        //     'throw' => false,
+        //     'report' => false,
+        // ],
         'public' => [
             'driver' => 'local',
-            'root' => storage_path('app/public'),
-            'url' => rtrim(env('APP_URL', 'http://localhost'), '/').'/storage',
+            'root' => env('FILESYSTEM_PUBLIC_ROOT', public_path('storage')),
+            'url' => env('FILESYSTEM_PUBLIC_URL', env('APP_URL') . '/storage'),
             'visibility' => 'public',
-            'throw' => false,
             'report' => false,
+            'throw' => false,
         ],
 
         's3' => [
