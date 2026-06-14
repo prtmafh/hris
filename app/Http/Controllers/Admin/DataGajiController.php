@@ -281,10 +281,10 @@ class DataGajiController extends Controller
      */
     private function hitungUpahPerSesi($karyawan): float
     {
-        $gajiPerHari = (float) ($karyawan->gaji_per_hari ?? 0);
-        $jumlahSesiPerHari = (int) Pengaturan::getValue('jumlah_sesi_per_hari', 2); // Default 2 sesi
+        // $gajiPerHari = (float) ($karyawan->gaji_per_hari ?? 0);
+        $jumlahSesiPerHari = (int) Pengaturan::getValue('upah_per_sesi', 100000); // Default 2 sesi
 
-        return $gajiPerHari / $jumlahSesiPerHari;
+        return $jumlahSesiPerHari;
     }
 
     /**

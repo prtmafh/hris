@@ -20,16 +20,24 @@ class DataAbsensiController extends Controller
         $type = $request->get('type', 'biasa');
 
         if ($type === 'sesi') {
-            $query = $this->buildFilteredQuerySesi($request);
-            $absensi = $query->paginate(20)->withQueryString();
+
+            $absensi = $this->buildFilteredQuerySesi($request)
+                ->orderByDesc('absensi_id')
+                ->get();
         } else {
-            $query = $this->buildFilteredQuery($request);
-            $absensi = $query->paginate(20)->withQueryString();
+
+            $absensi = $this->buildFilteredQuery($request)
+                ->orderByDesc('tanggal')
+                ->orderByDesc('id')
+                ->get();
         }
 
         $karyawanList = Karyawan::orderBy('nama')->get();
 
-        return view('admin.absensi.index', compact('absensi', 'karyawanList'));
+        return view('admin.absensi.index', compact(
+            'absensi',
+            'karyawanList'
+        ));
     }
 
     public function export(Request $request)

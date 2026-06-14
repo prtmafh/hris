@@ -140,8 +140,8 @@
                             @if(request('type') === 'sesi')
                             @forelse($absensi as $index => $sesi)
                             <tr>
-                                <td>{{ $absensi->firstItem() + $index }}</td>
-
+                                {{-- <td>{{ $absensi->firstItem() + $index }}</td> --}}
+                                <td>{{ $loop->iteration }}</td>
                                 <td>
                                     <div class="d-flex align-items-center">
                                         <div class="avatar me-2">
@@ -217,8 +217,8 @@
                             @forelse($absensi as $index => $a)
                             <tr>
 
-                                <td>{{ $absensi->firstItem() + $index }}</td>
-
+                                {{-- <td>{{ $absensi->firstItem() + $index }}</td> --}}
+                                <td>{{ $loop->iteration }}</td>
                                 {{-- KARYAWAN --}}
                                 <td>
                                     <div class="d-flex align-items-center">
@@ -300,9 +300,9 @@
 
                     </table>
                 </div>
-                <div class="mt-3">
+                {{-- <div class="mt-3">
                     {{ $absensi->links() }}
-                </div>
+                </div> --}}
 
             </div>
         </div>

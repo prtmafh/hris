@@ -167,10 +167,10 @@
                                             <div class="fw-semibold text-capitalize">
                                                 {{ $g->karyawan->nama }}
                                             </div>
-
+                                            {{--
                                             <div class="small text-muted">
                                                 Payroll #{{ $g->id }}
-                                            </div>
+                                            </div> --}}
                                         </div>
 
                                     </div>
