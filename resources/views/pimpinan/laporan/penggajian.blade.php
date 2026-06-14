@@ -89,7 +89,7 @@
         <div class="card">
             <div class="card-header">
                 Data Penggajian —
-                {{ \Carbon\Carbon::create()->month($bulan)->locale('id')->isoFormat('MMMM') }} {{ $tahun }}
+                {{ \Carbon\Carbon::create()->month((int) $bulan)->locale('id')->isoFormat('MMMM') }} {{ $tahun }}
                 {{-- <span class="badge bg-primary ms-2">{{ $penggajian->count() }} karyawan</span> --}}
             </div>
             <div class="card-body p-0">

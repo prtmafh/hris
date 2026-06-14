@@ -24,9 +24,10 @@
                     <img class="dropdown-user-img"
                         src="{{ asset('sbadmin/assets/img/illustrations/profiles/profile-1.png') }}" />
                     <div class="dropdown-user-details">
-                        <div class="dropdown-user-details-name">{{ Auth::user()->karyawan->nama ?? Auth::user()->nik }}
+                        <div class="dropdown-user-details-name">Pimpinan
                         </div>
-                        <div class="dropdown-user-details-email">Pimpinan</div>
+                        <div class="dropdown-user-details-email">{{ Auth::user()->karyawan->nama ?? Auth::user()->nik }}
+                        </div>
                     </div>
                 </h6>
                 <div class="dropdown-divider"></div>

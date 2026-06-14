@@ -89,17 +89,15 @@
                 aria-labelledby="navbarDropdownUserImage">
                 <h6 class="dropdown-header d-flex align-items-center">
                     <img class="dropdown-user-img"
-                        src="{{asset('sbadmin/assets/img/illustrations/profiles/profile-1.png')}}" />
+                        src="{{ asset('sbadmin/assets/img/illustrations/profiles/profile-1.png') }}" />
                     <div class="dropdown-user-details">
-                        <div class="dropdown-user-details-name">Valerie Luna</div>
-                        <div class="dropdown-user-details-email">vluna@aol.com</div>
+                        <div class="dropdown-user-details-name">Admin
+                        </div>
+                        <div class="dropdown-user-details-email">{{ Auth::user()->karyawan->nama ?? Auth::user()->nik }}
+                        </div>
                     </div>
                 </h6>
                 <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="#!">
-                    <div class="dropdown-item-icon"><i data-feather="settings"></i></div>
-                    Account
-                </a>
                 <form action="{{ route('logout') }}" method="POST">
                     @csrf
                     <button class="dropdown-item" type="submit">

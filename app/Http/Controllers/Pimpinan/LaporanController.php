@@ -125,8 +125,8 @@ class LaporanController extends Controller
 
     public function penggajian(Request $request)
     {
-        $bulan = $request->input('bulan', Carbon::now()->month);
-        $tahun = $request->input('tahun', Carbon::now()->year);
+        $bulan = (int) $request->input('bulan', now()->month);
+        $tahun = (int) $request->input('tahun', now()->year);
 
         $penggajian = Penggajian::with('karyawan.jabatan')
             ->where('periode_bulan', $bulan)
@@ -153,8 +153,8 @@ class LaporanController extends Controller
 
     public function izin(Request $request)
     {
-        $bulan  = $request->input('bulan', Carbon::now()->month);
-        $tahun  = $request->input('tahun', Carbon::now()->year);
+        $bulan = (int) $request->input('bulan', now()->month);
+        $tahun = (int) $request->input('tahun', now()->year);
         $status = $request->input('status');
 
         $query = Izin::with('karyawan.jabatan')
@@ -187,8 +187,8 @@ class LaporanController extends Controller
 
     public function lembur(Request $request)
     {
-        $bulan  = $request->input('bulan', Carbon::now()->month);
-        $tahun  = $request->input('tahun', Carbon::now()->year);
+        $bulan = (int) $request->input('bulan', now()->month);
+        $tahun = (int) $request->input('tahun', now()->year);
         $status = $request->input('status');
 
         $query = Lembur::with('karyawan.jabatan')
@@ -223,8 +223,8 @@ class LaporanController extends Controller
 
     public function reimbursement(Request $request)
     {
-        $bulan  = $request->input('bulan', Carbon::now()->month);
-        $tahun  = $request->input('tahun', Carbon::now()->year);
+        $bulan = (int) $request->input('bulan', now()->month);
+        $tahun = (int) $request->input('tahun', now()->year);
         $status = $request->input('status');
 
         $query = Reimbursement::with(['karyawan.jabatan', 'kategori'])
