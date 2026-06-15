@@ -241,10 +241,8 @@
 
                                     <div class="d-flex align-items-center">
 
-                                        <img src="{{ $r['karyawan']->foto
-? asset('storage/'.$r['karyawan']->foto)
-: 'https://ui-avatars.com/api/?name='.urlencode($r['karyawan']->nama) }}" width="40" height="40"
-                                            class="rounded-circle me-3">
+                                        <img src="{{ $r['karyawan']->foto? asset('storage/'.$r['karyawan']->foto): 'https://ui-avatars.com/api/?name='.urlencode($r['karyawan']->nama) }}"
+                                            width="40" height="40" class="rounded-circle me-3">
 
 
                                         <div>

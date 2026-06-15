@@ -18,13 +18,24 @@ class DashboardController extends Controller
         $now   = Carbon::now();
         $bulan = $now->month;
         $tahun = $now->year;
+        $today = Carbon::today();
+
+        $absensiHariIni = Absensi::with(['karyawan.jabatan'])
+            ->whereDate('tanggal', $today)
+            ->orderByRaw("CASE
+                WHEN status = 'terlambat' THEN 1
+                WHEN status = 'hadir' THEN 2
+                WHEN status = 'izin' THEN 3
+                WHEN status = 'alpha' THEN 4
+                ELSE 5
+            END")
+            ->orderBy('jam_masuk')
+            ->get();
 
         $totalKaryawan  = Karyawan::where('status', 'aktif')->count();
-        $hadirHariIni   = Absensi::whereDate('tanggal', today())
-            ->whereIn('status', ['hadir', 'terlambat'])->count();
-        $terlambat      = Absensi::whereDate('tanggal', today())->where('status', 'terlambat')->count();
-        $tidakHadir     = Karyawan::where('status', 'aktif')->count()
-            - Absensi::whereDate('tanggal', today())->whereIn('status', ['hadir', 'terlambat', 'izin'])->count();
+        $hadirHariIni   = $absensiHariIni->where('status', 'hadir')->count();
+        $terlambat      = $absensiHariIni->where('status', 'terlambat')->count();
+        $tidakHadir     = $absensiHariIni->where('status', 'alpha')->count();
 
         $izinPending    = Izin::where('status_approval', 'pending')->count();
         $lemburPending  = Lembur::where('status', 'pending')->count();

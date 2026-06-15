@@ -87,6 +87,23 @@ class LaporanController extends Controller
             $persentase = $totalHariKaryawan > 0
                 ? round(($hadir / $totalHariKaryawan) * 100, 2)
                 : 0;
+            $query = Absensi::where('karyawan_id', $item->id)
+                ->whereYear('tanggal', $tahun);
+
+            // if ($bulan) {
+            //     $query->whereMonth('tanggal', $bulan);
+            // }
+
+            $data = $query->get();
+            $jumlah_hadir = $absensi
+                ->where('karyawan_id', $item->id)
+                ->whereIn('status', ['hadir'])
+                ->count();
+            // $hadir     = $data->where('status', 'hadir')->count();
+            $terlambat = $data->where('status', 'terlambat')->count();
+            $izin      = $data->where('status', 'izin')->count();
+            $alpha     = $data->where('status', 'alpha')->count();
+            $total     = $data->count();
 
             return [
                 'karyawan_id'      => $item->id,
@@ -95,6 +112,11 @@ class LaporanController extends Controller
                 'hari_hadir'       => $hadir,
                 'hari_tidak_hadir' => $tidakHadir,
                 'persentase'       => $persentase,
+                'terlambat'        => $terlambat,
+                'izin'             => $izin,
+                'alpha'            => $alpha,
+                'total'            => $total,
+                'jumlah_hadir'      => $jumlah_hadir,
             ];
         });
 

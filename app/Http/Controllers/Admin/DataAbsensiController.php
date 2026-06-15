@@ -141,19 +141,34 @@ class DataAbsensiController extends Controller
             ->get();
 
         $rekap = $karyawanList->map(function ($k) use ($tahun, $bulan) {
-            $query = Absensi::where('karyawan_id', $k->id)->whereYear('tanggal', $tahun);
+            $query = Absensi::where('karyawan_id', $k->id)
+                ->whereYear('tanggal', $tahun);
+
             if ($bulan) {
                 $query->whereMonth('tanggal', $bulan);
             }
+
             $data = $query->get();
 
+            $hadir     = $data->where('status', 'hadir')->count();
+            $terlambat = $data->where('status', 'terlambat')->count();
+            $izin      = $data->where('status', 'izin')->count();
+            $alpha     = $data->where('status', 'alpha')->count();
+            $total     = $data->count();
+
+            // Hadir + Terlambat dianggap masuk kerja
+            $persentase = $total > 0
+                ? round((($hadir + $terlambat) / $total) * 100, 2)
+                : 0;
+
             return [
-                'karyawan'  => $k,
-                'hadir'     => $data->where('status', 'hadir')->count(),
-                'terlambat' => $data->where('status', 'terlambat')->count(),
-                'izin'      => $data->where('status', 'izin')->count(),
-                'alpha'     => $data->where('status', 'alpha')->count(),
-                'total'     => $data->count(),
+                'karyawan'   => $k,
+                'hadir'      => $hadir,
+                'terlambat'  => $terlambat,
+                'izin'       => $izin,
+                'alpha'      => $alpha,
+                'total'      => $total,
+                'persentase' => $persentase,
             ];
         });
 

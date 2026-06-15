@@ -33,7 +33,8 @@ class DashboardController extends Controller
         $hadirHariIni = $absensiHariIni->where('status', 'hadir')->count();
         $terlambatHariIni = $absensiHariIni->where('status', 'terlambat')->count();
         $izinHariIni = $absensiHariIni->where('status', 'izin')->count();
-        $tidakHadirHariIni = max($totalKaryawan - ($hadirHariIni + $terlambatHariIni + $izinHariIni), 0);
+        // $tidakHadirHariIni = max($totalKaryawan - ($hadirHariIni + $terlambatHariIni + $izinHariIni), 0);
+        $tidakHadirHariIni = $absensiHariIni->where('status', 'alpha')->count();
 
         $izinPending = Izin::where('status_approval', 'pending')->count();
         $lemburPending = Lembur::where('status', 'pending')->count();

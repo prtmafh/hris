@@ -77,9 +77,9 @@
             </div>
         </div>
 
-        {{--
+
         <!-- Rekap Cards -->
-        <div class="row mb-4">
+        {{-- <div class="row mb-4">
             <div class="col-6 col-xl-3 mb-3">
                 <div class="card border-start-lg border-success h-100">
                     <div class="card-body">
@@ -127,8 +127,23 @@
                             <tr>
                                 <th class="ps-4">No</th>
                                 <th>Nama Karyawan</th>
-                                <th>Jabatan</th>
+                                {{-- <th>Jabatan</th> --}}
                                 <th>Persentase Kehadiran</th>
+                                <th class="text-center">
+                                    Hadir
+                                </th>
+                                <th class="text-center">
+                                    Terlambat
+                                </th>
+                                <th class="text-center">
+                                    Izin
+                                </th>
+                                <th class="text-center">
+                                    Alpha
+                                </th>
+                                <th class="text-center">
+                                    Total Hari
+                                </th>
                             </tr>
                         </thead>
                         <tbody>
@@ -136,7 +151,7 @@
                             <tr>
                                 <td class="ps-4">{{ $i + 1 }}</td>
                                 <td class="text-capitalize fw-semibold">{{ $row['nama'] }}</td>
-                                <td class="text-muted small">{{ $row['jabatan'] }}</td>
+                                {{-- <td class="text-muted small">{{ $row['jabatan'] }}</td> --}}
                                 <td style="min-width: 260px;">
                                     <div class="d-flex flex-column">
                                         <div class="d-flex align-items-center mb-1">
@@ -151,6 +166,38 @@
                                             </div>
                                         </div>
                                     </div>
+                                </td>
+                                <td class="text-center">
+                                    <span class="badge bg-green-soft text-green">
+                                        {{ $row['jumlah_hadir'] }}
+                                    </span>
+                                </td>
+
+
+                                <td class="text-center">
+                                    <span class="badge bg-yellow-soft text-yellow">
+                                        {{ $row['terlambat'] }}
+                                    </span>
+                                </td>
+
+
+                                <td class="text-center">
+                                    <span class="badge bg-blue-soft text-blue">
+                                        {{ $row['izin'] }}
+                                    </span>
+                                </td>
+
+
+                                <td class="text-center">
+                                    <span class="badge bg-red-soft text-red">
+                                        {{ $row['alpha'] }}
+                                    </span>
+                                </td>
+
+
+
+                                <td class="text-center fw-bold">
+                                    {{ $row['total'] }}
                                 </td>
                             </tr>
                             @empty
