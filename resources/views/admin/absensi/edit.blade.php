@@ -187,7 +187,7 @@ default=>'secondary'
 
                                     <input type="time" name="jam_masuk"
                                         class="form-control @error('jam_masuk') is-invalid @enderror"
-                                        value="{{ old('jam_masuk',$absensi->jam_masuk) }}">
+                                        value="{{ old('jam_masuk', $absensi->jam_masuk ? \Carbon\Carbon::parse($absensi->jam_masuk)->format('H:i') : '') }}">
 
                                     @error('jam_masuk')
                                     <div class="invalid-feedback">
@@ -207,7 +207,7 @@ default=>'secondary'
 
                                     <input type="time" name="jam_keluar"
                                         class="form-control @error('jam_keluar') is-invalid @enderror"
-                                        value="{{ old('jam_keluar',$absensi->jam_keluar) }}">
+                                        value="{{ old('jam_keluar', $absensi->jam_keluar ? \Carbon\Carbon::parse($absensi->jam_keluar)->format('H:i') : '') }}">
 
                                     @error('jam_keluar')
                                     <div class="invalid-feedback">

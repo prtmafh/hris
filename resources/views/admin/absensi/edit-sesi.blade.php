@@ -207,7 +207,7 @@ default=>'secondary'
 
                                     <input type="time" name="jam_checkin"
                                         class="form-control @error('jam_checkin') is-invalid @enderror"
-                                        value="{{ old('jam_checkin',$sesi->jam_checkin) }}">
+                                        value="{{ old('jam_checkin', $sesi->jam_checkin ? \Carbon\Carbon::parse($sesi->jam_checkin)->format('H:i') : '') }}">
 
                                     @error('jam_checkin')
                                     <div class="invalid-feedback">
@@ -228,7 +228,7 @@ default=>'secondary'
 
                                     <input type="time" name="jam_checkout"
                                         class="form-control @error('jam_checkout') is-invalid @enderror"
-                                        value="{{ old('jam_checkout',$sesi->jam_checkout) }}">
+                                        value="{{ old('jam_checkout', $sesi->jam_checkout ? \Carbon\Carbon::parse($sesi->jam_checkout)->format('H:i') : '') }}">
 
                                     @error('jam_checkout')
                                     <div class="invalid-feedback">
