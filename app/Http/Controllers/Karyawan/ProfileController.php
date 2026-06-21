@@ -24,6 +24,7 @@ class ProfileController extends Controller
             'karyawan.jabatan',
             'penilai'
         ])->where('karyawan_id', $karyawan->id)
+            ->latest()
             ->first();
 
         return view('karyawan.profile-saya', compact('karyawan', 'jabatan', 'penilaian'));

@@ -74,6 +74,7 @@
                     <div class="card-header">Penilaian Karyawan</div>
 
                     <div class="card-body">
+                        @if($penilaian)
                         @php
                         $gradeColor = ['A'=>'success','B'=>'primary','C'=>'warning','D'=>'danger'][$penilaian->grade] ??
                         'secondary';
@@ -95,6 +96,13 @@
                                 <div class="mt-2 text-{{ $gradeColor }} fw-semibold">{{ $gradeLabel }}</div>
                             </div>
                         </div>
+                        @else
+
+                        <div class="alert alert-info">
+                            Belum ada data penilaian karyawan.
+                        </div>
+
+                        @endif
                     </div>
                 </div>
 
