@@ -249,7 +249,7 @@ class LaporanController extends Controller
         $tahun = (int) $request->input('tahun', now()->year);
         $status = $request->input('status');
 
-        $query = Reimbursement::with(['karyawan.jabatan', 'kategori'])
+        $query = Reimbursement::with(['karyawan.jabatan', 'kategoriReimbursement'])
             ->whereMonth('tanggal_pengajuan', $bulan)
             ->whereYear('tanggal_pengajuan', $tahun);
 
