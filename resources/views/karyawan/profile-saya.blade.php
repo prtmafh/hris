@@ -18,9 +18,9 @@
                     </div>
 
                     <div class="col-auto mb-3">
-                        <a href="{{ route('admin.daftar_karyawan') }}" class="btn btn-sm btn-light">
+                        {{-- <a href="{{ route('admin.daftar_karyawan') }}" class="btn btn-sm btn-light">
                             <i data-feather="arrow-left"></i> Kembali
-                        </a>
+                        </a> --}}
                         {{-- <a href="{{ route('admin.karyawan.edit', $karyawan->id) }}"
                             class="btn btn-sm btn-light text-primary ms-1">
                             <i data-feather="edit"></i> Edit
