@@ -42,6 +42,10 @@
                     </div>
                 </h6>
                 <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="{{ route('karyawan.profile') }}">
+                    <div class="dropdown-item-icon"><i data-feather="settings"></i></div>
+                    Profile
+                </a>
                 <form action="{{ route('logout') }}" method="POST">
                     @csrf
                     <button class="dropdown-item" type="submit">

@@ -30,9 +30,9 @@
                     <div class="col-md-4">
                         <label class="form-label small mb-1">Bulan</label>
                         <select name="bulan" class="form-select form-select-sm">
-                            @foreach(range(1, 12) as $b)
+                            @foreach(range(1,12) as $b)
                             <option value="{{ $b }}" {{ $bulan==$b ? 'selected' : '' }}>
-                                {{ \Carbon\Carbon::create()->month($b)->translatedFormat('F') }}
+                                {{ \Carbon\Carbon::create()->month($b)->locale('id')->isoFormat('MMMM') }}
                             </option>
                             @endforeach
                         </select>
@@ -59,7 +59,9 @@
                 <div>
                     <div class="fw-bold">Riwayat Absensi</div>
                     <div class="small text-muted">
-                        Periode {{ \Carbon\Carbon::create()->month($bulan)->translatedFormat('F') }} {{ $tahun }}
+                        Periode {{ \Carbon\Carbon::create()->month((int)$bulan)->locale('id')->isoFormat('MMMM') }} {{
+                        $tahun
+                        }}
                         @if($statusGaji === 'harian')
                         &mdash; <span class="text-primary">Karyawan Harian (per sesi)</span>
                         @endif

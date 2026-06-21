@@ -21,6 +21,7 @@ use App\Http\Controllers\Karyawan\AbsensiController as KaryawanAbsensiController
 use App\Http\Controllers\Karyawan\DashboardController as KaryawanDashboardController;
 use App\Http\Controllers\Karyawan\IzinController as KaryawanIzinController;
 use App\Http\Controllers\Karyawan\LemburController as KaryawanLemburController;
+use App\Http\Controllers\Karyawan\ProfileController;
 use App\Http\Controllers\Karyawan\ReimbursementController as KaryawanReimbursementController;
 use App\Http\Controllers\Karyawan\SlipGajiController;
 use App\Http\Controllers\landing\HomeController;
@@ -169,4 +170,7 @@ Route::middleware(['auth', 'karyawan'])->group(function () {
     Route::get('/karyawan/slip-gaji', [SlipGajiController::class, 'index'])->name('karyawan.slip_gaji');
     Route::get('/karyawan/slip-gaji/{id}', [SlipGajiController::class, 'showSlip'])->name('karyawan.slip_gaji.show');
     Route::get('/karyawan/slip-gaji/{id}/pdf', [SlipGajiController::class, 'downloadSlipPdf'])->name('karyawan.slip_gaji.pdf');
+
+    Route::get('/karyawan/profile-saya', [ProfileController::class, 'index'])->name('karyawan.profile');
+    Route::put('/karyawan/{id}/password', [ProfileController::class, 'updatePassword'])->name('karyawan.updatePassword');
 });
