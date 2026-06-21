@@ -135,7 +135,7 @@
                                 <td>{{ \Carbon\Carbon::parse($r->tanggal_pengajuan)->locale('id')->isoFormat('D MMM
                                     YYYY') }}</td>
                                 <td class="text-capitalize fw-semibold">{{ $r->karyawan->nama ?? '-' }}</td>
-                                <td class="text-muted small">{{ $r->kategori->nama ?? '-' }}</td>
+                                <td class="text-muted small">{{ $r->kategoriReimbursement->nama ?? '-' }}</td>
                                 <td>{{ \Illuminate\Support\Str::limit($r->judul, 40) }}</td>
                                 <td>Rp {{ number_format($r->jumlah_diajukan, 0, ',', '.') }}</td>
                                 <td>
