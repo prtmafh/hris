@@ -47,15 +47,22 @@
                     <input type="hidden" name="type" value="{{ request('type', 'biasa') }}">
 
                     <div class="col-md-3">
-                        <label class="small mb-1">Dari Tanggal</label>
-                        <input type="date" name="tanggal_dari" class="form-control form-control-sm"
-                            value="{{ request('tanggal_dari') }}">
+                        <label class="form-label small mb-1">Bulan</label>
+                        <select name="bulan" class="form-select form-select-sm">
+                            @foreach(range(1,12) as $b)
+                            <option value="{{ $b }}" {{ $bulan==$b ? 'selected' : '' }}>
+                                {{ \Carbon\Carbon::create()->month($b)->locale('id')->isoFormat('MMMM') }}
+                            </option>
+                            @endforeach
+                        </select>
                     </div>
-
                     <div class="col-md-3">
-                        <label class="small mb-1">Sampai Tanggal</label>
-                        <input type="date" name="tanggal_sampai" class="form-control form-control-sm"
-                            value="{{ request('tanggal_sampai') }}">
+                        <label class="form-label small mb-1">Tahun</label>
+                        <select name="tahun" class="form-select form-select-sm">
+                            @foreach($daftarTahun as $t)
+                            <option value="{{ $t }}" {{ $tahun==$t ? 'selected' : '' }}>{{ $t }}</option>
+                            @endforeach
+                        </select>
                     </div>
 
                     <div class="col-md-2">
@@ -87,10 +94,10 @@
                             <i data-feather="search"></i>
                         </button>
 
-                        <a href="{{ route('admin.absensi.export', request()->query()) }}"
+                        {{-- <a href="{{ route('admin.absensi.export', request()->query()) }}"
                             class="btn btn-success btn-sm">
                             <i data-feather="download"></i>
-                        </a>
+                        </a> --}}
 
                         <a href="{{ route('data_absen') }}" class="btn btn-light btn-sm">
                             <i data-feather="x"></i>
@@ -107,9 +114,13 @@
 
             <div class="card-header">
                 @if(request('type') === 'sesi')
-                Data Absensi Sesi
+                Data Absensi Sesi {{ \Carbon\Carbon::create()->month((int)$bulan)->locale('id')->isoFormat('MMMM') }} {{
+                $tahun
+                }}
                 @else
-                Data Absensi
+                Data Absensi {{ \Carbon\Carbon::create()->month((int)$bulan)->locale('id')->isoFormat('MMMM') }} {{
+                $tahun
+                }}
                 @endif
             </div>
 
@@ -160,7 +171,9 @@
                                     {{ optional($sesi->absensi->karyawan->jabatan)->nama_jabatan ?? '-' }}
                                 </td>
 
-                                <td>{{ $sesi->absensi->tanggal->format('d M Y') }}</td>
+                                {{-- <td>{{ $sesi->absensi->tanggal->translatedFormat('d F Y') }}</td> --}}
+                                <td>{{ \Carbon\Carbon::parse($sesi->absensi->tanggal)->locale('id')->isoFormat('D MMM
+                                    YYYY') }}</td>
 
                                 <td class="fw-semibold">Sesi {{ $sesi->sesi_ke }}</td>
                                 <td>{{ $sesi->jam_checkin ?? '-' }}</td>
@@ -238,7 +251,8 @@
                                     {{ optional($a->karyawan->jabatan)->nama_jabatan ?? '-' }}
                                 </td>
 
-                                <td>{{ $a->tanggal->format('d M Y') }}</td>
+                                <td>{{ \Carbon\Carbon::parse($a->tanggal)->locale('id')->isoFormat('D MMM
+                                    YYYY') }}</td>
 
                                 <td>{{ $a->jam_masuk ?? '-' }}</td>
                                 <td>{{ $a->jam_keluar ?? '-' }}</td>

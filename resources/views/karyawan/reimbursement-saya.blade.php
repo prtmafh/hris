@@ -111,7 +111,7 @@
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <div>
                             <div class="fw-bold">Riwayat Reimbursement</div>
-                            <div class="small text-muted">Daftar pengajuan yang pernah Anda buat.</div>
+                            {{-- <div class="small text-muted">Daftar pengajuan yang pernah Anda buat.</div> --}}
                         </div>
                         <span class="badge bg-primary">{{ $reimbursement->count() }} data</span>
                     </div>

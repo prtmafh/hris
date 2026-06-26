@@ -17,6 +17,7 @@ class DataGajiController extends Controller
     public function index(Request $request)
     {
         $query = Penggajian::with('karyawan');
+        $tahun = (int) $request->input('tahun', now()->year);
 
         if ($request->filled('bulan')) {
             $query->where('periode_bulan', $request->bulan);
@@ -36,6 +37,7 @@ class DataGajiController extends Controller
 
         $penggajian   = $query->latest()->paginate(10);
         $karyawanList = Karyawan::orderBy('nama')->get();
+        $daftarTahun = range(Carbon::now()->year, Carbon::now()->year - 3);
 
         $hasFilter = $request->filled('bulan')
             || $request->filled('tahun')
@@ -45,7 +47,9 @@ class DataGajiController extends Controller
         return view('admin.penggajian.data_gaji', compact(
             'penggajian',
             'karyawanList',
-            'hasFilter'
+            'hasFilter',
+            'daftarTahun',
+            'tahun'
         ));
     }
 

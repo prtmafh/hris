@@ -127,7 +127,7 @@
                 <div class="card-header d-flex flex-wrap justify-content-between align-items-center gap-2">
                     <div>
                         <div class="fw-bold">Riwayat Pengajuan Izin</div>
-                        <div class="small text-muted">Daftar seluruh pengajuan izin Anda.</div>
+                        {{-- <div class="small text-muted">Daftar seluruh pengajuan izin Anda.</div> --}}
                     </div>
                     <span class="badge bg-primary">{{ $izin->count() }} data</span>
                 </div>
@@ -155,7 +155,8 @@
                                 <tr>
                                     <td>
                                         <div class="fw-semibold" style="white-space: nowrap">
-                                            {{ \Carbon\Carbon::parse($iz->tanggal)->translatedFormat('d M Y') }}
+                                            {{ \Carbon\Carbon::parse($iz->tanggal)->locale('id')->isoFormat('D MMMM
+                                            YYYY') }}
                                         </div>
                                     </td>
                                     <td>

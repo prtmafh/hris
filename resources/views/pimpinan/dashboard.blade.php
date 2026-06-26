@@ -43,7 +43,8 @@
                         </div>
                     </div>
                     <div class="card-footer d-flex align-items-center justify-content-between small">
-                        <span class="text-white">Karyawan Aktif</span>
+                        <a href="{{ route('pimpinan.laporan.absensi') }}" class="text-white stretched-link">Karyawan
+                            Aktif</a>
                         <div class="text-white"><i class="fas fa-angle-right"></i></div>
                     </div>
                 </div>

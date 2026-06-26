@@ -27,7 +27,7 @@
 
         <!-- Filter -->
         <div class="card mb-4">
-            <div class="card-header"><i data-feather="filter" class="me-2"></i> Filter</div>
+            <div class="card-header"> Filter Data</div>
             <div class="card-body">
                 <form method="GET" action="{{ route('pimpinan.laporan.absensi') }}">
                     <div class="row g-3">
@@ -41,17 +41,17 @@
                                 @endforeach
                             </select>
                         </div> --}}
-                        <div class="col-md-2">
-                            <label class="form-label">Tahun</label>
-                            <select name="tahun" class="form-select">
+                        <div class="col-md-3">
+                            <label class="form-label small mb-1">Tahun</label>
+                            <select name="tahun" class="form-select form-select-sm">
                                 @foreach($tahunList as $t)
                                 <option value="{{ $t }}" {{ $tahun==$t ? 'selected' : '' }}>{{ $t }}</option>
                                 @endforeach
                             </select>
                         </div>
                         <div class="col-md-3">
-                            <label class="form-label">Jabatan</label>
-                            <select name="jabatan_id" class="form-select">
+                            <label class="form-label small mb-1">Jabatan</label>
+                            <select name="jabatan_id" class="form-select form-select-sm">
                                 <option value="">Semua Jabatan</option>
                                 @foreach($jabatan as $j)
                                 <option value="{{ $j->id }}" {{ $jabatanId==$j->id ? 'selected' : '' }}>{{
@@ -60,8 +60,8 @@
                             </select>
                         </div>
                         <div class="col-md-3">
-                            <label class="form-label">Karyawan</label>
-                            <select name="karyawan_id" class="form-select">
+                            <label class="form-label small mb-1">Karyawan</label>
+                            <select name="karyawan_id" class="form-select form-select-sm">
                                 <option value="">Semua Karyawan</option>
                                 @foreach($karyawan as $k)
                                 <option value="{{ $k->id }}" {{ $karyawanId==$k->id ? 'selected' : '' }}>{{ $k->nama }}
@@ -69,8 +69,8 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="col-md-1 d-flex align-items-end">
-                            <button type="submit" class="btn btn-primary w-100">Tampilkan</button>
+                        <div class="col-md-3 d-flex align-items-end">
+                            <button type="submit" class="btn btn-primary btn-sm w-100">Tampilkan</button>
                         </div>
                     </div>
                 </form>

@@ -116,7 +116,8 @@
                                     <tr>
                                         <td>
                                             <div class="fw-semibold">
-                                                {{ \Carbon\Carbon::parse($lb->tanggal)->translatedFormat('d M Y') }}
+                                                {{ \Carbon\Carbon::parse($lb->tanggal)->locale('id')->isoFormat('D MMMM
+                                                YYYY') }}
                                             </div>
                                         </td>
                                         <td>{{ $lb->jam_mulai ? \Carbon\Carbon::parse($lb->jam_mulai)->format('H:i') :

@@ -127,7 +127,7 @@
 
                                     {{-- Hapus --}}
                                     <button class="btn btn-datatable btn-icon btn-transparent-dark text-danger"
-                                        onclick="confirmDeleteLowongan({{ $item->id }})" title="Hapus">
+                                        onclick="confirmDelete({{ $item->id }})" title="Hapus">
                                         <i data-feather="trash-2"></i>
                                     </button>
 

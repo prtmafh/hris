@@ -23,7 +23,8 @@
         <div class="card mb-4">
             <div class="card-header">
                 <div class="fw-bold">Filter Absensi</div>
-                <div class="small text-muted">Pilih bulan dan tahun untuk melihat riwayat kehadiran Anda.</div>
+                {{-- <div class="small text-muted">Pilih bulan dan tahun untuk melihat riwayat kehadiran Anda.</div>
+                --}}
             </div>
             <div class="card-body">
                 <form method="GET" action="{{ route('karyawan.absensi') }}" class="row g-3 align-items-end">
@@ -92,7 +93,8 @@
                                 <td class="text-muted">{{ $no++ }}</td>
                                 <td>
                                     <div class="fw-semibold">
-                                        {{ \Carbon\Carbon::parse($a->tanggal)->translatedFormat('d F Y') }}
+                                        {{ \Carbon\Carbon::parse($a->tanggal)->locale('id')->isoFormat('D MMMM
+                                        YYYY') }}
                                     </div>
                                 </td>
                                 <td><span class="text-muted">-</span></td>
@@ -128,7 +130,8 @@
                                 <td>
                                     @if($idx === 0)
                                     <div class="fw-semibold">
-                                        {{ \Carbon\Carbon::parse($a->tanggal)->translatedFormat('d F Y') }}
+                                        {{ \Carbon\Carbon::parse($a->tanggal)->locale('id')->isoFormat('D MMMM
+                                        YYYY') }}
                                     </div>
                                     @endif
                                 </td>
@@ -183,7 +186,8 @@
                                 <td class="text-muted">{{ $i + 1 }}</td>
                                 <td>
                                     <div class="fw-semibold">
-                                        {{ \Carbon\Carbon::parse($a->tanggal)->translatedFormat('d F Y') }}
+                                        {{ \Carbon\Carbon::parse($a->tanggal)->locale('id')->isoFormat('D MMMM
+                                        YYYY') }}
                                     </div>
                                 </td>
                                 <td>{{ $a->jam_masuk ? \Carbon\Carbon::parse($a->jam_masuk)->format('H:i') : '-' }}</td>

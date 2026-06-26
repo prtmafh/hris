@@ -32,11 +32,11 @@
     <div class="container-xl px-4 mt-4">
 
         {{-- NAV SB PRO --}}
-        <nav class="nav nav-borders">
+        {{-- <nav class="nav nav-borders">
             <a class="nav-link active ms-0">Edit Profile</a>
         </nav>
 
-        <hr class="mt-0 mb-4">
+        <hr class="mt-0 mb-4"> --}}
 
         <form action="{{ route('admin.karyawan.update', $karyawan->id) }}" method="POST" enctype="multipart/form-data">
             @csrf
@@ -48,7 +48,7 @@
                 <div class="col-xl-4">
                     <div class="card mb-4 mb-xl-0">
 
-                        <div class="card-header">Profile Picture</div>
+                        <div class="card-header">Foto Profile</div>
 
                         <div class="card-body text-center">
 
@@ -74,7 +74,7 @@
 
                     <div class="card mb-4">
 
-                        <div class="card-header">Account Details</div>
+                        <div class="card-header">Detail Profile</div>
 
                         <div class="card-body">
 

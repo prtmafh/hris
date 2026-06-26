@@ -89,7 +89,7 @@
 
                                 {{-- ROLE / JABATAN (PAKAI BADGE STYLE SB PRO) --}}
                                 <td>
-                                    <span class="badge bg-blue-soft text-blue">
+                                    <span class="badge text-capitalize bg-blue-soft text-blue">
                                         {{ optional($k->jabatan)->nama_jabatan ?? '-' }}
                                     </span>
                                 </td>

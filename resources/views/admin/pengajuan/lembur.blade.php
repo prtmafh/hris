@@ -30,8 +30,8 @@
             <div class="card-header d-flex justify-content-between align-items-center">
 
                 <div>
-                    <div class="fw-semibold">Filter Data</div>
-                    <div class="small text-muted">Cari data lembur dengan cepat</div>
+                    <div class="fw-semibold">Filter Data Lembur</div>
+                    {{-- <div class="small text-muted">Cari data lembur dengan cepat</div> --}}
                 </div>
 
                 @if($hasFilter)

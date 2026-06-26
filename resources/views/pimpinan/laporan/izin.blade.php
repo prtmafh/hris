@@ -27,13 +27,13 @@
 
         <!-- Filter -->
         <div class="card mb-4">
-            <div class="card-header"><i data-feather="filter" class="me-2"></i> Filter</div>
+            <div class="card-header">Filter Data</div>
             <div class="card-body">
                 <form method="GET" action="{{ route('pimpinan.laporan.izin') }}">
                     <div class="row g-3 align-items-end">
                         <div class="col-md-3">
-                            <label class="form-label">Bulan</label>
-                            <select name="bulan" class="form-select">
+                            <label class="form-label small mb-1">Bulan</label>
+                            <select name="bulan" class="form-select form-select-sm">
                                 @foreach(range(1,12) as $b)
                                 <option value="{{ $b }}" {{ $bulan==$b ? 'selected' : '' }}>
                                     {{ \Carbon\Carbon::create()->month($b)->locale('id')->isoFormat('MMMM') }}
@@ -41,17 +41,17 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="col-md-2">
-                            <label class="form-label">Tahun</label>
-                            <select name="tahun" class="form-select">
+                        <div class="col-md-3">
+                            <label class="form-label small mb-1">Tahun</label>
+                            <select name="tahun" class="form-select form-select-sm">
                                 @foreach($tahunList as $t)
                                 <option value="{{ $t }}" {{ $tahun==$t ? 'selected' : '' }}>{{ $t }}</option>
                                 @endforeach
                             </select>
                         </div>
                         <div class="col-md-3">
-                            <label class="form-label">Status</label>
-                            <select name="status" class="form-select">
+                            <label class="form-label small mb-1">Status</label>
+                            <select name="status" class="form-select form-select-sm">
                                 <option value="">Semua Status</option>
                                 <option value="pending" {{ $status==='pending' ? 'selected' : '' }}>Pending</option>
                                 <option value="disetujui" {{ $status==='disetujui' ? 'selected' : '' }}>Disetujui
@@ -59,8 +59,8 @@
                                 <option value="ditolak" {{ $status==='ditolak' ? 'selected' : '' }}>Ditolak</option>
                             </select>
                         </div>
-                        <div class="col-md-2">
-                            <button type="submit" class="btn btn-primary w-100">Tampilkan</button>
+                        <div class="col-md-3">
+                            <button type="submit" class="btn btn-primary btn-sm w-100">Tampilkan</button>
                         </div>
                     </div>
                 </form>

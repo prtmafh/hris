@@ -48,8 +48,8 @@
             <div class="card-header d-flex justify-content-between align-items-center">
 
                 <div>
-                    <div class="fw-semibold">Filter Data</div>
-                    <div class="small text-muted">Cari data penggajian dengan cepat</div>
+                    <div class="fw-semibold">Filter Data Penggajian</div>
+                    {{-- <div class="small text-muted">Cari data penggajian dengan cepat</div> --}}
                 </div>
 
                 @if($hasFilter)
@@ -77,9 +77,12 @@
                     </div>
 
                     <div class="col-md-2">
-                        <label class="small mb-1">Tahun</label>
-                        <input type="number" name="tahun" class="form-control form-control-sm"
-                            value="{{ request('tahun') }}">
+                        <label class="form-label small mb-1">Tahun</label>
+                        <select name="tahun" class="form-select form-select-sm">
+                            @foreach($daftarTahun as $t)
+                            <option value="{{ $t }}" {{ $tahun==$t ? 'selected' : '' }}>{{ $t }}</option>
+                            @endforeach
+                        </select>
                     </div>
 
                     <div class="col-md-4">

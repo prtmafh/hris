@@ -34,8 +34,8 @@
             <div class="card-header d-flex justify-content-between align-items-center">
 
                 <div>
-                    <div class="fw-semibold">Filter Data</div>
-                    <div class="small text-muted">Cari data izin dengan cepat</div>
+                    <div class="fw-semibold">Filter Data Izin</div>
+                    {{-- <div class="small text-muted">Cari data izin dengan cepat</div> --}}
                 </div>
 
                 @if($hasFilter)

@@ -23,4 +23,8 @@ class Jabatan extends Model
     {
         return $this->hasMany(Karyawan::class);
     }
+    public function divisi()
+    {
+        return $this->belongsTo(Divisi::class);
+    }
 }

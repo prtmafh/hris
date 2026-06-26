@@ -27,13 +27,13 @@
 
         <!-- Filter -->
         <div class="card mb-4">
-            <div class="card-header"><i data-feather="filter" class="me-2"></i> Filter Periode</div>
+            <div class="card-header"></i> Filter Periode</div>
             <div class="card-body">
                 <form method="GET" action="{{ route('pimpinan.laporan.penggajian') }}">
                     <div class="row g-3 align-items-end">
                         <div class="col-md-4">
-                            <label class="form-label">Bulan</label>
-                            <select name="bulan" class="form-select">
+                            <label class="form-label small mb-1">Bulan</label>
+                            <select name="bulan" class="form-select form-select-sm">
                                 @foreach(range(1,12) as $b)
                                 <option value="{{ $b }}" {{ $bulan==$b ? 'selected' : '' }}>
                                     {{ \Carbon\Carbon::create()->month($b)->locale('id')->isoFormat('MMMM') }}
@@ -41,16 +41,16 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="col-md-3">
-                            <label class="form-label">Tahun</label>
-                            <select name="tahun" class="form-select">
+                        <div class="col-md-4">
+                            <label class="form-label small mb-1">Tahun</label>
+                            <select name="tahun" class="form-select form-select-sm">
                                 @foreach($tahunList as $t)
                                 <option value="{{ $t }}" {{ $tahun==$t ? 'selected' : '' }}>{{ $t }}</option>
                                 @endforeach
                             </select>
                         </div>
-                        <div class="col-md-2">
-                            <button type="submit" class="btn btn-primary w-100">Tampilkan</button>
+                        <div class="col-md-4">
+                            <button type="submit" class="btn btn-primary btn-sm w-100">Tampilkan</button>
                         </div>
                     </div>
                 </form>

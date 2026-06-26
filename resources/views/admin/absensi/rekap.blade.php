@@ -87,7 +87,7 @@
 
 
 
-                    <div class="col-md-2 d-grid">
+                    <div class="col-md-4 d-grid">
                         <button class="btn btn-primary btn-sm">
                             <i data-feather="search"></i>
                             Tampilkan
@@ -103,7 +103,7 @@
 
 
         {{-- SUMMARY CARDS --}}
-        <div class="row mb-4">
+        {{-- <div class="row mb-4">
 
             <div class="col-xl-3 col-md-6 mb-4">
                 <div class="card border-start-lg border-start-success h-100">
@@ -166,7 +166,7 @@
                 </div>
             </div>
 
-        </div>
+        </div> --}}
 
 
 

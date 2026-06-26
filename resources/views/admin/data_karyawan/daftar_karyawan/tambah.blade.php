@@ -32,11 +32,11 @@
     <div class="container-xl px-4 mt-4">
 
         {{-- NAV --}}
-        <nav class="nav nav-borders">
+        {{-- <nav class="nav nav-borders">
             <a class="nav-link active ms-0">Create Employee</a>
         </nav>
 
-        <hr class="mt-0 mb-4">
+        <hr class="mt-0 mb-4"> --}}
 
         <form id="formTambahKaryawan" action="{{ route('admin.karyawan.store') }}" method="POST"
             enctype="multipart/form-data">
@@ -47,7 +47,7 @@
                 {{-- LEFT --}}
                 <div class="col-xl-4">
                     <div class="card mb-4 mb-xl-0">
-                        <div class="card-header">Profile Picture</div>
+                        <div class="card-header">Foto Profile </div>
                         <div class="card-body text-center">
 
                             <img id="preview" class="img-account-profile rounded-circle mb-2 d-none" width="120">
@@ -66,7 +66,7 @@
                 <div class="col-xl-8">
 
                     <div class="card mb-4">
-                        <div class="card-header">Account Details</div>
+                        <div class="card-header">Detail Profile</div>
 
                         <div class="card-body">
 

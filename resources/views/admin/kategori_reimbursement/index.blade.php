@@ -157,17 +157,17 @@
                                         data-bs-toggle="modal" data-bs-target="#modalEdit{{ $item->id }}" title="Edit">
                                         <i data-feather="edit"></i>
                                     </button>
-
+                                    <button class="btn btn-datatable btn-icon btn-transparent-dark text-danger"
+                                        title="Hapus" onclick="confirmDelete({{ $item->id }})">
+                                        <i data-feather="trash-2"></i>
+                                    </button>
 
                                     <form action="{{ route('admin.kategori-reimbursement.destroy',$item->id) }}"
                                         method="POST" class="d-inline">
                                         @csrf
                                         @method('DELETE')
 
-                                        <button class="btn btn-datatable btn-icon btn-transparent-dark text-danger"
-                                            title="Hapus" onclick="return confirm('Yakin hapus data?')">
-                                            <i data-feather="trash-2"></i>
-                                        </button>
+
                                     </form>
 
                                 </td>

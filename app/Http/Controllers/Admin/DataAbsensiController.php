@@ -18,15 +18,23 @@ class DataAbsensiController extends Controller
     public function index(Request $request)
     {
         $type = $request->get('type', 'biasa');
+        $bulan = (int) $request->input('bulan', now()->month);
+        $tahun = (int) $request->input('tahun', now()->year);
+        $daftarTahun = range(Carbon::now()->year, Carbon::now()->year - 3);
 
         if ($type === 'sesi') {
 
             $absensi = $this->buildFilteredQuerySesi($request)
+                // ->whereMonth('tanggal', $bulan)
+                // ->whereYear('tanggal', $tahun)
+
                 ->orderByDesc('absensi_id')
                 ->get();
         } else {
 
             $absensi = $this->buildFilteredQuery($request)
+                ->whereMonth('tanggal', $bulan)
+                ->whereYear('tanggal', $tahun)
                 ->orderByDesc('tanggal')
                 ->orderByDesc('id')
                 ->get();
@@ -36,7 +44,10 @@ class DataAbsensiController extends Controller
 
         return view('admin.absensi.index', compact(
             'absensi',
-            'karyawanList'
+            'karyawanList',
+            'bulan',
+            'tahun',
+            'daftarTahun',
         ));
     }
 

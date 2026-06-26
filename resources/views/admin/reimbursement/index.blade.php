@@ -185,17 +185,16 @@
                                         </button>
                                     </form>
                                     @endif
-
+                                    <button class="btn btn-datatable btn-icon btn-transparent-dark text-danger"
+                                        onclick="confirmDelete({{ $item->id }})" title="Hapus">
+                                        <i data-feather="trash-2"></i>
+                                    </button>
                                     {{-- Hapus --}}
                                     <form action="{{ route('admin.reimbursement.destroy', $item->id) }}" method="POST"
                                         class="d-inline">
                                         @csrf
                                         @method('DELETE')
-                                        <button class="btn btn-datatable btn-icon btn-transparent-dark text-danger"
-                                            onclick="return confirm('Yakin hapus data reimbursement ini?')"
-                                            title="Hapus">
-                                            <i data-feather="trash-2"></i>
-                                        </button>
+
                                     </form>
 
                                 </td>
