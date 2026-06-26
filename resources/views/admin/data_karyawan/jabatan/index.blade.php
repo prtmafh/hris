@@ -5,68 +5,48 @@
 @section('content')
 
 <main>
-
-    {{-- HEADER SB ADMIN PRO --}}
     <header class="page-header page-header-compact page-header-light border-bottom bg-white mb-4">
         <div class="container-xl px-4">
             <div class="page-header-content">
                 <div class="row align-items-center justify-content-between pt-3">
-
                     <div class="col-auto mb-3">
                         <h1 class="page-header-title">
                             <div class="page-header-icon"><i data-feather="briefcase"></i></div>
                             Jabatan
                         </h1>
                     </div>
-
                 </div>
             </div>
         </div>
     </header>
 
     <div class="container-xl px-4 mt-4">
-
         <div class="row">
-
-            {{-- FORM --}}
             <div class="col-xl-4">
                 <div class="card mb-4 mb-xl-0">
-
                     <div class="card-header">Tambah Jabatan</div>
-
                     <div class="card-body">
-
                         <form action="{{ route('admin.jabatan.store') }}" method="POST">
                             @csrf
-
                             <div class="mb-3">
                                 <label class="small mb-1">Nama Jabatan</label>
                                 <input type="text" class="form-control" name="nama_jabatan"
                                     placeholder="Masukkan nama jabatan" required>
                             </div>
-
                             <div class="d-flex justify-content-end gap-2">
                                 <button type="reset" class="btn btn-light">Reset</button>
                                 <button type="submit" class="btn btn-primary">Simpan</button>
                             </div>
-
                         </form>
-
                     </div>
                 </div>
             </div>
-
-            {{-- TABLE --}}
             <div class="col-xl-8">
-
                 <div class="card mb-4">
-
                     <div class="card-header">Daftar Jabatan</div>
-
                     <div class="card-body">
                         <div class="table-responsive">
                             <table id="datatablesSimple" class="table responsive">
-
                                 <thead>
                                     <tr>
                                         <th>No.</th>
@@ -75,7 +55,6 @@
                                         <th>Aksi</th>
                                     </tr>
                                 </thead>
-
                                 <tbody>
                                     @php
                                     $badgeClasses = ['bg-primary', 'bg-success', 'bg-info', 'bg-warning', 'bg-danger',
@@ -83,9 +62,7 @@
                                     @endphp
                                     @foreach($jabatan as $index => $j)
                                     <tr>
-
                                         <td>{{ $index + 1 }}</td>
-
                                         <td>
                                             @php $badgeClass = $badgeClasses[$index % count($badgeClasses)]; @endphp
                                             <div class="d-flex align-items-center gap-2">
@@ -98,82 +75,61 @@
                                                     value="{{ $j->nama_jabatan }}" aria-label="Edit nama jabatan">
                                             </div>
                                         </td>
-
                                         <td>
                                             <span class="badge bg-secondary text-white">
                                                 {{ $j->karyawan_count ?? 0 }} Karyawan
                                             </span>
                                         </td>
-
                                         <td>
-
-                                            {{-- EDIT --}}
                                             <button class="btn btn-datatable btn-icon btn-transparent-dark me-2"
                                                 data-bs-toggle="modal" data-bs-target="#modalEdit" data-id="{{ $j->id}}"
                                                 data-nama="{{ $j->nama_jabatan }}">
                                                 <i data-feather="edit"></i>
                                             </button>
-
-                                            {{-- DELETE --}}
                                             <button class="btn btn-datatable btn-icon btn-transparent-dark text-danger"
                                                 onclick="confirmDelete({{ $j->id }})">
                                                 <i data-feather="trash-2"></i>
                                             </button>
-
                                             <form id="delete-form-{{ $j->id }}"
                                                 action="{{ route('admin.jabatan.destroy', $j->id) }}" method="POST"
                                                 style="display:none;">
                                                 @csrf
                                                 @method('DELETE')
                                             </form>
-
                                         </td>
-
                                     </tr>
                                     @endforeach
                                 </tbody>
-
                             </table>
                         </div>
                     </div>
                 </div>
-
             </div>
-
         </div>
     </div>
 </main>
 <div class="modal fade" id="modalEdit" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-
             <div class="modal-header">
                 <h5 class="modal-title">Edit Jabatan</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-
             <div class="modal-body">
-
                 <form id="formEdit" method="POST">
                     @csrf
                     @method('PUT')
-
                     <input type="hidden" name="id_jabatan" id="edit_id_jabatan">
-
                     <div class="mb-3">
                         <label class="small mb-1">Nama Jabatan</label>
                         <input type="text" class="form-control" name="nama_jabatan" id="edit_nama_jabatan" required>
                     </div>
-
                     <div class="d-flex justify-content-end gap-2">
                         <button type="button" class="btn btn-light" data-bs-dismiss="modal">Batal</button>
                         <button type="submit" class="btn btn-primary">Simpan</button>
                     </div>
-
                 </form>
-
             </div>
-
         </div>
     </div>
 </div>

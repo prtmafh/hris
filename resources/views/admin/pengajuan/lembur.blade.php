@@ -4,7 +4,6 @@
 
 @section('content')
 <main>
-
     {{-- HEADER --}}
     <header class="page-header page-header-compact page-header-light border-bottom bg-white mb-4 py-2">
         <div class="container-xl px-4">
@@ -24,34 +23,25 @@
     </header>
 
     <div class="container-xl px-4">
-
-        {{-- FILTER --}}
         <div class="card mb-4">
             <div class="card-header d-flex justify-content-between align-items-center">
-
                 <div>
                     <div class="fw-semibold">Filter Data Lembur</div>
                     {{-- <div class="small text-muted">Cari data lembur dengan cepat</div> --}}
                 </div>
-
                 @if($hasFilter)
                 <a href="{{ route('admin.lembur') }}" class="btn btn-light btn-sm">
                     <i data-feather="x"></i>
                 </a>
                 @endif
-
             </div>
-
             <div class="card-body">
-
                 <form method="GET" action="{{ route('admin.lembur') }}" class="row gx-2 gy-2 align-items-end">
-
                     <div class="col-md-4">
                         <label class="small mb-1">Tanggal</label>
                         <input type="date" name="tanggal" class="form-control form-control-sm"
                             value="{{ request('tanggal') }}">
                     </div>
-
                     <div class="col-md-4">
                         <label class="small mb-1">Karyawan</label>
                         <select name="karyawan_id" class="form-select form-select-sm">
@@ -64,7 +54,6 @@
                             @endforeach
                         </select>
                     </div>
-
                     <div class="col-md-2">
                         <label class="small mb-1">Status</label>
                         <select name="status" class="form-select form-select-sm">
@@ -77,25 +66,18 @@
                             </option>
                         </select>
                     </div>
-
                     <div class="col-md-2 d-flex gap-1">
                         <button type="submit" class="btn btn-primary btn-sm w-100">
                             <i data-feather="search"></i>
                         </button>
                     </div>
-
                 </form>
-
             </div>
         </div>
-
-        {{-- TABLE --}}
         <div class="card">
-
             <div class="card-header">
                 Daftar Data Lembur
             </div>
-
             <div class="card-body">
                 <div class="table-responsive">
                     <table id="datatablesSimple" class="table ">
@@ -214,10 +196,8 @@
                 <div class="mt-4">
                     {{ $lembur->withQueryString()->links() }}
                 </div>
-
             </div>
         </div>
-
     </div>
 </main>
 @endsection

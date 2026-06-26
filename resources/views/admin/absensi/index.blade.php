@@ -4,7 +4,6 @@
 
 @section('content')
 <main>
-
     {{-- HEADER --}}
     <header class="page-header page-header-compact page-header-light border-bottom bg-white mb-4 py-2">
         <div class="container-xl px-4">
@@ -24,7 +23,6 @@
     </header>
 
     <div class="container-xl px-4">
-
         {{-- TAB NAVIGATION --}}
         <nav class="nav nav-borders mb-4">
             <a class="nav-link {{ request('type') !== 'sesi' ? 'active' : '' }}"
@@ -42,10 +40,8 @@
         {{-- FILTER --}}
         <div class="card mb-4">
             <div class="card-body">
-
                 <form method="GET" action="{{ route('data_absen') }}" class="row gx-2 gy-2 align-items-end">
                     <input type="hidden" name="type" value="{{ request('type', 'biasa') }}">
-
                     <div class="col-md-3">
                         <label class="form-label small mb-1">Bulan</label>
                         <select name="bulan" class="form-select form-select-sm">
@@ -93,25 +89,20 @@
                         <button type="submit" class="btn btn-primary btn-sm w-100">
                             <i data-feather="search"></i>
                         </button>
-
                         {{-- <a href="{{ route('admin.absensi.export', request()->query()) }}"
                             class="btn btn-success btn-sm">
                             <i data-feather="download"></i>
                         </a> --}}
-
                         <a href="{{ route('data_absen') }}" class="btn btn-light btn-sm">
                             <i data-feather="x"></i>
                         </a>
                     </div>
-
                 </form>
-
             </div>
         </div>
 
         {{-- TABLE --}}
         <div class="card mb-4">
-
             <div class="card-header">
                 @if(request('type') === 'sesi')
                 Data Absensi Sesi {{ \Carbon\Carbon::create()->month((int)$bulan)->locale('id')->isoFormat('MMMM') }} {{
@@ -123,11 +114,9 @@
                 }}
                 @endif
             </div>
-
             <div class="card-body">
                 <div class="table-responsive">
                     <table id="datatablesSimple" class="table responsive">
-
                         <thead>
                             <tr>
                                 <th>No</th>
@@ -146,7 +135,6 @@
                                 <th>Aksi</th>
                             </tr>
                         </thead>
-
                         <tbody>
                             @if(request('type') === 'sesi')
                             @forelse($absensi as $index => $sesi)
@@ -166,19 +154,15 @@
                                         </div>
                                     </div>
                                 </td>
-
                                 <td class="text-capitalize">
                                     {{ optional($sesi->absensi->karyawan->jabatan)->nama_jabatan ?? '-' }}
                                 </td>
-
                                 {{-- <td>{{ $sesi->absensi->tanggal->translatedFormat('d F Y') }}</td> --}}
                                 <td>{{ \Carbon\Carbon::parse($sesi->absensi->tanggal)->locale('id')->isoFormat('D MMM
                                     YYYY') }}</td>
-
                                 <td class="fw-semibold">Sesi {{ $sesi->sesi_ke }}</td>
                                 <td>{{ $sesi->jam_checkin ?? '-' }}</td>
                                 <td>{{ $sesi->jam_checkout ?? '-' }}</td>
-
                                 <td>
                                     @php
                                     $badge = match($sesi->status) {
@@ -189,28 +173,23 @@
                                     default => 'secondary',
                                     };
                                     @endphp
-
                                     <span class="badge bg-{{ $badge }}-soft text-{{ $badge }} text-capitalize">
                                         {{ $sesi->status }}
                                     </span>
                                 </td>
-
                                 <td>
                                     <a href="{{ route('admin.absensi-sesi.show', $sesi->id) }}"
                                         class="btn btn-datatable btn-icon btn-transparent-dark me-2">
                                         <i data-feather="eye"></i>
                                     </a>
-
                                     <a href="{{ route('admin.absensi-sesi.edit', $sesi->id) }}"
                                         class="btn btn-datatable btn-icon btn-transparent-dark me-2">
                                         <i data-feather="edit"></i>
                                     </a>
-
                                     <button class="btn btn-datatable btn-icon btn-transparent-dark text-danger"
                                         onclick="confirmDeleteSesi({{ $sesi->id }})">
                                         <i data-feather="trash-2"></i>
                                     </button>
-
                                     <form id="delete-form-{{ $sesi->id }}"
                                         action="{{ route('admin.absensi-sesi.destroy', $sesi->id) }}" method="POST"
                                         style="display:none;">
@@ -229,7 +208,6 @@
                             @else
                             @forelse($absensi as $index => $a)
                             <tr>
-
                                 {{-- <td>{{ $absensi->firstItem() + $index }}</td> --}}
                                 <td>{{ $loop->iteration }}</td>
                                 {{-- KARYAWAN --}}
@@ -246,17 +224,13 @@
                                         </div>
                                     </div>
                                 </td>
-
                                 <td class="text-capitalize">
                                     {{ optional($a->karyawan->jabatan)->nama_jabatan ?? '-' }}
                                 </td>
-
                                 <td>{{ \Carbon\Carbon::parse($a->tanggal)->locale('id')->isoFormat('D MMM
                                     YYYY') }}</td>
-
                                 <td>{{ $a->jam_masuk ?? '-' }}</td>
                                 <td>{{ $a->jam_keluar ?? '-' }}</td>
-
                                 {{-- STATUS --}}
                                 <td>
                                     @php
@@ -273,34 +247,27 @@
                                         {{ $a->status }}
                                     </span>
                                 </td>
-
                                 {{-- AKSI --}}
                                 <td>
-
                                     <a href="{{ route('admin.absensi.show', $a->id) }}"
                                         class="btn btn-datatable btn-icon btn-transparent-dark me-2">
                                         <i data-feather="eye"></i>
                                     </a>
-
                                     <a href="{{ route('admin.absensi.edit', $a->id) }}"
                                         class="btn btn-datatable btn-icon btn-transparent-dark me-2">
                                         <i data-feather="edit"></i>
                                     </a>
-
                                     <button class="btn btn-datatable btn-icon btn-transparent-dark text-danger"
                                         onclick="confirmDelete({{ $a->id }})">
                                         <i data-feather="trash-2"></i>
                                     </button>
-
                                     <form id="delete-form-{{ $a->id }}"
                                         action="{{ route('admin.absensi.destroy', $a->id) }}" method="POST"
                                         style="display:none;">
                                         @csrf
                                         @method('DELETE')
                                     </form>
-
                                 </td>
-
                             </tr>
                             @empty
                             <tr>
@@ -311,16 +278,13 @@
                             @endforelse
                             @endif
                         </tbody>
-
                     </table>
                 </div>
                 {{-- <div class="mt-3">
                     {{ $absensi->links() }}
                 </div> --}}
-
             </div>
         </div>
-
     </div>
 </main>
 @endsection

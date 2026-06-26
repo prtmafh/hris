@@ -4,7 +4,6 @@
 
 @section('content')
 <main>
-
     {{-- HEADER --}}
     <header class="page-header page-header-compact page-header-light border-bottom bg-white mb-4">
         <div class="container-fluid px-4">
@@ -157,36 +156,28 @@
         <form action="{{ route('admin.daftar_admin.store') }}" method="POST">
             @csrf
             <div class="modal-content">
-
                 <div class="modal-header">
                     <h5 class="modal-title"><i data-feather="shield"></i> Tambah Admin</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-
                 <div class="modal-body">
-
                     <div class="mb-3">
                         <label class="form-label">NIK</label>
                         <input type="text" name="nik" class="form-control" required>
                     </div>
-
                     <div class="mb-3">
                         <label class="form-label">Password</label>
                         <input type="password" name="password" class="form-control" required>
                     </div>
-
                     <div class="mb-0">
                         <label class="form-label">Konfirmasi Password</label>
                         <input type="password" name="password_confirmation" class="form-control" required>
                     </div>
-
                 </div>
-
                 <div class="modal-footer">
                     <button type="button" class="btn btn-light" data-bs-dismiss="modal">Batal</button>
                     <button type="submit" class="btn btn-primary">Simpan</button>
                 </div>
-
             </div>
         </form>
     </div>
@@ -199,36 +190,28 @@
             @csrf
             @method('PUT')
             <div class="modal-content">
-
                 <div class="modal-header">
                     <h5 class="modal-title"><i data-feather="edit"></i> Edit Admin</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-
                 <div class="modal-body">
-
                     <div class="mb-3">
                         <label class="form-label">NIK</label>
                         <input type="text" id="edit_nik" name="nik" class="form-control" required>
                     </div>
-
                     <div class="mb-3">
                         <label class="form-label">Password Baru</label>
                         <input type="password" name="password" class="form-control">
                     </div>
-
                     <div class="mb-0">
                         <label class="form-label">Konfirmasi Password</label>
                         <input type="password" name="password_confirmation" class="form-control">
                     </div>
-
                 </div>
-
                 <div class="modal-footer">
                     <button type="button" class="btn btn-light" data-bs-dismiss="modal">Batal</button>
                     <button type="submit" class="btn btn-primary">Simpan</button>
                 </div>
-
             </div>
         </form>
     </div>

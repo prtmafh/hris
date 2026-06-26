@@ -4,114 +4,82 @@
 
 @section('content')
 <main>
-
-    {{-- HEADER --}}
     <header class="page-header page-header-compact page-header-light border-bottom bg-white mb-4">
         <div class="container-xl px-4">
             <div class="page-header-content">
                 <div class="row align-items-center justify-content-between pt-3">
-
                     <div class="col-auto mb-3">
                         <h1 class="page-header-title">
                             <div class="page-header-icon"><i data-feather="user-plus"></i></div>
                             Tambah Karyawan
                         </h1>
                     </div>
-
                     <div class="col-auto mb-3">
                         <a href="{{ route('admin.daftar_karyawan') }}" class="btn btn-sm btn-light">
                             <i data-feather="arrow-left"></i> Kembali
                         </a>
                     </div>
-
                 </div>
             </div>
         </div>
     </header>
 
     <div class="container-xl px-4 mt-4">
-
         {{-- NAV --}}
         {{-- <nav class="nav nav-borders">
             <a class="nav-link active ms-0">Create Employee</a>
         </nav>
-
         <hr class="mt-0 mb-4"> --}}
-
         <form id="formTambahKaryawan" action="{{ route('admin.karyawan.store') }}" method="POST"
             enctype="multipart/form-data">
             @csrf
-
             <div class="row">
-
-                {{-- LEFT --}}
                 <div class="col-xl-4">
                     <div class="card mb-4 mb-xl-0">
                         <div class="card-header">Foto Profile </div>
                         <div class="card-body text-center">
-
                             <img id="preview" class="img-account-profile rounded-circle mb-2 d-none" width="120">
-
                             <div class="small text-muted mb-3">
                                 JPG atau PNG maksimal 2 MB
                             </div>
-
                             <input type="file" name="foto" id="foto" class="form-control">
-
                         </div>
                     </div>
                 </div>
-
                 {{-- RIGHT --}}
                 <div class="col-xl-8">
-
                     <div class="card mb-4">
                         <div class="card-header">Detail Profile</div>
-
                         <div class="card-body">
-
-                            {{-- DATA PRIBADI --}}
                             <div class="row gx-3 mb-3">
-
                                 <div class="col-md-6">
                                     <label class="small mb-1">Nama</label>
                                     <input type="text" name="nama" class="form-control" required>
                                 </div>
-
                                 <div class="col-md-6">
                                     <label class="small mb-1">NIK</label>
                                     <input type="text" name="nik" class="form-control" required>
                                 </div>
-
                             </div>
-
                             <div class="row gx-3 mb-3">
-
                                 <div class="col-md-6">
                                     <label class="small mb-1">Tanggal Lahir</label>
                                     <input type="date" name="tgl_lahir" class="form-control" required>
                                 </div>
-
                                 <div class="col-md-6">
                                     <label class="small mb-1">No HP</label>
                                     <input type="text" name="no_hp" class="form-control">
                                 </div>
-
                             </div>
-
                             <div class="mb-3">
                                 <label class="small mb-1">Alamat</label>
                                 <textarea name="alamat" class="form-control"></textarea>
                             </div>
-
-                            {{-- PEKERJAAN --}}
                             <div class="row gx-3 mb-3">
-
                                 <div class="col-md-6">
                                     <label class="small mb-1">Tanggal Masuk</label>
                                     <input type="date" name="tgl_masuk" class="form-control" required>
                                 </div>
-
                                 <div class="col-md-6">
                                     <label class="small mb-1">Jabatan</label>
                                     <select name="jabatan_id" class="form-select" required>
@@ -121,9 +89,7 @@
                                         @endforeach
                                     </select>
                                 </div>
-
                             </div>
-
                             <div class="mb-3">
                                 <label class="small mb-1">Status</label>
                                 <select name="status" class="form-select">
@@ -131,10 +97,7 @@
                                     <option value="nonaktif">Nonaktif</option>
                                 </select>
                             </div>
-
-                            {{-- GAJI --}}
                             <div class="row gx-3 mb-3">
-
                                 <div class="col-md-6">
                                     <label class="small mb-1">Jenis Gaji</label>
                                     <select name="status_gaji" id="status_gaji" class="form-select" required>
@@ -143,36 +106,26 @@
                                         <option value="bulanan">Bulanan</option>
                                     </select>
                                 </div>
-
                                 <div class="col-md-6" id="wrap_gaji_pokok">
                                     <label class="small mb-1">Gaji Pokok</label>
                                     <input type="text" name="gaji_pokok" id="gaji_pokok" class="form-control">
                                 </div>
-
                                 <div class="col-md-6" id="wrap_gaji_harian">
                                     <label class="small mb-1">Gaji Harian</label>
                                     <input type="text" name="gaji_per_hari" id="gaji_per_hari" class="form-control">
                                 </div>
-
                             </div>
-
                             <div class="alert alert-info">
                                 Login menggunakan <b>NIK</b> dan password <b>tanggal lahir</b>
                             </div>
-
                         </div>
                     </div>
-
-                    {{-- ACTION --}}
                     <div class="d-flex justify-content-end gap-2">
                         <a href="{{ route('admin.daftar_karyawan') }}" class="btn btn-light">Batal</a>
                         <button type="submit" class="btn btn-primary">Simpan</button>
                     </div>
-
                 </div>
-
             </div>
-
         </form>
     </div>
 </main>

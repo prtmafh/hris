@@ -104,25 +104,17 @@
                             @endphp
 
                             <tr>
-
-                                {{-- No --}}
                                 <td class="fw-semibold text-muted">{{ $index + 1 }}</td>
-
-                                {{-- Pelamar --}}
                                 <td>
                                     <div class="fw-semibold">{{ $item->nama }}</div>
                                     <div class="small text-muted">{{ $item->email }}</div>
                                 </td>
-
-                                {{-- Lowongan --}}
                                 <td>
                                     <div class="fw-semibold">{{ $item->lowongan->judul ?? '-' }}</div>
                                     <div class="small text-muted">
                                         {{ optional(optional($item->lowongan)->jabatan)->nama_jabatan ?? '-' }}
                                     </div>
                                 </td>
-
-                                {{-- Status --}}
                                 <td>
                                     <span class="badge bg-{{ $badgeColor }}-soft text-{{ $badgeColor }}">
                                         {{ $statusLabel }}
@@ -133,78 +125,54 @@
                                     </div>
                                     @endif
                                 </td>
-
-                                {{-- Aksi --}}
                                 <td class="text-center">
-
-                                    {{-- Detail --}}
                                     <button class="btn btn-datatable btn-icon btn-transparent-dark me-1"
                                         data-bs-toggle="modal" data-bs-target="#modalDetail{{ $item->id }}"
                                         title="Lihat Detail">
                                         <i data-feather="eye"></i>
                                     </button>
-
-                                    {{-- Perbarui Status --}}
                                     <button class="btn btn-datatable btn-icon btn-transparent-dark me-1"
                                         data-bs-toggle="modal" data-bs-target="#modalEdit{{ $item->id }}"
                                         title="Perbarui Status">
                                         <i data-feather="edit"></i>
                                     </button>
-
-                                    {{-- Kirim Panggilan --}}
                                     <button class="btn btn-datatable btn-icon btn-transparent-dark me-1"
                                         data-bs-toggle="modal" data-bs-target="#modalPanggilan{{ $item->id }}"
                                         title="Kirim Panggilan Wawancara">
                                         <i data-feather="mail"></i>
                                     </button>
-
-                                    {{-- Kirim Pembaruan Proses --}}
                                     <button class="btn btn-datatable btn-icon btn-transparent-dark me-1"
                                         data-bs-toggle="modal" data-bs-target="#modalUpdateProses{{ $item->id }}"
                                         title="Kirim Pembaruan Proses">
                                         <i data-feather="send"></i>
                                     </button>
-
-                                    {{-- Hapus --}}
                                     <button class="btn btn-datatable btn-icon btn-transparent-dark text-danger"
                                         onclick="confirmDeletePelamar({{ $item->id }})" title="Hapus">
                                         <i data-feather="trash-2"></i>
                                     </button>
-
                                     <form id="delete-pelamar-{{ $item->id }}"
                                         action="{{ route('admin.pelamar.destroy', $item->id) }}" method="POST"
                                         class="d-none">
                                         @csrf
                                         @method('DELETE')
                                     </form>
-
                                 </td>
                             </tr>
 
-
                             {{-- MODAL DETAIL --}}
                             <div class="modal fade" id="modalDetail{{ $item->id }}" tabindex="-1">
-
                                 <div class="modal-dialog modal-xl modal-dialog-centered">
                                     <div class="modal-content border-0 shadow-lg">
-
-                                        {{-- HEADER --}}
                                         <div class="modal-header border-bottom bg-white">
                                             <h5 class="modal-title d-flex align-items-center">
                                                 <i data-feather="user" class="me-2"></i>
                                                 Profil Pelamar
                                             </h5>
-
                                             <button type="button" class="btn-close" data-bs-dismiss="modal">
                                             </button>
                                         </div>
-
-
-
                                         <div class="modal-body p-4">
-
                                             <div class="row">
-
                                                 {{-- LEFT SIDEBAR --}}
                                                 <div class="col-lg-4">
 

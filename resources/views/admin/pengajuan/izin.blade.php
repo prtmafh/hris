@@ -4,7 +4,6 @@
 
 @section('content')
 <main>
-
     {{-- HEADER --}}
     <header class="page-header page-header-compact page-header-light border-bottom bg-white mb-4 py-2">
         <div class="container-xl px-4">
@@ -22,32 +21,23 @@
             </div>
         </div>
     </header>
-
     <div class="container-xl px-4">
-
         @php
         $hasFilter = request()->filled('tanggal') || request()->filled('karyawan_id') || request()->filled('status');
         @endphp
-
-        {{-- FILTER --}}
         <div class="card mb-4">
             <div class="card-header d-flex justify-content-between align-items-center">
-
                 <div>
                     <div class="fw-semibold">Filter Data Izin</div>
                     {{-- <div class="small text-muted">Cari data izin dengan cepat</div> --}}
                 </div>
-
                 @if($hasFilter)
                 <a href="{{ route('admin.izin') }}" class="btn btn-light btn-sm">
                     <i data-feather="x"></i>
                 </a>
                 @endif
-
             </div>
-
             <div class="card-body">
-
                 <form method="GET" action="{{ route('admin.izin') }}" class="row gx-2 gy-2 align-items-end">
 
                     <div class="col-md-4">
@@ -89,17 +79,12 @@
                     </div>
 
                 </form>
-
             </div>
         </div>
-
-        {{-- TABLE --}}
         <div class="card">
-
             <div class="card-header">
                 Daftar Pengajuan Izin
             </div>
-
             <div class="card-body">
                 <div class="table-responsive">
                     <table id="datatablesSimple" class="table ">
@@ -214,10 +199,8 @@
                 <div class="mt-4">
                     {{ $izin->withQueryString()->links() }}
                 </div>
-
             </div>
         </div>
-
     </div>
 </main>
 @endsection
