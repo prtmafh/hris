@@ -11,7 +11,13 @@ class PimpinanMiddleware
 {
     public function handle(Request $request, Closure $next): Response
     {
-        if (!Auth::check() || Auth::user()->role !== 'pimpinan') {
+        if (!Auth::check()) {
+            abort(403, 'Akses ditolak.');
+        }
+
+        $user = Auth::user();
+
+        if (!$user || $user->role_id !== 2) {
             abort(403, 'Akses ditolak.');
         }
 

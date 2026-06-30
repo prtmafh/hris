@@ -13,9 +13,9 @@ class LemburController extends Controller
 {
     public function index(Request $request)
     {
-        /** @var User $user */
-        $user = Auth::user();
-        $karyawan = $user->karyawan()->firstOrFail();
+        /** @var \App\Models\Karyawan $user */
+        $karyawan = Auth::user();
+        // $karyawan = $user->karyawan()->firstOrFail();
 
         $lembur = Lembur::where('karyawan_id', $karyawan->id)
             ->orderByDesc('tanggal')
@@ -27,9 +27,9 @@ class LemburController extends Controller
 
     public function store(Request $request)
     {
-        /** @var User $user */
-        $user = Auth::user();
-        $karyawan = $user->karyawan()->firstOrFail();
+        /** @var \App\Models\Karyawan $user */
+        $karyawan = Auth::user();
+        // $karyawan = $user->karyawan()->firstOrFail();
 
         $request->validate([
             'tanggal'     => 'required|date',

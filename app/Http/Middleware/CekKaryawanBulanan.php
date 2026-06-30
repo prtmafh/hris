@@ -11,13 +11,16 @@ class CekKaryawanBulanan
 {
     public function handle(Request $request, Closure $next): Response
     {
+        if (!Auth::check()) {
+            abort(403, 'Silakan login terlebih dahulu.');
+        }
+
         $user = Auth::user();
 
         if (
-            $user &&
-            $user->role === 'karyawan' &&
-            $user->karyawan &&
-            $user->karyawan->status_gaji === 'harian'
+            $user->role &&
+            $user->role->nama_role === 'karyawan' &&
+            $user->status_gaji === 'harian'
         ) {
             abort(403, 'Fitur ini hanya tersedia untuk karyawan bulanan.');
         }

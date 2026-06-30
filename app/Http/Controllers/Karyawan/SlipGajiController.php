@@ -13,9 +13,9 @@ class SlipGajiController extends Controller
 {
     public function index(Request $request)
     {
-        /** @var User $user */
-        $user = Auth::user();
-        $karyawan = $user->karyawan()->firstOrFail();
+        /** @var \App\Models\Karyawan $user */
+        $karyawan = Auth::user();
+        // $karyawan = $user->karyawan()->firstOrFail();
 
         $tahun = $request->get('tahun', Carbon::now()->year);
 
@@ -31,9 +31,9 @@ class SlipGajiController extends Controller
     }
     public function showSlip(int $id)
     {
-        /** @var User $user */
-        $user       = Auth::user();
-        $karyawan   = $user->karyawan()->firstOrFail();
+        /** @var \App\Models\Karyawan $user */
+        $karyawan = Auth::user();
+        // $karyawan   = $user->karyawan()->firstOrFail();
         $penggajian = Penggajian::with(['details', 'karyawan.jabatan'])
             ->where('karyawan_id', $karyawan->id)
             ->findOrFail($id);
@@ -43,9 +43,9 @@ class SlipGajiController extends Controller
 
     public function downloadSlipPdf(int $id)
     {
-        /** @var User $user */
-        $user       = Auth::user();
-        $karyawan   = $user->karyawan()->firstOrFail();
+        /** @var \App\Models\Karyawan $user */
+        $karyawan = Auth::user();
+        // $karyawan   = $user->karyawan()->firstOrFail();
         $penggajian = Penggajian::with(['details', 'karyawan.jabatan'])
             ->where('karyawan_id', $karyawan->id)
             ->findOrFail($id);

@@ -10,9 +10,26 @@
                     <div class="nav-link-icon">
                         <i data-feather="home"></i>
                     </div>
-                    Dashboard
+                    Dashboard Absensi
                 </a>
-
+                @if (auth()->user()?->role_id === 1)
+                <a class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}"
+                    href="{{ route('admin.dashboard') }}">
+                    <div class="nav-link-icon">
+                        <i data-feather="home"></i>
+                    </div>
+                    Dashboard Admin
+                </a>
+                @endif
+                @if (auth()->user()?->role_id === 2)
+                <a class="nav-link {{ request()->routeIs('pimpinan.dashboard') ? 'active' : '' }}"
+                    href="{{ route('pimpinan.dashboard') }}">
+                    <div class="nav-link-icon">
+                        <i data-feather="home"></i>
+                    </div>
+                    Dashboard Pimpinan
+                </a>
+                @endif
                 <div class="sidenav-menu-heading">Menu</div>
 
                 <a class="nav-link {{ request()->routeIs('karyawan.absensi') ? 'active' : '' }}"
@@ -22,7 +39,7 @@
                     </div>
                     Absensi Saya
                 </a>
-                @if (auth()->user()->karyawan?->status_gaji === 'bulanan')
+                @if (auth()->user()?->status_gaji === 'bulanan')
                 <a class="nav-link {{ request()->routeIs('karyawan.izin*') ? 'active' : '' }}"
                     href="{{ route('karyawan.izin') }}">
                     <div class="nav-link-icon">
@@ -62,7 +79,7 @@
             <div class="sidenav-footer-content">
                 <div class="sidenav-footer-subtitle">Logged in as:</div>
                 <div class="sidenav-footer-title text-capitalize">
-                    {{ auth()->user()->karyawan->nama ?? auth()->user()->nik }}
+                    {{ auth()->user()->nama ?? auth()->user()->nik }}
                 </div>
             </div>
         </div>

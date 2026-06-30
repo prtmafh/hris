@@ -129,7 +129,7 @@ class PenilaianController extends Controller
 
         PenilaianKaryawan::create([
             'karyawan_id' => $request->karyawan_id,
-            'penilaian_oleh' => Auth::id(),
+            'penilaian_oleh' => Auth::user()->id,
             'periode_tahun' => $request->periode_tahun,
             'nilai_kehadiran' => $nilaiKehadiran,
             'nilai_kedisiplinan' => $request->nilai_kedisiplinan,

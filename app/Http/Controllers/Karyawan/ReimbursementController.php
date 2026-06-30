@@ -13,9 +13,9 @@ class ReimbursementController extends Controller
 {
     public function index()
     {
-        /** @var User $user */
-        $user = Auth::user();
-        $karyawan = $user->karyawan()->firstOrFail();
+        /** @var \App\Models\Karyawan $user */
+        $karyawan = Auth::user();
+        // $karyawan = $user->karyawan()->firstOrFail();
         $kategoriList = KategoriReimbursement::where('status', 'aktif')->orderBy('nama')->get();
         $reimbursement = Reimbursement::with(['kategoriReimbursement', 'penyetuju'])
             ->where('karyawan_id', $karyawan->id)
@@ -28,9 +28,9 @@ class ReimbursementController extends Controller
 
     public function store(Request $request)
     {
-        /** @var User $user */
-        $user = Auth::user();
-        $karyawan = $user->karyawan()->firstOrFail();
+        /** @var \App\Models\Karyawan $user */
+        $karyawan = Auth::user();
+        // $karyawan = $user->karyawan()->firstOrFail();
 
         $validated = $request->validate([
             'kategori_reimbursement_id' => 'required|exists:kategori_reimbursement,id',
@@ -62,9 +62,9 @@ class ReimbursementController extends Controller
 
     public function destroy($id)
     {
-        /** @var User $user */
-        $user = Auth::user();
-        $karyawan = $user->karyawan()->firstOrFail();
+        /** @var \App\Models\Karyawan $user */
+        $karyawan = Auth::user();
+        // $karyawan = $user->karyawan()->firstOrFail();
         $reimbursement = Reimbursement::where('karyawan_id', $karyawan->id)->findOrFail($id);
 
         if ($reimbursement->status !== 'pending') {

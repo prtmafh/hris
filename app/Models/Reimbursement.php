@@ -47,6 +47,6 @@ class Reimbursement extends Model
 
     public function penyetuju()
     {
-        return $this->belongsTo(User::class, 'disetujui_oleh');
+        return $this->belongsTo(karyawan::class, 'disetujui_oleh');
     }
 }

@@ -91,9 +91,9 @@
                     <img class="dropdown-user-img"
                         src="{{ asset('sbadmin/assets/img/illustrations/profiles/profile-1.png') }}" />
                     <div class="dropdown-user-details">
-                        <div class="dropdown-user-details-name">Admin
+                        <div class="dropdown-user-details-name">{{Auth::user()->nama ?? "Adminn"}}
                         </div>
-                        <div class="dropdown-user-details-email">{{ Auth::user()->karyawan->nama ?? Auth::user()->nik }}
+                        <div class="dropdown-user-details-email">{{ Auth::user()->nik ?? "-"}}
                         </div>
                     </div>
                 </h6>

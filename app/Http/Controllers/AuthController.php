@@ -11,6 +11,7 @@ class AuthController extends Controller
     {
         return view('auth.login');
     }
+
     public function login(Request $request)
     {
         $credentials = $request->validate([
@@ -18,40 +19,44 @@ class AuthController extends Controller
             'password' => ['required', 'string'],
         ]);
 
-        // Login
         if (!Auth::attempt($credentials)) {
             return back()->withErrors([
-                'error' => 'nik atau password salah!',
+                'error' => 'NIK atau password salah!',
             ])->withInput();
         }
 
         $request->session()->regenerate();
 
-        $user = Auth::user();
+        /** @var \App\Models\Karyawan $karyawan */
+        $karyawan = Auth::user();
 
-        if ($user->status !== 'aktif') {
+        $karyawan->load('role');
+
+        if ($karyawan->status !== 'aktif') {
             Auth::logout();
+
             return back()->withErrors([
                 'error' => 'Akun Anda tidak aktif!',
             ])->withInput();
         }
 
-        if ($user->role === 'admin') {
-            return redirect()->route('admin.dashboard');
-        }
+        switch ($karyawan->role->nama_role) {
+            case 'admin':
+                return redirect()->route('admin.dashboard');
 
-        if ($user->role === 'karyawan') {
-            return redirect()->route('dashboard.karyawan');
-        }
+            case 'karyawan':
+                return redirect()->route('dashboard.karyawan');
 
-        if ($user->role === 'pimpinan') {
-            return redirect()->route('pimpinan.dashboard');
-        }
+            case 'pimpinan':
+                return redirect()->route('pimpinan.dashboard');
 
-        Auth::logout();
-        return redirect()->route('login')->withErrors([
-            'error' => 'Role tidak dikenali!',
-        ]);
+            default:
+                Auth::logout();
+
+                return redirect()->route('login')->withErrors([
+                    'error' => 'Role tidak dikenali!',
+                ]);
+        }
     }
 
     public function logout(Request $request)
@@ -61,6 +66,7 @@ class AuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('login')->with('success', 'Anda berhasil keluar.');
+        return redirect()->route('login')
+            ->with('success', 'Anda berhasil keluar.');
     }
 }

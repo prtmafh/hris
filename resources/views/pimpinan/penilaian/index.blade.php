@@ -34,14 +34,14 @@
 
         <!-- Filter -->
         <div class="card mb-4">
-            <div class="card-header"><i data-feather="filter" class="me-2"></i> Filter</div>
+            <div class="card-header"></i> Filter</div>
             <div class="card-body">
                 <form method="GET" action="{{ route('pimpinan.penilaian.index') }}">
                     <div class="row g-3 align-items-end">
-                        <div class="col-md-3">
-                            <label class="form-label">Tahun</label>
+                        <div class="col-md-4">
+                            <label class="form-label small mb-1">Tahun</label>
 
-                            <select name="tahun" class="form-select">
+                            <select name="tahun" class="form-select form-select-sm">
                                 @foreach($tahunList as $t)
                                 <option value="{{ $t }}" {{ $tahun==$t ? 'selected' : '' }}>
                                     {{ $t }}
@@ -51,7 +51,7 @@
                         </div>
 
                         <div class="col-md-4">
-                            <label class="form-label">Jabatan</label>
+                            <label class="form-label small mb-1">Jabatan</label>
 
                             <select name="jabatan_id" class="form-select">
                                 <option value="">Semua Jabatan</option>
@@ -64,8 +64,8 @@
                             </select>
                         </div>
 
-                        <div class="col-md-2">
-                            <button type="submit" class="btn btn-primary w-100">
+                        <div class="col-md-4">
+                            <button type="submit" class="btn btn-primary btn-sm w-100">
                                 Tampilkan
                             </button>
                         </div>

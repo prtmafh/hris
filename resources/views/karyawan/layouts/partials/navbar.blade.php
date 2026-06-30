@@ -21,7 +21,7 @@
         </li> --}}
         <li class="nav-item dropdown no-caret dropdown-user me-3 me-lg-4">
             @php
-            $authKaryawan = auth()->user()->karyawan;
+            $authKaryawan = auth()->user();
             $avatar = $authKaryawan && $authKaryawan->foto
             ? asset('storage/'.$authKaryawan->foto)
             : asset('sbadmin/assets/img/illustrations/profiles/profile-1.png');

@@ -321,7 +321,7 @@
                                     </div>
                                     @endif
                                 </div>
-
+                                @if (auth()->user()?->status_gaji === 'bulanan')
                                 <div class="info-box p-4">
                                     <div class="small text-uppercase text-muted fw-bold mb-3">Jam Kerja</div>
                                     <div class="d-flex justify-content-between align-items-center mb-3">
@@ -338,6 +338,7 @@
                                         Bila ada kendala, hubungi admin atau mandor sebelum meninggalkan lokasi kerja.
                                     </div>
                                 </div>
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -406,6 +407,7 @@
                             <div class="fw-semibold mb-1">Hadir bulan ini</div>
                             <div class="helper-text">{{ $totalHadirBulanIni }} kali kehadiran tercatat.</div>
                         </div>
+                        @if (auth()->user()?->status_gaji === 'bulanan')
                         <div class="quick-guide-item">
                             <div class="fw-semibold mb-1">Izin menunggu</div>
                             <div class="helper-text">{{ $totalIzinPending }} pengajuan belum diproses.</div>
@@ -417,6 +419,7 @@
                                 bulan ini.
                             </div>
                         </div>
+                        @endif
                         <div class="pt-3">
                             <div class="fw-semibold mb-1">Gaji terbaru</div>
                             @if($penggajianTerbaru)

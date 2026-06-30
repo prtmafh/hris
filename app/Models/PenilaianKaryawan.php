@@ -35,7 +35,7 @@ class PenilaianKaryawan extends Model
 
     public function penilai()
     {
-        return $this->belongsTo(User::class, 'penilaian_oleh');
+        return $this->belongsTo(Karyawan::class, 'penilaian_oleh');
     }
 
     public static function hitungNilaiTotal(float $kehadiran, float $kedisiplinan, float $kinerja): float

@@ -40,12 +40,12 @@
                             <tr>
                                 <th>User</th>
                                 <th>NIK</th>
-                                <th>Role / Jabatan</th>
+                                <th>Jabatan</th>
                                 <th>Status Gaji</th>
                                 <th>Gaji</th>
                                 <th>Status</th>
-                                <th>Joined Date</th>
-                                <th>Actions</th>
+                                <th>Tanggal Masuk</th>
+                                <th>Aksi</th>
                             </tr>
                         </thead>
                         {{--

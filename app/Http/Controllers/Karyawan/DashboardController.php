@@ -17,9 +17,9 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        /** @var \App\Models\User $user */
-        $user = Auth::user();
-        $karyawan = $user->karyawan()->with('jabatan')->firstOrFail();
+        /** @var \App\Models\Karyawan $user */
+        $karyawan = Auth::user();
+        // $karyawan = $user->karyawan()->with('jabatan')->firstOrFail();
 
         $today        = Carbon::today();
         $currentMonth = $today->month;

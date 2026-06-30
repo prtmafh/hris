@@ -11,7 +11,13 @@ class KaryawanMiddleware
 {
     public function handle(Request $request, Closure $next): Response
     {
-        if (!Auth::check() || Auth::user()->role !== 'karyawan') {
+        if (!Auth::check()) {
+            abort(403, 'Akses ditolak.');
+        }
+
+        $user = Auth::user();
+
+        if (!$user || $user->role_id !== 3) {
             abort(403, 'Akses ditolak.');
         }
 

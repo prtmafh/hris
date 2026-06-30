@@ -26,7 +26,7 @@
                     <div class="dropdown-user-details">
                         <div class="dropdown-user-details-name">Pimpinan
                         </div>
-                        <div class="dropdown-user-details-email">{{ Auth::user()->karyawan->nama ?? Auth::user()->nik }}
+                        <div class="dropdown-user-details-email">{{ Auth::user()->nik ?? "-" }}
                         </div>
                     </div>
                 </h6>

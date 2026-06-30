@@ -11,7 +11,13 @@ class AdminMiddleware
 {
     public function handle(Request $request, Closure $next): Response
     {
-        if (!Auth::check() || Auth::user()->role !== 'admin') {
+        if (!Auth::check()) {
+            abort(403, 'Akses ditolak.');
+        }
+
+        $user = Auth::user();
+
+        if (!$user || $user->role_id !== 1) {
             abort(403, 'Akses ditolak.');
         }
 

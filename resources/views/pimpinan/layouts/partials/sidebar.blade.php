@@ -13,9 +13,13 @@ $penilaian = request()->is('pimpinan/penilaian*');
                 <a class="nav-link {{ request()->is('pimpinan/dashboard*') ? 'active' : '' }}"
                     href="{{ route('pimpinan.dashboard') }}">
                     <div class="nav-link-icon"><i data-feather="home"></i></div>
-                    Dashboard
+                    Dashboard Pimpinan
                 </a>
-
+                <a class="nav-link {{ request()->is('/dashboard') ? 'active' : '' }}"
+                    href="{{ route('dashboard.karyawan') }}">
+                    <div class="nav-link-icon"><i data-feather="home"></i></div>
+                    Dashboard Absensi
+                </a>
                 <div class="sidenav-menu-heading">Menu</div>
 
                 <a class="nav-link {{ $laporan ? '' : 'collapsed' }}" href="#" data-bs-toggle="collapse"
@@ -51,8 +55,8 @@ $penilaian = request()->is('pimpinan/penilaian*');
                     <nav class="sidenav-menu-nested nav">
                         <a class="nav-link {{ request()->is('pimpinan/penilaian*') ? 'active' : '' }}"
                             href="{{ route('pimpinan.penilaian.index') }}">Data Penilaian</a>
-                        <a class="nav-link {{ request()->is('pimpinan/penilaian/tambah*') ? 'active' : '' }}"
-                            href="{{ route('pimpinan.penilaian.create') }}">Beri Penilaian</a>
+                        {{-- <a class="nav-link {{ request()->is('pimpinan/penilaian/tambah*') ? 'active' : '' }}"
+                            href="{{ route('pimpinan.penilaian.create') }}">Beri Penilaian</a> --}}
                     </nav>
                 </div>
 
@@ -61,7 +65,7 @@ $penilaian = request()->is('pimpinan/penilaian*');
         <div class="sidenav-footer">
             <div class="sidenav-footer-content">
                 <div class="sidenav-footer-subtitle">Login sebagai:</div>
-                <div class="sidenav-footer-title">{{ Auth::user()->karyawan->nama ?? Auth::user()->nik }}</div>
+                <div class="sidenav-footer-title">{{ Auth::user()->nama ?? Auth::user()->nik }}</div>
             </div>
         </div>
     </nav>

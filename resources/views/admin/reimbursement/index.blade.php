@@ -175,12 +175,11 @@
                                     {{-- Bayar --}}
                                     @if($item->status === 'disetujui')
                                     <form action="{{ route('admin.reimbursement.bayar', $item->id) }}" method="POST"
-                                        class="d-inline">
+                                        class="d-inline" id="formTandaiBayar">
                                         @csrf
                                         <button
                                             class="btn btn-datatable btn-icon btn-transparent-dark text-primary me-1"
-                                            onclick="return confirm('Tandai reimbursement ini sudah dibayar?')"
-                                            title="Tandai Dibayar">
+                                            onclick="confirmTandaiBayar(event)" title="Tandai Dibayar">
                                             <i data-feather="dollar-sign"></i>
                                         </button>
                                     </form>
@@ -565,3 +564,27 @@
 </div>
 
 @endsection
+@push('scripts')
+<script>
+    function confirmTandaiBayar(event) {
+    event.preventDefault();
+
+    Swal.fire({
+        title: 'Konfirmasi Pembayaran',
+        text: 'Tandai sebagai sudah dibayar?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#28a745',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Ya, Tandai Dibayar',
+        cancelButtonText: 'Batal',
+    }).then((result) => {
+        if(result.isConfirmed){
+            document.getElementById('formTandaiBayar').submit();
+        }
+    });
+
+    return false;
+}
+</script>
+@endpush

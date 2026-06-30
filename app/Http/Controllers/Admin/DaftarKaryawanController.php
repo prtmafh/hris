@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Jabatan;
 use App\Models\Karyawan;
+use App\Models\Role;
 use App\Models\User;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -16,16 +18,20 @@ class DaftarKaryawanController extends Controller
     public function index()
     {
         $jabatan = Jabatan::all();
-        // $jenis_gaji = JenisGaji::all();
-        // $karyawan = Karyawan::with(['jabatan', 'user'])->orderBy('tgl_masuk', 'desc')->get();
         $user = Auth::user();
-        $karyawan = Karyawan::whereHas('user', function ($query) {
-            $query->where('role', '!=', 'admin');
-        })->with(['jabatan', 'user'])->orderBy('tgl_masuk', 'desc')->get();
 
-        return view('admin.data_karyawan.daftar_karyawan.index', compact('jabatan', 'karyawan', 'user'));
+        $karyawan = Karyawan::with(['jabatan', 'role'])
+            ->whereHas('role', function ($query) {
+                $query->where('nama_role', 'karyawan');
+            })
+            ->latest('tgl_masuk')
+            ->get();
+
+        return view(
+            'admin.data_karyawan.daftar_karyawan.index',
+            compact('jabatan', 'karyawan', 'user')
+        );
     }
-
 
     public function store(Request $request)
     {
@@ -34,6 +40,7 @@ class DaftarKaryawanController extends Controller
             'nik' => 'required|unique:karyawan,nik',
             'tgl_lahir' => 'required|date',
             'tgl_masuk' => 'required|date',
+            // 'role_id' => 'required|exists:role,id',
             'jabatan_id' => 'required|exists:jabatan,id',
             'status_gaji' => 'required|in:harian,bulanan',
             'gaji_pokok' => 'nullable|integer',
@@ -41,41 +48,36 @@ class DaftarKaryawanController extends Controller
             'status' => 'required|in:aktif,nonaktif',
         ], [
             'nik.required' => 'NIK wajib diisi',
-            'nik.unique' => 'NIK sudah terpakai, gunakan NIK lain',
-        ]);
-
-        $user = User::create([
-            'nik' => $request->nik,
-            // 'email' => $request->nik . '@company.com',
-            'password' => Hash::make($request->tgl_lahir),
-            'role' => 'karyawan',
-            'status' => 'aktif'
+            'nik.unique' => 'NIK sudah terpakai.',
         ]);
 
         $foto = null;
+
         if ($request->hasFile('foto')) {
             $foto = $request->file('foto')->store('karyawan', 'public');
         }
-
+        $roleKaryawan = Role::where('nama_role', 'karyawan')->first();
         Karyawan::create([
-            'user_id' => $user->id,
-            'jabatan_id' => $request->jabatan_id,
-            'nama' => $request->nama,
-            'nik' => $request->nik,
-            'tgl_lahir' => $request->tgl_lahir,
-            'alamat' => $request->alamat,
-            'no_hp' => $request->no_hp,
-            'tgl_masuk' => $request->tgl_masuk,
-            'status_gaji' => $request->status_gaji,
-            'gaji_pokok' => $request->gaji_pokok,
-            'gaji_per_hari' => $request->gaji_per_hari,
-            'status' => $request->status,
-            'foto' => $foto,
+            'role_id'        => $roleKaryawan->id,
+            'jabatan_id'     => $request->jabatan_id,
+            'nama'           => $request->nama,
+            'nik'            => $request->nik,
+            'password'       => Hash::make($request->tgl_lahir),
+            'tgl_lahir'      => $request->tgl_lahir,
+            'alamat'         => $request->alamat,
+            'no_hp'          => $request->no_hp,
+            'tgl_masuk'      => $request->tgl_masuk,
+            'status_gaji'    => $request->status_gaji,
+            'gaji_pokok'     => $request->gaji_pokok,
+            'gaji_per_hari'  => $request->gaji_per_hari,
+            'status'         => $request->status,
+            'foto'           => $foto,
         ]);
 
-        return redirect()->route('admin.daftar_karyawan')->with('success', 'Karyawan berhasil ditambahkan');
+        return redirect()
+            ->route('admin.daftar_karyawan')
+            ->with('success', 'Karyawan berhasil ditambahkan.');
     }
-
     public function storeView()
     {
         $jabatan = Jabatan::all();
@@ -85,14 +87,14 @@ class DaftarKaryawanController extends Controller
 
     public function detail($id)
     {
-        $karyawan = Karyawan::with(['jabatan', 'user'])->findOrFail($id);
+        $karyawan = Karyawan::with(['jabatan'])->findOrFail($id);
         $jabatan  = Jabatan::all();
         return view('admin.data_karyawan.daftar_karyawan.detail', compact('karyawan', 'jabatan'));
     }
 
     public function updateView($id)
     {
-        $karyawan = Karyawan::with(['jabatan', 'user'])->findOrFail($id);
+        $karyawan = Karyawan::with(['jabatan'])->findOrFail($id);
         $jabatan  = Jabatan::all();
         return view('admin.data_karyawan.daftar_karyawan.edit', compact('karyawan', 'jabatan'));
     }
@@ -102,17 +104,18 @@ class DaftarKaryawanController extends Controller
         $karyawan = Karyawan::findOrFail($id);
 
         $request->validate([
-            'nama'        => 'required|string|max:255',
-            'nik'         => 'nullable|string|max:20|unique:karyawan,nik,' . $id,
-            'tgl_lahir'   => 'nullable|date',
-            'tgl_masuk'   => 'nullable|date',
-            'alamat'      => 'nullable|string',
-            'no_hp'       => 'nullable|string|max:20',
-            'jabatan_id'  => 'required|exists:jabatan,id',
-            'status_gaji' => 'required|in:bulanan,harian',
-            'gaji_pokok'  => 'nullable|numeric',
-            'gaji_per_hari' => 'nullable|numeric',
-            'foto'        => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'nama'           => 'required|string|max:255',
+            'nik'            => 'required|string|max:20|unique:karyawan,nik,' . $id,
+            'tgl_lahir'      => 'required|date',
+            'tgl_masuk'      => 'required|date',
+            'alamat'         => 'nullable|string',
+            'no_hp'          => 'nullable|string|max:20',
+            'jabatan_id'     => 'required|exists:jabatan,id',
+            'status_gaji'    => 'required|in:bulanan,harian',
+            'gaji_pokok'     => 'nullable|numeric',
+            'gaji_per_hari'  => 'nullable|numeric',
+            // 'status'         => 'required|in:aktif,nonaktif',
+            'foto'           => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
         $data = $request->only([
@@ -126,18 +129,17 @@ class DaftarKaryawanController extends Controller
             'status_gaji',
             'gaji_pokok',
             'gaji_per_hari',
+            'status',
         ]);
 
-        // Handle upload foto
         if ($request->hasFile('foto')) {
-            // Hapus foto lama jika ada
             if ($karyawan->foto) {
                 Storage::disk('public')->delete($karyawan->foto);
             }
+
             $data['foto'] = $request->file('foto')->store('foto_karyawan', 'public');
         }
 
-        // Reset nominal gaji yang tidak dipakai
         if ($request->status_gaji === 'bulanan') {
             $data['gaji_per_hari'] = null;
         } else {
@@ -146,9 +148,11 @@ class DaftarKaryawanController extends Controller
 
         $karyawan->update($data);
 
-        return redirect()->route('admin.karyawan.show', $karyawan->id)
+        return redirect()
+            ->route('admin.karyawan.show', $karyawan->id)
             ->with('success', 'Data karyawan berhasil diperbarui.');
     }
+
     public function toggleKaryawanStatus($id)
     {
         $karyawan = Karyawan::findOrFail($id);
@@ -173,20 +177,18 @@ class DaftarKaryawanController extends Controller
 
     public function resetPassword($id)
     {
-        $karyawan = Karyawan::with('user')->findOrFail($id);
-        $user = $karyawan->user;
+        $karyawan = Karyawan::findOrFail($id);
 
-        if (! $user) {
-            return redirect()->back()->with('error', 'Akun login untuk karyawan ini tidak ditemukan.');
-        }
-
-        if (! $karyawan->tgl_lahir) {
-            return redirect()->back()->with('error', 'Tanggal lahir karyawan belum tersedia, password tidak dapat direset.');
+        if (!$karyawan->tgl_lahir) {
+            return redirect()->back()->with(
+                'error',
+                'Tanggal lahir karyawan belum tersedia, password tidak dapat direset.'
+            );
         }
 
         $passwordDefault = $karyawan->tgl_lahir;
 
-        $user->update([
+        $karyawan->update([
             'password' => Hash::make($passwordDefault),
         ]);
 
@@ -198,7 +200,7 @@ class DaftarKaryawanController extends Controller
 
     public function destroy($id)
     {
-        $karyawan = Karyawan::with('user')->findOrFail($id);
+        $karyawan = Karyawan::findOrFail($id);
 
         if ($karyawan->foto && Storage::disk('public')->exists($karyawan->foto)) {
             Storage::disk('public')->delete($karyawan->foto);

@@ -14,10 +14,10 @@ class ProfileController extends Controller
 {
     public function index()
     {
-        /** @var \App\Models\User $user */
-        $user = Auth::user();
-        $user_id = $user->id;
-        $karyawan = $user->karyawan()->with('jabatan')->firstOrFail();
+        /** @var \App\Models\Karyawan $user */
+        $karyawan = Auth::user();
+        // $user_id = $user->id;
+        // $karyawan = $user->karyawan()->with('jabatan')->firstOrFail();
         // $karyawan = Karyawan::with(['jabatan', 'user'])->findOrFail($id);
         $jabatan  = Jabatan::all();
         $penilaian = PenilaianKaryawan::with([
@@ -35,9 +35,9 @@ class ProfileController extends Controller
             'password' => 'required|min:6|confirmed',
         ]);
 
-        $karyawan = Karyawan::with('user')->findOrFail($id);
+        $karyawan = Karyawan::findOrFail($id);
 
-        $karyawan->user->update([
+        $karyawan->update([
             'password' => Hash::make($request->password),
         ]);
 

@@ -15,9 +15,9 @@ class AbsensiController extends Controller
 {
     public function index(Request $request)
     {
-        /** @var \App\Models\User $user */
-        $user = Auth::user();
-        $karyawan = $user->karyawan()->firstOrFail();
+        /** @var \App\Models\Karyawan $karyawan */
+        $karyawan = Auth::user();
+        // $karyawan = $user->karyawan()->firstOrFail();
         $statusGaji = $karyawan->status_gaji;
 
         $bulan = $request->get('bulan', Carbon::now()->month);
@@ -58,9 +58,9 @@ class AbsensiController extends Controller
 
     public function absenMasuk(Request $request)
     {
-        /** @var \App\Models\User $user */
-        $user = Auth::user();
-        $karyawan = $user->karyawan()->firstOrFail();
+        /** @var \App\Models\Karyawan $user */
+        $karyawan = Auth::user();
+        // $karyawan = $user->karyawan()->firstOrFail();
 
         if ($karyawan->status_gaji === 'harian') {
             return response()->json([
@@ -117,9 +117,9 @@ class AbsensiController extends Controller
 
     public function absenPulang(Request $request)
     {
-        /** @var \App\Models\User $user */
-        $user = Auth::user();
-        $karyawan = $user->karyawan()->firstOrFail();
+        /** @var \App\Models\Karyawan $user */
+        $karyawan = Auth::user();
+        // $karyawan = $user->karyawan()->firstOrFail();
 
         if ($karyawan->status_gaji === 'harian') {
             return response()->json([
@@ -170,9 +170,9 @@ class AbsensiController extends Controller
 
     public function absenMasukSesi(Request $request)
     {
-        /** @var \App\Models\User $user */
-        $user = Auth::user();
-        $karyawan = $user->karyawan()->firstOrFail();
+        /** @var \App\Models\Karyawan $user */
+        $karyawan = Auth::user();
+        // $karyawan = $user->karyawan()->firstOrFail();
 
         if ($karyawan->status_gaji !== 'harian') {
             return response()->json([
@@ -256,9 +256,9 @@ class AbsensiController extends Controller
 
     public function absenPulangSesi(Request $request)
     {
-        /** @var \App\Models\User $user */
-        $user = Auth::user();
-        $karyawan = $user->karyawan()->firstOrFail();
+        /** @var \App\Models\Karyawan $user */
+        $karyawan = Auth::user();
+        // $karyawan = $user->karyawan()->firstOrFail();
 
         if ($karyawan->status_gaji !== 'harian') {
             return response()->json([

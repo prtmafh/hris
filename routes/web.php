@@ -45,10 +45,16 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
 
     Route::get('/admin/daftar_admin', [DaftarAdminController::class, 'index'])->name('admin.daftar_admin');
+
+    Route::get('/admin/daftar_admin/tambah', [DaftarAdminController::class, 'storeView'])->name('admin.daftar_admin.create');
     Route::post('/admin/daftar_admin', [DaftarAdminController::class, 'store'])->name('admin.daftar_admin.store');
+    Route::get('admin/daftar_admin/detail_karyawan/{id}', [DaftarAdminController::class, 'detail'])->name('admin.daftar_admin.show');
+    Route::get('admin/daftar_admin/edit_karyawan/{id}', [DaftarAdminController::class, 'updateView'])->name('admin.daftar_admin.edit');
     Route::put('/admin/daftar_admin/{id}', [DaftarAdminController::class, 'update'])->name('admin.daftar_admin.update');
     Route::post('/admin/daftar_admin/{id}/toggle-status', [DaftarAdminController::class, 'toggleAdminStatus'])->name('admin.daftar_admin.toggleStatus');
     Route::delete('/admin/daftar_admin/{id}', [DaftarAdminController::class, 'destroy'])->name('admin.daftar_admin.destroy');
+    Route::post('/admin/daftar_admin/{id}/toggle-karyawan-status', [DaftarAdminController::class, 'toggleKaryawanStatus'])->name('admin.daftar_admin.toggleKaryawanStatus');
+    Route::post('/admin/daftar_admin/{id}/reset-password', [DaftarAdminController::class, 'resetPassword'])->name('admin.daftar_admin.resetPassword');
 
     Route::get('/admin/jabatan', [JabatanController::class, 'index'])->name('admin.jabatan');
     Route::post('/admin/jabatan', [JabatanController::class, 'store'])->name('admin.jabatan.store');
@@ -148,7 +154,7 @@ Route::middleware(['auth', 'pimpinan'])->prefix('pimpinan')->group(function () {
     Route::delete('/penilaian/{id}', [PimpinanPenilaianController::class, 'destroy'])->name('pimpinan.penilaian.destroy');
 });
 
-Route::middleware(['auth', 'karyawan'])->group(function () {
+Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [KaryawanDashboardController::class, 'index'])->name('dashboard.karyawan');
     Route::post('/absen/masuk', [KaryawanAbsensiController::class, 'absenMasuk'])->name('absen.masuk');
     Route::post('/absen/pulang', [KaryawanAbsensiController::class, 'absenPulang'])->name('absen.pulang');

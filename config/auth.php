@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\User;
+use App\Models\Karyawan;
 
 return [
 
@@ -62,14 +62,22 @@ return [
     */
 
     'providers' => [
+        // 'users' => [
+        //     'driver' => 'eloquent',
+        //     'model' => env('AUTH_MODEL', User::class),
+        // ],
+
+        // 'providers' => [
+        //     'users' => [
+        //         'driver' => 'eloquent',
+        //         'model' => App\Models\Karyawan::class,
+        //     ],
+        // ],
+        // 'providers' => [
         'users' => [
             'driver' => 'eloquent',
-            'model' => env('AUTH_MODEL', User::class),
+            'model' => env('AUTH_MODEL', Karyawan::class),
         ],
-
-        // 'users' => [
-        //     'driver' => 'database',
-        //     'table' => 'users',
         // ],
     ],
 

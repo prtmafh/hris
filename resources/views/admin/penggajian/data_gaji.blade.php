@@ -35,13 +35,13 @@
 
     <div class="container-xl px-4">
 
-        @if(session('success'))
+        {{-- @if(session('success'))
         <div class="alert alert-success alert-dismissible fade show shadow-sm">
             {{ session('success') }}
             <button class="btn-close" data-bs-dismiss="alert"></button>
         </div>
         @endif
-
+        --}}
 
         {{-- FILTER --}}
         <div class="card mb-4">
@@ -227,41 +227,38 @@
 
     </div>
 </main>
-
-
-
-{{-- MODAL GENERATE (LOGIC TIDAK DIUBAH, HANYA STYLE) --}}
+{{-- MODAL GENERATE --}}
 <div class="modal fade" id="modalGenerateGaji" tabindex="-1">
 
     <div class="modal-dialog modal-dialog-centered">
-        <form method="POST" action="{{ route('admin.penggajian.generate') }}">
-            @csrf
 
-            <div class="modal-content">
 
-                <div class="modal-header">
-                    <h5 class="modal-title">
-                        <i data-feather="cpu"></i>
-                        Generate Gaji Otomatis
-                    </h5>
+        <div class="modal-content">
 
-                    <button class="btn-close" data-bs-dismiss="modal"></button>
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i data-feather="cpu"></i>
+                    Generate Gaji Otomatis
+                </h5>
+
+                <button class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+
+            <div class="modal-body">
+
+                <div class="alert alert-primary-soft mb-4">
+                    Sistem akan generate penggajian otomatis untuk periode terpilih.
                 </div>
 
+                <div class="row gx-3">
 
-                <div class="modal-body">
-
-                    <div class="alert alert-primary-soft mb-4">
-                        Sistem akan generate penggajian otomatis untuk periode terpilih.
-                    </div>
-
-                    <div class="row gx-3">
-
-                        <div class="col-md-6">
-                            <label class="small mb-1">
-                                Bulan
-                            </label>
-
+                    <div class="col-md-6">
+                        <label class="small mb-1">
+                            Bulan
+                        </label>
+                        <form method="POST" action="{{ route('admin.penggajian.generate') }}">
+                            @csrf
                             <select name="bulan" class="form-select" required>
 
                                 @php
@@ -275,41 +272,41 @@
                                     @endfor
 
                             </select>
-                        </div>
+                    </div>
 
 
-                        <div class="col-md-6">
-                            <label class="small mb-1">
-                                Tahun
-                            </label>
+                    <div class="col-md-6">
+                        <label class="small mb-1">
+                            Tahun
+                        </label>
 
-                            <select name="tahun" class="form-select" required>
+                        <select name="tahun" class="form-select" required>
 
-                                @for($y=now()->year;$y>=now()->year-3;$y--)
-                                <option value="{{ $y }}" {{ $y==now()->year?'selected':'' }}>
-                                    {{ $y }}
-                                </option>
-                                @endfor
+                            @for($y=now()->year;$y>=now()->year-3;$y--)
+                            <option value="{{ $y }}" {{ $y==now()->year?'selected':'' }}>
+                                {{ $y }}
+                            </option>
+                            @endfor
 
-                            </select>
-                        </div>
-
+                        </select>
                     </div>
 
                 </div>
 
-
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">
-                        Batal
-                    </button>
-
-                    <button type="submit" class="btn btn-primary">
-                        Generate
-                    </button>
-                </div>
-
             </div>
+
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal">
+                    Batal
+                </button>
+
+                <button type="submit" class="btn btn-primary">
+                    Generate
+                </button>
+            </div>
+
+        </div>
         </form>
     </div>
 </div>

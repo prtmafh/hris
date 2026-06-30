@@ -16,7 +16,7 @@ class DashboardController extends Controller
     {
         $today = Carbon::today();
 
-        $totalKaryawan = Karyawan::where('status', 'aktif')->count();
+        $totalKaryawan = Karyawan::where('status', 'aktif')->whereIn('role_id', [3])->count();
 
         $absensiHariIni = Absensi::with(['karyawan.jabatan'])
             ->whereDate('tanggal', $today)

@@ -16,10 +16,10 @@
                         </h1>
                     </div>
                     <div class="col-auto mb-3">
-                        <a href="{{ route('admin.daftar_karyawan') }}" class="btn btn-sm btn-light">
+                        <a href="{{ route('admin.daftar_admin') }}" class="btn btn-sm btn-light">
                             <i data-feather="arrow-left"></i> Kembali
                         </a>
-                        <a href="{{ route('admin.karyawan.edit', $karyawan->id) }}"
+                        <a href="{{ route('admin.daftar_admin.edit', $karyawan->id) }}"
                             class="btn btn-sm btn-light text-primary ms-1">
                             <i data-feather="edit"></i> Edit
                         </a>
@@ -64,7 +64,7 @@
                                 <div class="small fw-semibold">Status Karyawan</div>
                                 <div class="text-muted small">Status kepegawaian</div>
                             </div>
-                            <form action="{{ route('admin.karyawan.toggleKaryawanStatus', $karyawan->id) }}"
+                            <form action="{{ route('admin.daftar_admin.toggleKaryawanStatus', $karyawan->id) }}"
                                 method="POST">
                                 @csrf
                                 <div class="form-check form-switch mb-0">
@@ -99,7 +99,7 @@
                             Password akan direset ke:
                             <strong>{{ $karyawan->tgl_lahir ?? '-' }}</strong>
                         </div>
-                        <form action="{{ route('admin.karyawan.resetPassword', $karyawan->id) }}" method="POST"
+                        <form action="{{ route('admin.daftar_admin.resetPassword', $karyawan->id) }}" method="POST"
                             onsubmit="return confirmResetPassword(event, '{{ addslashes($karyawan->nama) }}', '{{ $karyawan->tgl_lahir ?? '-' }}')">
                             @csrf
                             <button type="submit" class="btn btn-danger w-100">

@@ -77,7 +77,7 @@ class ReimbursementController extends Controller
             'jumlah_disetujui' => $jumlahDisetujui,
             'status' => 'disetujui',
             'catatan_approval' => $validated['catatan_approval'] ?? null,
-            'disetujui_oleh' => Auth::id(),
+            'disetujui_oleh' => Auth::user()->id,
             'tgl_disetujui' => now(),
         ]);
 

@@ -147,7 +147,7 @@ class DataAbsensiController extends Controller
         $bulan = $request->get('bulan');
 
         $karyawanList = Karyawan::with('jabatan')
-            ->whereHas('user', fn($q) => $q->where('role', 'karyawan'))
+            ->whereIn('role_id',  [1, 3])
             ->orderBy('nama')
             ->get();
 

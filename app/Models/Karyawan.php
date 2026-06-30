@@ -2,34 +2,22 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Notifications\Notifiable;
 
-// #[Fillable([
-//     'user_id',
-//     'jabatan_id',
-//     'nama',
-//     'alamat',
-//     'no_hp',
-//     'tgl_masuk',
-//     'status_gaji',
-//     'gaji_pokok',
-//     'gaji_per_hari',
-//     'status',
-//     'kuota_izin',
-//     'foto'
-// ])]
-class Karyawan extends Model
+class Karyawan extends Authenticatable
 {
-    use HasFactory;
+    use HasFactory, Notifiable;
 
     protected $table = 'karyawan';
+
     protected $fillable = [
-        'user_id',
+        'role_id',
         'jabatan_id',
         'nama',
         'nik',
+        'password',
         'tgl_lahir',
         'alamat',
         'no_hp',
@@ -41,16 +29,39 @@ class Karyawan extends Model
         'kuota_izin',
         'foto',
     ];
-    /**
-     * Relasi ke user (1:1)
-     */
-    public function user()
+
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
+
+    protected function casts(): array
     {
-        return $this->belongsTo(User::class);
+        return [
+            'password' => 'hashed',
+            // 'tgl_lahir' => 'date',
+            // 'tgl_masuk' => 'date',
+        ];
     }
 
     /**
-     * Relasi ke jabatan
+     * Username yang digunakan untuk login.
+     */
+    public function getAuthIdentifierName()
+    {
+        return 'nik';
+    }
+
+    /**
+     * Relasi Role
+     */
+    public function role()
+    {
+        return $this->belongsTo(Role::class);
+    }
+
+    /**
+     * Relasi Jabatan
      */
     public function jabatan()
     {
@@ -58,34 +69,10 @@ class Karyawan extends Model
     }
 
     /**
-     * Relasi ke absensi
+     * Relasi Absensi
      */
     public function absensi()
     {
         return $this->hasMany(Absensi::class);
     }
-
-    /**
-     * Relasi ke izin
-     */
-    // public function izin()
-    // {
-    //     return $this->hasMany(Izin::class);
-    // }
-
-    /**
-     * Relasi ke lembur
-     */
-    // public function lembur()
-    // {
-    //     return $this->hasMany(Lembur::class);
-    // }
-
-    /**
-     * Relasi ke penggajian
-     */
-    // public function penggajian()
-    // {
-    //     return $this->hasMany(Penggajian::class);
-    // }
 }

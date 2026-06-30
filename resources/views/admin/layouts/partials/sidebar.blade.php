@@ -15,12 +15,17 @@ $pengaturan = request()->is(['admin/pengaturan*','admin/hari-libur*']);
         <div class="sidenav-menu">
             <div class="nav accordion" id="accordionSidenav">
 
-                <div class="sidenav-menu-heading">Core</div>
+                <div class="sidenav-menu-heading">Portal Admin</div>
 
                 <a class="nav-link {{ request()->is('admin/dashboard*') ? 'active' : '' }}"
                     href="{{ route('admin.dashboard') }}">
                     <div class="nav-link-icon"><i data-feather="home"></i></div>
-                    Dashboard
+                    Dashboard Admin
+                </a>
+                <a class="nav-link {{ request()->is('/dashboard') ? 'active' : '' }}"
+                    href="{{ route('dashboard.karyawan') }}">
+                    <div class="nav-link-icon"><i data-feather="home"></i></div>
+                    Dashboard Absensi
                 </a>
 
                 <div class="sidenav-menu-heading">Menu</div>
@@ -150,7 +155,7 @@ $pengaturan = request()->is(['admin/pengaturan*','admin/hari-libur*']);
         <div class="sidenav-footer">
             <div class="sidenav-footer-content">
                 <div class="sidenav-footer-subtitle">Login sebagai:</div>
-                <div class="sidenav-footer-title">{{ Auth::user()->karyawan->nama ?? Auth::user()->nik }}</div>
+                <div class="sidenav-footer-title">{{ Auth::user()->nama ?? Auth::user()->nik }}</div>
             </div>
         </div>
     </nav>
