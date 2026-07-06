@@ -8,7 +8,8 @@
     <meta name="description" content="" />
     <meta name="author" content="" />
     <meta name="theme-color" content="#0d6efd">
-    <link rel="manifest" href="/manifest.json">
+    {{--
+    <link rel="manifest" href="/manifest.json"> --}}
     <title>Login | TSI GROUP</title>
     <link rel="shortcut icon" href="{{ asset('') }}assets/img/logotsi.png" />
     <link href="{{ asset('sbadmin/css/styles.css') }}" rel="stylesheet" />
