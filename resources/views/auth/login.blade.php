@@ -102,7 +102,17 @@
             </footer>
         </div>
     </div>
-
+    {{-- PWA Service Worker --}}
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/sw.js');
+        }
+    </script>
+    <script>
+        if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/sw.js');
+    }
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous">
     </script>
     <script src="{{ asset('sbadmin/js/scripts.js') }}"></script>
@@ -145,17 +155,7 @@
     </script>
     @endif
 
-    {{-- PWA Service Worker --}}
-    <script>
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('/sw.js');
-        }
-    </script>
-    <script>
-        if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('/sw.js');
-    }
-    </script>
+
 </body>
 
 </html>

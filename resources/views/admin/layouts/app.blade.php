@@ -8,6 +8,11 @@
     <meta name="description" content="" />
     <meta name="author" content="" />
     <title>@yield('title') - TSI GROUP</title>
+    <link rel="manifest" href="/manifest.json">
+
+    <meta name="theme-color" content="#0d6efd">
+
+    <link rel="apple-touch-icon" href="{{ asset('') }}assets/img/logotsi.png">
     <script>
         (function() {
             var savedTheme = localStorage.getItem('sb-theme') || 'light';
@@ -229,6 +234,17 @@
             </footer>
         </div>
     </div>
+    {{-- PWA Service Worker --}}
+    <script>
+        if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('/sw.js');
+            }
+    </script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/sw.js');
+        }
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous">
     </script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
