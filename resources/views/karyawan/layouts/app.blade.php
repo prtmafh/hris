@@ -363,11 +363,11 @@
     
     });
     
-    window.addEventListener("appinstalled",()=>{
+    // window.addEventListener("appinstalled",()=>{
     
-        localStorage.setItem("hideInstall","true");
+    //     localStorage.setItem("hideInstall","true");
     
-    });
+    // });
     
     </script>
     {{-- PWA Service Worker --}}
