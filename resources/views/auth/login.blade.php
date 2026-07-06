@@ -13,6 +13,11 @@
     <link rel="shortcut icon" href="{{ asset('') }}assets/img/logotsi.png" />
     <link href="{{ asset('sbadmin/css/styles.css') }}" rel="stylesheet" />
     <link rel="icon" type="image/x-icon" href="{{asset('assets/img/logotsi.png')}}" />
+    <link rel="manifest" href="/manifest.json">
+
+    <meta name="theme-color" content="#0d6efd">
+
+    <link rel="apple-touch-icon" href="{{ asset('') }}assets/img/logotsi.png">
     {{--
     <link rel="icon" type="image/x-icon" href="{{ asset('assets/img/logotsi.png') }}" /> --}}
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
@@ -145,6 +150,11 @@
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('/sw.js');
         }
+    </script>
+    <script>
+        if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/sw.js');
+    }
     </script>
 </body>
 
