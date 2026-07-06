@@ -103,6 +103,114 @@
             </footer>
         </div>
     </div>
+    <!-- PWA Install Modal -->
+    <div class="modal fade" id="installModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow">
+
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title">
+                        📱 Install HRIS
+                    </h5>
+                </div>
+
+                <div class="modal-body text-center">
+
+                    <img src="{{ asset('assets/img/logotsi.png') }}" width="90" class="mb-3">
+
+                    <h5>Install Aplikasi HRIS</h5>
+
+                    <p class="text-muted">
+                        Install HRIS agar akses lebih cepat langsung dari layar utama.
+                        Anda juga akan mendapatkan pengalaman seperti aplikasi Android.
+                    </p>
+
+                </div>
+
+                <div class="modal-footer justify-content-center">
+
+                    <button class="btn btn-secondary" id="laterInstall">
+                        Nanti
+                    </button>
+
+                    <button class="btn btn-primary" id="installAppBtn">
+                        Install Sekarang
+                    </button>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let deferredPrompt = null;
+    
+    window.addEventListener('beforeinstallprompt', (e)=>{
+    
+        e.preventDefault();
+    
+        deferredPrompt = e;
+    
+        // Jangan tampilkan jika sudah pernah ditutup
+        if(localStorage.getItem("hideInstall") !== "true"){
+    
+            setTimeout(()=>{
+    
+                let modal = new bootstrap.Modal(document.getElementById('installModal'));
+    
+                modal.show();
+    
+            },1500);
+    
+        }
+    
+    });
+    
+    document.getElementById("installAppBtn").addEventListener("click", async ()=>{
+    
+        if(!deferredPrompt) return;
+    
+        deferredPrompt.prompt();
+    
+        const choice = await deferredPrompt.userChoice;
+    
+        deferredPrompt = null;
+    
+        bootstrap.Modal.getInstance(
+            document.getElementById("installModal")
+        ).hide();
+    
+    });
+    
+    document.getElementById("laterInstall").addEventListener("click",()=>{
+
+    let next = Date.now() + (7*24*60*60*1000);
+
+    localStorage.setItem("nextInstallPopup",next);
+
+    bootstrap.Modal.getInstance(
+        document.getElementById("installModal")
+    ).hide();
+
+});
+    let next = localStorage.getItem("nextInstallPopup");
+
+    if(!next || Date.now() > next){
+
+    let modal = new bootstrap.Modal(document.getElementById("installModal"));
+
+    modal.show();
+
+}
+    
+    window.addEventListener("appinstalled",()=>{
+    
+        localStorage.setItem("hideInstall","true");
+    
+    });
+    
+    </script>
     {{-- PWA Service Worker --}}
     <script>
         if ('serviceWorker' in navigator) {
