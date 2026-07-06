@@ -13,7 +13,6 @@ class IzinController extends Controller
     {
         /** @var \App\Models\Karyawan $user */
         $karyawan = Auth::user();
-        // $karyawan = $user->karyawan()->firstOrFail();
 
         $izin = Izin::where('karyawan_id', $karyawan->id)
             ->orderByDesc('tanggal')

@@ -17,7 +17,7 @@ class AbsensiController extends Controller
     {
         /** @var \App\Models\Karyawan $karyawan */
         $karyawan = Auth::user();
-        // $karyawan = $user->karyawan()->firstOrFail();
+        
         $statusGaji = $karyawan->status_gaji;
 
         $bulan = $request->get('bulan', Carbon::now()->month);

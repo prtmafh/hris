@@ -40,7 +40,7 @@
                         <thead>
                             <tr>
                                 <th width="50">No</th>
-                                <th>Key</th>
+                                {{-- <th>Key</th> --}}
                                 <th>Nama Pengaturan</th>
                                 <th>Grup</th>
                                 <th>Nilai</th>
@@ -76,9 +76,9 @@
                                 <td class="fw-semibold text-muted">{{ $index + 1 }}</td>
 
                                 {{-- Key --}}
-                                <td>
+                                {{-- <td>
                                     <code class="small">{{ $item->key }}</code>
-                                </td>
+                                </td> --}}
 
                                 {{-- Nama --}}
                                 <td>
@@ -139,111 +139,111 @@
                                 </td>
                             </tr>
 
-    @empty
-    <tr>
-        <td colspan="6" class="text-center text-muted py-5">
-            Belum ada data pengaturan.
-        </td>
-    </tr>
-    @endforelse
+                            @empty
+                            <tr>
+                                <td colspan="6" class="text-center text-muted py-5">
+                                    Belum ada data pengaturan.
+                                </td>
+                            </tr>
+                            @endforelse
 
-    </tbody>
-    </table>
-    </div>
-    </div>
-    </div>
-
-    @foreach($pengaturan as $item)
-    @php
-    $grupColor = match(strtolower($item->grup ?? '')) {
-    'system', 'sistem' => 'dark',
-    'operasional' => 'blue',
-    'absensi' => 'yellow',
-    'gaji', 'penggajian' => 'green',
-    'notifikasi' => 'orange',
-    default => 'secondary',
-    };
-    $grupLabel = match(strtolower($item->grup ?? '')) {
-    'system', 'sistem' => 'Sistem',
-    'operasional' => 'Operasional',
-    'absensi' => 'Absensi',
-    'gaji', 'penggajian' => 'Penggajian',
-    'notifikasi' => 'Notifikasi',
-    default => ucfirst($item->grup ?: 'Umum'),
-    };
-    @endphp
-    <div class="modal fade" id="modalDetail{{ $item->id }}" tabindex="-1">
-        <div class="modal-dialog modal-xl modal-dialog-centered">
-            <div class="modal-content border-0 shadow-lg">
-                <div class="modal-header border-bottom bg-white">
-                    <h5 class="modal-title d-flex align-items-center">
-                        <i data-feather="settings" class="me-2"></i>
-                        Detail Pengaturan
-                    </h5>
-                    <button class="btn-close" data-bs-dismiss="modal"></button>
+                        </tbody>
+                    </table>
                 </div>
-                <div class="modal-body p-4">
-                    <div class="row">
-                        <div class="col-lg-4">
-                            <div class="card border mb-4">
-                                <div class="card-body text-center">
-                                    <div class="avatar avatar-xl mb-3">
-                                        <div
-                                            class="avatar-img rounded-circle bg-primary-soft d-flex align-items-center justify-content-center">
-                                            <i data-feather="sliders"></i>
+            </div>
+        </div>
+
+        @foreach($pengaturan as $item)
+        @php
+        $grupColor = match(strtolower($item->grup ?? '')) {
+        'system', 'sistem' => 'dark',
+        'operasional' => 'blue',
+        'absensi' => 'yellow',
+        'gaji', 'penggajian' => 'green',
+        'notifikasi' => 'orange',
+        default => 'secondary',
+        };
+        $grupLabel = match(strtolower($item->grup ?? '')) {
+        'system', 'sistem' => 'Sistem',
+        'operasional' => 'Operasional',
+        'absensi' => 'Absensi',
+        'gaji', 'penggajian' => 'Penggajian',
+        'notifikasi' => 'Notifikasi',
+        default => ucfirst($item->grup ?: 'Umum'),
+        };
+        @endphp
+        <div class="modal fade" id="modalDetail{{ $item->id }}" tabindex="-1">
+            <div class="modal-dialog modal-xl modal-dialog-centered">
+                <div class="modal-content border-0 shadow-lg">
+                    <div class="modal-header border-bottom bg-white">
+                        <h5 class="modal-title d-flex align-items-center">
+                            <i data-feather="settings" class="me-2"></i>
+                            Detail Pengaturan
+                        </h5>
+                        <button class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body p-4">
+                        <div class="row">
+                            <div class="col-lg-4">
+                                <div class="card border mb-4">
+                                    <div class="card-body text-center">
+                                        <div class="avatar avatar-xl mb-3">
+                                            <div
+                                                class="avatar-img rounded-circle bg-primary-soft d-flex align-items-center justify-content-center">
+                                                <i data-feather="sliders"></i>
+                                            </div>
+                                        </div>
+                                        <div class="fw-bold fs-5">{{ $item->label ?: $item->key }}</div>
+                                        <div class="small text-muted mb-3">{{ $item->key }}</div>
+                                        <span class="badge bg-{{ $grupColor }}-soft text-{{ $grupColor }}">{{ $grupLabel
+                                            }}</span>
+                                    </div>
+                                </div>
+                                <div class="card border">
+                                    <div class="card-header">Configuration Summary</div>
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between border-bottom py-2">
+                                            <span class="small text-muted">Data Type</span>
+                                            <strong>{{ ucfirst($item->tipe ?: '-') }}</strong>
+                                        </div>
+                                        <div class="d-flex justify-content-between py-2">
+                                            <span class="small text-muted">Group</span>
+                                            <strong>{{ $grupLabel }}</strong>
                                         </div>
                                     </div>
-                                    <div class="fw-bold fs-5">{{ $item->label ?: $item->key }}</div>
-                                    <div class="small text-muted mb-3">{{ $item->key }}</div>
-                                    <span class="badge bg-{{ $grupColor }}-soft text-{{ $grupColor }}">{{ $grupLabel
-                                        }}</span>
                                 </div>
                             </div>
-                            <div class="card border">
-                                <div class="card-header">Configuration Summary</div>
-                                <div class="card-body">
-                                    <div class="d-flex justify-content-between border-bottom py-2">
-                                        <span class="small text-muted">Data Type</span>
-                                        <strong>{{ ucfirst($item->tipe ?: '-') }}</strong>
+                            <div class="col-lg-8">
+                                <div class="card border mb-4">
+                                    <div class="card-header">Setting Value</div>
+                                    <div class="card-body">
+                                        @if($item->tipe==='boolean')
+                                        @if(in_array(strtolower($item->value ?? ''),['1','true','ya','yes']))
+                                        <span class="badge bg-green-soft text-green">Aktif</span>
+                                        @else
+                                        <span class="badge bg-red-soft text-red">Nonaktif</span>
+                                        @endif
+                                        @elseif($item->tipe==='json')
+                                        <pre class="small bg-light p-4 rounded mb-0">{{ $item->value ?: '-' }}</pre>
+                                        @else
+                                        <div class="p-4 bg-light rounded fw-semibold">{{ $item->value ?: '-' }}</div>
+                                        @endif
                                     </div>
-                                    <div class="d-flex justify-content-between py-2">
-                                        <span class="small text-muted">Group</span>
-                                        <strong>{{ $grupLabel }}</strong>
+                                </div>
+                                @if($item->keterangan)
+                                <div class="card border">
+                                    <div class="card-header">Description</div>
+                                    <div class="card-body">
+                                        <div class="p-3 bg-light rounded">{{ $item->keterangan }}</div>
                                     </div>
                                 </div>
+                                @endif
                             </div>
-                        </div>
-                        <div class="col-lg-8">
-                            <div class="card border mb-4">
-                                <div class="card-header">Setting Value</div>
-                                <div class="card-body">
-                                    @if($item->tipe==='boolean')
-                                    @if(in_array(strtolower($item->value ?? ''),['1','true','ya','yes']))
-                                    <span class="badge bg-green-soft text-green">Aktif</span>
-                                    @else
-                                    <span class="badge bg-red-soft text-red">Nonaktif</span>
-                                    @endif
-                                    @elseif($item->tipe==='json')
-                                    <pre class="small bg-light p-4 rounded mb-0">{{ $item->value ?: '-' }}</pre>
-                                    @else
-                                    <div class="p-4 bg-light rounded fw-semibold">{{ $item->value ?: '-' }}</div>
-                                    @endif
-                                </div>
-                            </div>
-                            @if($item->keterangan)
-                            <div class="card border">
-                                <div class="card-header">Description</div>
-                                <div class="card-body">
-                                    <div class="p-3 bg-light rounded">{{ $item->keterangan }}</div>
-                                </div>
-                            </div>
-                            @endif
                         </div>
                     </div>
-                </div>
-                <div class="modal-footer bg-light">
-                    <button class="btn btn-light" data-bs-dismiss="modal">Tutup</button>
-                    <button class="btn btn-primary" data-bs-dismiss="modal" onclick="openEditPengaturan(
+                    <div class="modal-footer bg-light">
+                        <button class="btn btn-light" data-bs-dismiss="modal">Tutup</button>
+                        <button class="btn btn-primary" data-bs-dismiss="modal" onclick="openEditPengaturan(
                             {{ $item->id }},
                             @js($item->label ?: $item->key),
                             @js($item->key),
@@ -253,13 +253,13 @@
                             @js($item->grup),
                             @js($item->keterangan)
                         )">
-                        <i data-feather="edit" class="me-1"></i> Ubah
-                    </button>
+                            <i data-feather="edit" class="me-1"></i> Ubah
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    @endforeach
+        @endforeach
 
     </div>
 </main>
@@ -273,8 +273,8 @@
         <div class="modal-content border-0 shadow-lg">
 
             <form id="formEditPengaturan" method="POST">
-            @csrf
-            @method('PUT')
+                @csrf
+                @method('PUT')
 
                 <div class="modal-header border-bottom bg-white">
                     <h5 id="modal_judul_pengaturan" class="modal-title d-flex align-items-center">
@@ -319,7 +319,7 @@
                                             Key Pengaturan
                                         </label>
 
-                                        <input id="edit_pengaturan_key" name="key" class="form-control">
+                                        <input id="edit_pengaturan_key" name="key" class="form-control" disabled>
                                     </div>
 
 
@@ -328,7 +328,7 @@
                                             Nama Pengaturan
                                         </label>
 
-                                        <input id="edit_pengaturan_label" name="label" class="form-control">
+                                        <input id="edit_pengaturan_label" name="label" class="form-control" disabled>
                                     </div>
 
                                 </div>
@@ -342,7 +342,7 @@
                                             Tipe Data
                                         </label>
 
-                                        <select id="edit_pengaturan_tipe" name="tipe" class="form-select">
+                                        <select id="edit_pengaturan_tipe" name="tipe" class="form-select" disabled>
 
                                             <option value="string">String</option>
                                             <option value="integer">Integer</option>
@@ -361,7 +361,7 @@
                                             Grup
                                         </label>
 
-                                        <input id="edit_pengaturan_grup" name="grup" class="form-control">
+                                        <input id="edit_pengaturan_grup" name="grup" class="form-control" disabled>
                                     </div>
 
                                 </div>
@@ -374,7 +374,7 @@
                                     </label>
 
                                     <textarea id="edit_pengaturan_keterangan" name="keterangan" rows="2"
-                                        class="form-control"></textarea>
+                                        class="form-control" disabled></textarea>
                                 </div>
 
 
@@ -432,7 +432,7 @@
         <div class="modal-content border-0 shadow-lg">
 
             <form id="formTambahPengaturan" method="POST" action="{{ route('admin.pengaturan.store') }}">
-            @csrf
+                @csrf
 
                 <div class="modal-header border-bottom bg-white">
                     <h5 class="modal-title d-flex align-items-center">
