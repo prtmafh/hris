@@ -194,7 +194,7 @@
     </script>
     @endif
 
-    <script>
+    {{-- <script>
         let deferredPrompt = null;
         
             window.addEventListener('beforeinstallprompt', (e)=>{
@@ -269,7 +269,7 @@
         
         // });
         
-    </script>
+    </script> --}}
 </body>
 
 </html>
