@@ -25,6 +25,12 @@ class GenerateAbsensi extends Command
         $mulai = Carbon::create($tahun, $bulan, 1)->startOfMonth();
         $akhir = Carbon::create($tahun, $bulan, 1)->endOfMonth();
 
+        $hariIni = Carbon::today();
+
+        if ($bulan == $hariIni->month && $tahun == $hariIni->year) {
+            $akhir = $hariIni->copy();
+        }
+
         $karyawanList = Karyawan::where('status', 'aktif')->get();
 
         if ($karyawanList->isEmpty()) {

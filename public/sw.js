@@ -1,17 +1,57 @@
-const CACHE = "hris-v1";
+const CACHE = "hris-v2";
 
 self.addEventListener("install", (event) => {
+    self.skipWaiting();
+});
+
+self.addEventListener("activate", (event) => {
     event.waitUntil(
-        caches.open(CACHE).then((cache) => {
-            return cache.addAll(["/"]);
-        }),
+        caches.keys().then((keys) =>
+            Promise.all(
+                keys.map((key) => {
+                    if (key !== CACHE) {
+                        return caches.delete(key);
+                    }
+                }),
+            ),
+        ),
     );
+
+    self.clients.claim();
 });
 
 self.addEventListener("fetch", (event) => {
-    event.respondWith(
-        caches
-            .match(event.request)
-            .then((response) => response || fetch(event.request)),
-    );
+    // Jangan cache request POST
+    if (event.request.method !== "GET") {
+        return;
+    }
+
+    // Jangan cache halaman login/logout
+    const url = new URL(event.request.url);
+
+    if (url.pathname === "/login" || url.pathname === "/logout") {
+        return;
+    }
+
+    // Cache hanya asset
+    if (
+        url.pathname.startsWith("/sbadmin") ||
+        url.pathname.startsWith("/assets")
+    ) {
+        event.respondWith(
+            caches.open(CACHE).then(async (cache) => {
+                const cached = await cache.match(event.request);
+
+                if (cached) {
+                    return cached;
+                }
+
+                const response = await fetch(event.request);
+
+                cache.put(event.request, response.clone());
+
+                return response;
+            }),
+        );
+    }
 });

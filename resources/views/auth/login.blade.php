@@ -103,6 +103,7 @@
             </footer>
         </div>
     </div>
+
     <!-- PWA Install Modal -->
     <div class="modal fade" id="installModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
@@ -143,84 +144,13 @@
         </div>
     </div>
 
-    <script>
-        let deferredPrompt = null;
-    
-        window.addEventListener('beforeinstallprompt', (e)=>{
-    
-        e.preventDefault();
-    
-        deferredPrompt = e;
-    
-        // Jangan tampilkan jika sudah pernah ditutup
-        if(localStorage.getItem("hideInstall") !== "true"){
-    
-            setTimeout(()=>{
-    
-                let modal = new bootstrap.Modal(document.getElementById('installModal'));
-    
-                modal.show();
-    
-            },1500);
-    
-        }
-    
-    });
-    
-    document.getElementById("installAppBtn").addEventListener("click", async ()=>{
-    
-        if(!deferredPrompt) return;
-    
-        deferredPrompt.prompt();
-    
-        const choice = await deferredPrompt.userChoice;
-    
-        deferredPrompt = null;
-    
-        bootstrap.Modal.getInstance(
-            document.getElementById("installModal")
-        ).hide();
-    
-    });
-    
-    document.getElementById("laterInstall").addEventListener("click",()=>{
 
-    let next = Date.now() + (7*24*60*60*1000);
-
-    localStorage.setItem("nextInstallPopup",next);
-
-    bootstrap.Modal.getInstance(
-        document.getElementById("installModal")
-    ).hide();
-
-});
-    let next = localStorage.getItem("nextInstallPopup");
-
-    if(!next || Date.now() > next){
-
-    let modal = new bootstrap.Modal(document.getElementById("installModal"));
-
-    modal.show();
-
-}
-    
-    // window.addEventListener("appinstalled",()=>{
-    
-    //     localStorage.setItem("hideInstall","true");
-    
-    // });
-    
-    </script>
     {{-- PWA Service Worker --}}
     <script>
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('/sw.js');
         }
     </script>
-    <script>
-        if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('/sw.js');
-    }
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous">
     </script>
@@ -264,7 +194,82 @@
     </script>
     @endif
 
-
+    <script>
+        let deferredPrompt = null;
+        
+            window.addEventListener('beforeinstallprompt', (e)=>{
+        
+            e.preventDefault();
+        
+            deferredPrompt = e;
+        
+            // Jangan tampilkan jika sudah pernah ditutup
+            if(localStorage.getItem("hideInstall") !== "true"){
+        
+                setTimeout(()=>{
+        
+                    let modal = new bootstrap.Modal(document.getElementById('installModal'));
+        
+                    modal.show();
+        
+                },1500);
+        
+            }
+        
+        });
+        
+        document.getElementById("installAppBtn").addEventListener("click", async ()=>{
+        
+            if(!deferredPrompt) return;
+        
+            deferredPrompt.prompt();
+        
+            const choice = await deferredPrompt.userChoice;
+        
+            deferredPrompt = null;
+        
+            bootstrap.Modal.getInstance(
+                document.getElementById("installModal")
+            ).hide();
+        
+        });
+        
+        document.getElementById("laterInstall").addEventListener("click",()=>{
+        
+        let next = Date.now() + (7*24*60*60*1000);
+        
+        let next = localStorage.getItem("nextInstallPopup");
+        
+        if(!next || Date.now() > next){
+        
+        let modal = new bootstrap.Modal(document.getElementById("installModal"));
+        
+        modal.show();
+        
+        }
+    
+        bootstrap.Modal.getInstance(
+            document.getElementById("installModal")
+        ).hide();
+    
+    });
+        let next = localStorage.getItem("nextInstallPopup");
+    
+        if(!next || Date.now() > next){
+    
+        let modal = new bootstrap.Modal(document.getElementById("installModal"));
+    
+        modal.show();
+    
+    }
+        
+        // window.addEventListener("appinstalled",()=>{
+        
+        //     localStorage.setItem("hideInstall","true");
+        
+        // });
+        
+    </script>
 </body>
 
 </html>

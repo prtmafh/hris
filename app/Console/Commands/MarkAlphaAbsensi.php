@@ -34,7 +34,9 @@ class MarkAlphaAbsensi extends Command
 
         $karyawanList = Karyawan::where('status', 'aktif')
             ->whereDate('tgl_masuk', '<=', $tanggal)
-            ->whereHas('user', fn($q) => $q->where('role', 'karyawan')->where('status', 'aktif'))
+            ->whereHas('role', function ($q) {
+                $q->where('nama_role', 'karyawan');
+            })
             ->get();
 
         $sudahAbsen = Absensi::whereDate('tanggal', $tanggal)->pluck('karyawan_id')->toArray();

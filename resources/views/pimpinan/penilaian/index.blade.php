@@ -53,7 +53,7 @@
                         <div class="col-md-4">
                             <label class="form-label small mb-1">Jabatan</label>
 
-                            <select name="jabatan_id" class="form-select">
+                            <select name="jabatan_id" class="form-select form-select-sm">
                                 <option value="">Semua Jabatan</option>
 
                                 @foreach($jabatan as $j)
