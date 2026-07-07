@@ -151,7 +151,7 @@
             navigator.serviceWorker.register('/sw.js');
         }
     </script>
-    </script>
+    {{-- </script> --}}
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous">
     </script>
     <script src="{{ asset('sbadmin/js/scripts.js') }}"></script>
