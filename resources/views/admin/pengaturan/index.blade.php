@@ -40,7 +40,7 @@
                         <thead>
                             <tr>
                                 <th width="50">No</th>
-                                {{-- <th>Key</th> --}}
+                                <th>Key</th>
                                 <th>Nama Pengaturan</th>
                                 <th>Grup</th>
                                 <th>Nilai</th>
@@ -76,9 +76,9 @@
                                 <td class="fw-semibold text-muted">{{ $index + 1 }}</td>
 
                                 {{-- Key --}}
-                                {{-- <td>
+                                <td>
                                     <code class="small">{{ $item->key }}</code>
-                                </td> --}}
+                                </td>
 
                                 {{-- Nama --}}
                                 <td>
@@ -319,7 +319,7 @@
                                             Key Pengaturan
                                         </label>
 
-                                        <input id="edit_pengaturan_key" name="key" class="form-control" disabled>
+                                        <input id="edit_pengaturan_key" name="key" class="form-control">
                                     </div>
 
 
@@ -328,7 +328,7 @@
                                             Nama Pengaturan
                                         </label>
 
-                                        <input id="edit_pengaturan_label" name="label" class="form-control" disabled>
+                                        <input id="edit_pengaturan_label" name="label" class="form-control">
                                     </div>
 
                                 </div>
@@ -342,7 +342,7 @@
                                             Tipe Data
                                         </label>
 
-                                        <select id="edit_pengaturan_tipe" name="tipe" class="form-select" disabled>
+                                        <select id="edit_pengaturan_tipe" name="tipe" class="form-select">
 
                                             <option value="string">String</option>
                                             <option value="integer">Integer</option>
@@ -361,7 +361,7 @@
                                             Grup
                                         </label>
 
-                                        <input id="edit_pengaturan_grup" name="grup" class="form-control" disabled>
+                                        <input id="edit_pengaturan_grup" name="grup" class="form-control">
                                     </div>
 
                                 </div>
@@ -374,7 +374,7 @@
                                     </label>
 
                                     <textarea id="edit_pengaturan_keterangan" name="keterangan" rows="2"
-                                        class="form-control" disabled></textarea>
+                                        class="form-control"></textarea>
                                 </div>
 
 
