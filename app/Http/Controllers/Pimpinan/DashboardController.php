@@ -33,7 +33,7 @@ class DashboardController extends Controller
             ->get();
 
         $totalKaryawan  = Karyawan::where('status', 'aktif')->count();
-        $hadirHariIni   = $absensiHariIni->where('status', 'hadir')->count();
+        $hadirHariIni   = $absensiHariIni->whereIn('status', ['hadir', 'terlambat'])->count();
         $terlambat      = $absensiHariIni->where('status', 'terlambat')->count();
         $tidakHadir     = $absensiHariIni->where('status', 'alpha')->count();
 

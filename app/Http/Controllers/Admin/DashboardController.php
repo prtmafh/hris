@@ -30,7 +30,7 @@ class DashboardController extends Controller
             ->orderBy('jam_masuk')
             ->get();
 
-        $hadirHariIni = $absensiHariIni->where('status', 'hadir')->count();
+        $hadirHariIni = $absensiHariIni->whereIn('status', ['hadir', 'terlambat'])->count();
         $terlambatHariIni = $absensiHariIni->where('status', 'terlambat')->count();
         $izinHariIni = $absensiHariIni->where('status', 'izin')->count();
         // $tidakHadirHariIni = max($totalKaryawan - ($hadirHariIni + $terlambatHariIni + $izinHariIni), 0);
