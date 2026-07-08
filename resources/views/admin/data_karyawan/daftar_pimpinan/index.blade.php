@@ -1,6 +1,6 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Daftar Karyawan')
+@section('title', 'Daftar Pimpinan')
 
 @section('content')
 <main>
@@ -13,13 +13,13 @@
                             <div class="page-header-icon">
                                 <i data-feather="users"></i>
                             </div>
-                            Daftar Karyawan
+                            Daftar Pimpinan
                         </h1>
                     </div>
                     <div class="col-12 col-xl-auto mb-3">
-                        <a href="{{ route('admin.karyawan.create') }}" class="btn btn-sm btn-light text-primary">
+                        <a href="{{ route('admin.daftar_pimpinan.create') }}" class="btn btn-sm btn-light text-primary">
                             <i class="me-1" data-feather="user-plus"></i>
-                            Tambah Karyawan
+                            Tambah Pimpinan
                         </a>
                     </div>
                 </div>
@@ -107,11 +107,11 @@
                                 </td>
                                 <td>
                                     <a class="btn btn-datatable btn-icon btn-transparent-dark me-2"
-                                        href="{{ route('admin.karyawan.edit', $k->id) }}">
+                                        href="{{ route('admin.daftar_pimpinan.edit', $k->id) }}">
                                         <i data-feather="edit"></i>
                                     </a>
                                     <a class="btn btn-datatable btn-icon btn-transparent-dark me-2"
-                                        href="{{ route('admin.karyawan.show', $k->id) }}">
+                                        href="{{ route('admin.daftar_pimpinan.show', $k->id) }}">
                                         <i data-feather="eye"></i>
                                     </a>
                                     <button class="btn btn-datatable btn-icon btn-transparent-dark"
@@ -119,7 +119,7 @@
                                         <i data-feather="trash-2"></i>
                                     </button>
                                     <form id="delete-form-{{ $k->id }}"
-                                        action="{{ route('admin.karyawan.destroy', $k->id) }}" method="POST"
+                                        action="{{ route('admin.daftar_pimpinan.destroy', $k->id) }}" method="POST"
                                         style="display:none;">
                                         @csrf
                                         @method('DELETE')

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\DaftarAdminController;
+use App\Http\Controllers\Admin\DaftarPimpinanController;
 use App\Http\Controllers\Admin\DaftarKaryawanController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\DataAbsensiController;
@@ -45,7 +46,6 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
 
     Route::get('/admin/daftar_admin', [DaftarAdminController::class, 'index'])->name('admin.daftar_admin');
-
     Route::get('/admin/daftar_admin/tambah', [DaftarAdminController::class, 'storeView'])->name('admin.daftar_admin.create');
     Route::post('/admin/daftar_admin', [DaftarAdminController::class, 'store'])->name('admin.daftar_admin.store');
     Route::get('admin/daftar_admin/detail_karyawan/{id}', [DaftarAdminController::class, 'detail'])->name('admin.daftar_admin.show');
@@ -55,6 +55,17 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::delete('/admin/daftar_admin/{id}', [DaftarAdminController::class, 'destroy'])->name('admin.daftar_admin.destroy');
     Route::post('/admin/daftar_admin/{id}/toggle-karyawan-status', [DaftarAdminController::class, 'toggleKaryawanStatus'])->name('admin.daftar_admin.toggleKaryawanStatus');
     Route::post('/admin/daftar_admin/{id}/reset-password', [DaftarAdminController::class, 'resetPassword'])->name('admin.daftar_admin.resetPassword');
+
+    Route::get('/admin/daftar_pimpinan', [DaftarPimpinanController::class, 'index'])->name('admin.daftar_pimpinan');
+    Route::get('/admin/daftar_pimpinan/tambah', [DaftarPimpinanController::class, 'storeView'])->name('admin.daftar_pimpinan.create');
+    Route::post('/admin/daftar_pimpinan', [DaftarPimpinanController::class, 'store'])->name('admin.daftar_pimpinan.store');
+    Route::get('admin/daftar_pimpinan/detail_pimpinan/{id}', [DaftarPimpinanController::class, 'detail'])->name('admin.daftar_pimpinan.show');
+    Route::get('admin/daftar_pimpinan/edit_pimpinan/{id}', [DaftarPimpinanController::class, 'updateView'])->name('admin.daftar_pimpinan.edit');
+    Route::put('/admin/daftar_pimpinan/{id}', [DaftarPimpinanController::class, 'update'])->name('admin.daftar_pimpinan.update');
+    Route::post('/admin/daftar_pimpinan/{id}/toggle-status', [DaftarPimpinanController::class, 'togglePimpinanStatus'])->name('admin.daftar_pimpinan.toggleStatus');
+    Route::delete('/admin/daftar_pimpinan/{id}', [DaftarPimpinanController::class, 'destroy'])->name('admin.daftar_pimpinan.destroy');
+    Route::post('/admin/daftar_pimpinan/{id}/toggle-karyawan-status', [DaftarPimpinanController::class, 'toggleKaryawanStatus'])->name('admin.daftar_pimpinan.toggleKaryawanStatus');
+    Route::post('/admin/daftar_pimpinan/{id}/reset-password', [DaftarPimpinanController::class, 'resetPassword'])->name('admin.daftar_pimpinan.resetPassword');
 
     Route::get('/admin/jabatan', [JabatanController::class, 'index'])->name('admin.jabatan');
     Route::post('/admin/jabatan', [JabatanController::class, 'store'])->name('admin.jabatan.store');

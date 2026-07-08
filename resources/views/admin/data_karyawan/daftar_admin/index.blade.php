@@ -71,7 +71,8 @@
                                                 ? asset('storage/'.$k->foto) 
                                                 : 'https://ui-avatars.com/api/?name='.urlencode($k->nama) }}">
                                         </div>
-                                        {{ $k->nama }}
+                                        <span class="text-capitalize">{{ $k->nama }}</span>
+                                        {{-- {{ $k->nama }} --}}
                                     </div>
                                 </td>
                                 <td>{{ $k->nik }}</td>

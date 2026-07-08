@@ -1,5 +1,6 @@
 @php
-$dataKaryawan = request()->is(['admin/daftar_karyawan*','admin/daftar_admin*','admin/jabatan*']);
+$dataKaryawan =
+request()->is(['admin/daftar_karyawan*','admin/daftar_admin*','admin/daftar_pimpinan*','admin/jabatan*']);
 $absensi = request()->is(['admin/absensi*','admin/rekap-tahunan*']);
 $pengajuan = request()->is(['admin/lembur*','admin/izin*']);
 $gaji = request()->is(['admin/penggajian*']);
@@ -41,6 +42,9 @@ $pengaturan = request()->is(['admin/pengaturan*','admin/hari-libur*']);
                     <nav class="sidenav-menu-nested nav">
                         <a class="nav-link {{ request()->is('admin/daftar_admin*') ? 'active' : '' }}"
                             href="{{ route('admin.daftar_admin') }}">Admin</a>
+
+                        <a class="nav-link {{ request()->is('admin/daftar_pimpinan*') ? 'active' : '' }}"
+                            href="{{ route('admin.daftar_pimpinan') }}">Pimpinan</a>
 
                         <a class="nav-link {{ request()->is('admin/daftar_karyawan*') ? 'active' : '' }}"
                             href="{{ route('admin.daftar_karyawan') }}">Karyawan</a>
