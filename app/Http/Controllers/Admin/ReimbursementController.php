@@ -146,7 +146,8 @@ class ReimbursementController extends Controller
             'judul' => 'required|string|max:255',
             'deskripsi' => 'nullable|string|max:1000',
             'jumlah_diajukan' => 'required|numeric|min:1',
-            'bukti' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
+            'bukti' => 'nullable|file',
+            // 'bukti' => 'nullable|file|mimes:jpg,jpeg,png,pdf',
         ]);
     }
 }
