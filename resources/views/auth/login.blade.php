@@ -63,11 +63,20 @@
                                             <label class="form-label text-gray-600 fw-semibold" for="password">
                                                 <i class="fas fa-lock me-2"></i>Password
                                             </label>
+
                                             <div class="input-group">
-                                                <span class="input-group-text"><i class="fas fa-key"></i></span>
+                                                <span class="input-group-text">
+                                                    <i class="fas fa-key"></i>
+                                                </span>
+
                                                 <input class="form-control form-control-solid" type="password"
                                                     name="password" id="password" placeholder="Masukkan Password"
                                                     autocomplete="off" required />
+
+                                                <button class="btn btn-outline-secondary" type="button"
+                                                    id="togglePassword">
+                                                    <i class="fas fa-eye" id="toggleIcon"></i>
+                                                </button>
                                             </div>
                                         </div>
                                         <div class="d-grid mt-4">
@@ -193,7 +202,23 @@
         });
     </script>
     @endif
-
+    <script>
+        const togglePassword = document.getElementById('togglePassword');
+    const password = document.getElementById('password');
+    const toggleIcon = document.getElementById('toggleIcon');
+    
+    togglePassword.addEventListener('click', function () {
+    
+    if (password.type === 'password') {
+    password.type = 'text';
+    toggleIcon.innerHTML = '<i class="fas fa-eye-slash"></i>';
+    } else {
+    password.type = 'password';
+    toggleIcon.innerHTML = '<i class="fas fa-eye"></i>';
+    }
+    
+    });
+    </script>
     {{-- <script>
         let deferredPrompt = null;
         
