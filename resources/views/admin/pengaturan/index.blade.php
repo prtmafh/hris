@@ -8,8 +8,8 @@
     <header class="page-header page-header-compact page-header-light border-bottom bg-white mb-4">
         <div class="container-xl px-4">
             <div class="page-header-content">
-                <div class="row align-items-center justify-content-between pt-3">
-                    <div class="col-auto mb-3">
+                <div class="row align-items-center justify-content-between pt-4">
+                    <div class="col-auto mb-4">
                         <h1 class="page-header-title">
                             <div class="page-header-icon">
                                 <i data-feather="settings"></i>
@@ -17,13 +17,13 @@
                             Pengaturan Aplikasi
                         </h1>
                     </div>
-                    <div class="col-auto mb-3">
+                    {{-- <div class="col-auto mb-3">
                         <button type="button" class="btn btn-sm btn-light text-primary" data-bs-toggle="modal"
                             data-bs-target="#modalTambahPengaturan">
                             <i data-feather="plus"></i>
                             Tambah Pengaturan
                         </button>
-                    </div>
+                    </div> --}}
                 </div>
             </div>
         </div>
@@ -40,7 +40,7 @@
                         <thead>
                             <tr>
                                 <th width="50">No</th>
-                                <th>Key</th>
+                                {{-- <th>Key</th> --}}
                                 <th>Nama Pengaturan</th>
                                 <th>Grup</th>
                                 <th>Nilai</th>
@@ -76,9 +76,9 @@
                                 <td class="fw-semibold text-muted">{{ $index + 1 }}</td>
 
                                 {{-- Key --}}
-                                <td>
+                                {{-- <td>
                                     <code class="small">{{ $item->key }}</code>
-                                </td>
+                                </td> --}}
 
                                 {{-- Nama --}}
                                 <td>
@@ -120,11 +120,12 @@
                                 <td class="text-center">
 
                                     {{-- Detail --}}
-                                    <button type="button" class="btn btn-datatable btn-icon btn-transparent-dark me-1"
+                                    {{-- <button type="button"
+                                        class="btn btn-datatable btn-icon btn-transparent-dark me-1"
                                         data-bs-toggle="modal" data-bs-target="#modalDetail{{ $item->id }}"
                                         title="Lihat Detail">
                                         <i data-feather="eye"></i>
-                                    </button>
+                                    </button> --}}
 
                                     {{-- Edit --}}
                                     <button type="button" class="btn btn-datatable btn-icon btn-transparent-dark"
@@ -303,7 +304,7 @@
                             <div class="p-4">
 
                                 <h6 class="mb-3">
-                                    Configuration Info
+                                    Pengaturan Info
                                 </h6>
 
                                 <div id="modal_keterangan_wrapper" class="alert alert-info small d-none mb-0">
@@ -313,9 +314,6 @@
                             </div>
 
                         </div>
-
-
-
                         <div class="col-lg-8">
 
                             <div class="p-4">
@@ -323,73 +321,61 @@
                                 <div class="row g-3 mb-3">
 
                                     <div class="col-md-6">
-                                        <label class="small mb-1">
-                                            Key Pengaturan
-                                        </label>
+                                        <label class="small mb-1">Key Pengaturan</label>
+                                        <input id="edit_pengaturan_key" class="form-control" readonly>
 
-                                        <input id="edit_pengaturan_key" name="key" class="form-control">
+                                        {{-- tetap dikirim ke controller --}}
+                                        <input type="hidden" id="edit_pengaturan_key_hidden" name="key">
                                     </div>
 
-
                                     <div class="col-md-6">
-                                        <label class="small mb-1">
-                                            Nama Pengaturan
-                                        </label>
+                                        <label class="small mb-1">Nama Pengaturan</label>
+                                        <input id="edit_pengaturan_label" class="form-control" readonly>
 
-                                        <input id="edit_pengaturan_label" name="label" class="form-control">
+                                        <input type="hidden" id="edit_pengaturan_label_hidden" name="label">
                                     </div>
 
                                 </div>
-
 
 
                                 <div class="row g-3 mb-3">
 
                                     <div class="col-md-6">
-                                        <label class="small mb-1">
-                                            Tipe Data
-                                        </label>
+                                        <label class="small mb-1">Tipe Data</label>
 
-                                        <select id="edit_pengaturan_tipe" name="tipe" class="form-select">
+                                        <input id="edit_pengaturan_tipe_text" class="form-control" readonly>
 
-                                            <option value="string">String</option>
-                                            <option value="integer">Integer</option>
-                                            <option value="decimal">Decimal</option>
-                                            <option value="currency">Currency (Rupiah)</option>
-                                            <option value="boolean">Boolean</option>
-                                            <option value="json">JSON</option>
-                                            <option value="time">Time</option>
-                                            <option value="date">Date</option>
-
-                                        </select>
+                                        <input type="hidden" id="edit_pengaturan_tipe" name="tipe">
                                     </div>
 
-
                                     <div class="col-md-6">
-                                        <label class="small mb-1">
-                                            Grup
-                                        </label>
+                                        <label class="small mb-1">Grup</label>
 
-                                        <input id="edit_pengaturan_grup" name="grup" class="form-control">
+                                        <input id="edit_pengaturan_grup" class="form-control" readonly>
+
+                                        <input type="hidden" id="edit_pengaturan_grup_hidden" name="grup">
                                     </div>
 
                                 </div>
 
 
-
                                 <div class="mb-3">
+
                                     <label class="small mb-1">
                                         Keterangan
                                     </label>
 
-                                    <textarea id="edit_pengaturan_keterangan" name="keterangan" rows="2"
-                                        class="form-control"></textarea>
+                                    <textarea id="edit_pengaturan_keterangan" class="form-control" rows="2"
+                                        readonly></textarea>
+
+                                    <input type="hidden" id="edit_pengaturan_keterangan_hidden" name="keterangan">
+
                                 </div>
 
 
-
                                 <div>
-                                    <label class="small mb-1">
+
+                                    <label class="small mb-1 fw-bold">
                                         Nilai
                                     </label>
 
@@ -579,11 +565,25 @@
         document.getElementById('formEditPengaturan').action = `/admin/pengaturan/${id}`;
         document.getElementById('modal_judul_pengaturan').textContent = label;
 
-        document.getElementById('edit_pengaturan_key').value         = key ?? '';
-        document.getElementById('edit_pengaturan_label').value       = labelRaw ?? '';
-        document.getElementById('edit_pengaturan_tipe').value        = tipe ?? '';
-        document.getElementById('edit_pengaturan_grup').value        = grup ?? '';
-        document.getElementById('edit_pengaturan_keterangan').value  = keterangan ?? '';
+        // document.getElementById('edit_pengaturan_key').value         = key ?? '';
+        // document.getElementById('edit_pengaturan_label').value       = labelRaw ?? '';
+        // document.getElementById('edit_pengaturan_tipe').value        = tipe ?? '';
+        // document.getElementById('edit_pengaturan_grup').value        = grup ?? '';
+        // document.getElementById('edit_pengaturan_keterangan').value  = keterangan ?? '';
+        document.getElementById('edit_pengaturan_key').value = key ?? '';
+        document.getElementById('edit_pengaturan_key_hidden').value = key ?? '';
+        
+        document.getElementById('edit_pengaturan_label').value = labelRaw ?? '';
+        document.getElementById('edit_pengaturan_label_hidden').value = labelRaw ?? '';
+        
+        document.getElementById('edit_pengaturan_tipe_text').value = tipe ?? '';
+        document.getElementById('edit_pengaturan_tipe').value = tipe ?? '';
+        
+        document.getElementById('edit_pengaturan_grup').value = grup ?? '';
+        document.getElementById('edit_pengaturan_grup_hidden').value = grup ?? '';
+        
+        document.getElementById('edit_pengaturan_keterangan').value = keterangan ?? '';
+        document.getElementById('edit_pengaturan_keterangan_hidden').value = keterangan ?? '';
 
         const keteranganWrapper = document.getElementById('modal_keterangan_wrapper');
         const keteranganText    = document.getElementById('modal_keterangan_text');
@@ -717,7 +717,7 @@
         );
         @endif
     @endif
-    
+
     function cleanCurrency(input){
     input.value = input.value.replace(/\D/g,'');
     }
