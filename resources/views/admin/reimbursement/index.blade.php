@@ -157,6 +157,31 @@
                                         <i data-feather="paperclip"></i>
                                     </a>
                                     @endif
+                                    @if($item->buktiFile->isNotEmpty())
+
+                                    <div class="dropdown d-inline">
+                                        <button class="btn btn-datatable btn-icon btn-transparent-dark"
+                                            data-bs-toggle="dropdown">
+                                            <i data-feather="paperclip"></i>
+                                        </button>
+
+                                        <ul class="dropdown-menu">
+
+                                            @foreach($item->buktiFile as $index => $bukti)
+
+                                            <li>
+                                                <a class="dropdown-item" target="_blank"
+                                                    href="{{ asset('storage/'.$bukti->file) }}">
+                                                    Bukti {{ $index + 1 }}
+                                                </a>
+                                            </li>
+
+                                            @endforeach
+
+                                        </ul>
+                                    </div>
+
+                                    @endif
 
                                     {{-- Approve & Reject --}}
                                     @if($item->status === 'pending')
@@ -189,7 +214,8 @@
                                         <i data-feather="trash-2"></i>
                                     </button>
                                     {{-- Hapus --}}
-                                    <form action="{{ route('admin.reimbursement.destroy', $item->id) }}" method="POST"
+                                    <form id="delete-form-{{ $item->id }}"
+                                        action="{{ route('admin.reimbursement.destroy', $item->id) }}" method="POST"
                                         class="d-inline">
                                         @csrf
                                         @method('DELETE')

@@ -47,6 +47,10 @@ class Reimbursement extends Model
 
     public function penyetuju()
     {
-        return $this->belongsTo(karyawan::class, 'disetujui_oleh');
+        return $this->belongsTo(Karyawan::class, 'disetujui_oleh');
+    }
+    public function buktiFile()
+    {
+        return $this->hasMany(ReimbursementBukti::class);
     }
 }

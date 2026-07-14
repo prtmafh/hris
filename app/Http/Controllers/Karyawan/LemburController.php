@@ -45,9 +45,9 @@ class LemburController extends Controller
 
         $totalJam = $jamMulai->floatDiffInHours($jamSelesai);
 
-        $upahPerJam = Pengaturan::getValue('tarif_lembur_per_jam') ?? 15000;
+        $upahPerJam = Pengaturan::getValue('tarif_lembur') ?? 100000;
 
-        $totalUpah = $totalJam * $upahPerJam;
+        $totalUpah = $upahPerJam;
 
         Lembur::create([
             'karyawan_id' => $karyawan->id,

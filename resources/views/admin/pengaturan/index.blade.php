@@ -103,6 +103,11 @@
                                     @else
                                     <span class="badge bg-red-soft text-red">Nonaktif</span>
                                     @endif
+                                    @elseif($item->tipe === 'currency')
+
+                                    <span class="small">
+                                        Rp {{ number_format($item->value,0,',','.') }}
+                                    </span>
                                     @else
                                     <span class="small text-truncate d-inline-block" style="max-width:160px"
                                         title="{{ $item->value }}">
@@ -215,7 +220,7 @@
                             </div>
                             <div class="col-lg-8">
                                 <div class="card border mb-4">
-                                    <div class="card-header">Setting Value</div>
+                                    <div class="card-header">Nilai</div>
                                     <div class="card-body">
                                         @if($item->tipe==='boolean')
                                         @if(in_array(strtolower($item->value ?? ''),['1','true','ya','yes']))
@@ -225,6 +230,9 @@
                                         @endif
                                         @elseif($item->tipe==='json')
                                         <pre class="small bg-light p-4 rounded mb-0">{{ $item->value ?: '-' }}</pre>
+                                        @elseif($item->tipe==='currency')
+                                        <div class="p-4 bg-light rounded fw-semibold">Rp {{ number_format($item->value,
+                                            0, ',', '.') }}</div>
                                         @else
                                         <div class="p-4 bg-light rounded fw-semibold">{{ $item->value ?: '-' }}</div>
                                         @endif
@@ -347,6 +355,7 @@
                                             <option value="string">String</option>
                                             <option value="integer">Integer</option>
                                             <option value="decimal">Decimal</option>
+                                            <option value="currency">Currency (Rupiah)</option>
                                             <option value="boolean">Boolean</option>
                                             <option value="json">JSON</option>
                                             <option value="time">Time</option>
@@ -484,6 +493,7 @@
                                 <option value="string">String</option>
                                 <option value="integer">Integer</option>
                                 <option value="decimal">Decimal</option>
+                                <option value="currency">Currency (Rupiah)</option>
                                 <option value="boolean">Boolean</option>
                                 <option value="json">JSON</option>
                                 <option value="time">Time</option>
@@ -549,6 +559,14 @@
 
 @push('scripts')
 <script>
+    function formatRupiah(value) {
+        value = value.replace(/\D/g,'');
+        
+        if(value === '') return '';
+        
+        return 'Rp ' + Number(value).toLocaleString('id-ID');
+    }
+
     function hideAllValueInputs() {
         ['edit_pengaturan_value_text', 'edit_pengaturan_value_textarea', 'edit_pengaturan_value_boolean'].forEach(id => {
             const el = document.getElementById(id);
@@ -582,7 +600,18 @@
         const inputTextarea = document.getElementById('edit_pengaturan_value_textarea');
         const inputBoolean  = document.getElementById('edit_pengaturan_value_boolean');
         const tipeKey       = (tipe || '').toLowerCase();
+        if (tipeKey === 'currency') {
 
+            inputText.classList.remove('d-none');
+            inputText.disabled = false;
+            inputText.type = 'text';
+            inputText.value = formatRupiah(String(value ?? ''));
+
+            inputText.oninput = function () {
+                this.value = formatRupiah(this.value);
+            };
+
+        }
         if (tipeKey === 'json') {
             inputTextarea.classList.remove('d-none');
             inputTextarea.disabled = false;
@@ -621,6 +650,16 @@
         } else if (tipe === 'boolean') {
             valueBoolean.classList.remove('d-none'); valueBoolean.disabled = false;
             valueBoolean.value = ['1','true','ya','yes'].includes(String(currentValue).toLowerCase()) ? '1' : '0';
+        }else if (tipe === 'currency') {
+        
+        valueText.classList.remove('d-none');
+        valueText.disabled = false;
+        valueText.type = 'text';
+        valueText.value = formatRupiah(currentValue);
+        
+        valueText.oninput = function () {
+        this.value = formatRupiah(this.value);
+        };
         } else {
             valueText.classList.remove('d-none'); valueText.disabled = false;
             valueText.value = currentValue;
@@ -636,6 +675,17 @@
     document.getElementById('tambah_tipe')?.addEventListener('change', function () {
         const valueInput = document.getElementById('tambah_value');
         const tipe = this.value;
+
+        if(this.value === 'currency'){
+        
+        valueInput.type = 'text';
+        
+        valueInput.oninput = function(){
+        this.value = formatRupiah(this.value);
+        };
+        
+        }
+
         if (tipe === 'integer')      { valueInput.type = 'number'; valueInput.step = '1'; }
         else if (tipe === 'decimal') { valueInput.type = 'number'; valueInput.step = '0.01'; }
         else if (tipe === 'date')    { valueInput.type = 'date';   valueInput.removeAttribute('step'); }
@@ -667,5 +717,21 @@
         );
         @endif
     @endif
+    
+    function cleanCurrency(input){
+    input.value = input.value.replace(/\D/g,'');
+    }
+    
+    document.getElementById('formTambahPengaturan').addEventListener('submit',function(){
+    if(document.getElementById('tambah_tipe').value === 'currency'){
+    cleanCurrency(document.getElementById('tambah_value'));
+    }
+    });
+    
+    document.getElementById('formEditPengaturan').addEventListener('submit',function(){
+    if(document.getElementById('edit_pengaturan_tipe').value === 'currency'){
+    cleanCurrency(document.getElementById('edit_pengaturan_value_text'));
+    }
+    });
 </script>
 @endpush

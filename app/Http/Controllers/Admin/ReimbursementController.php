@@ -14,7 +14,7 @@ class ReimbursementController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Reimbursement::with(['karyawan', 'kategoriReimbursement', 'penyetuju']);
+        $query = Reimbursement::with(['karyawan', 'kategoriReimbursement', 'penyetuju', 'buktiFile']);
 
         if ($request->filled('status')) {
             $query->where('status', $request->status);

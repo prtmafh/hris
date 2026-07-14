@@ -23,7 +23,7 @@ class PengaturanController extends Controller
         $request->validate([
             'key' => ['required', 'string', 'max:255', 'unique:pengaturan,key'],
             'label' => ['required', 'string', 'max:255'],
-            'tipe' => ['required', 'in:string,integer,decimal,boolean,json,time,date'],
+            'tipe' => ['required', 'in:string,integer,decimal,currency,boolean,json,time,date'],
             'grup' => ['nullable', 'string', 'max:255'],
             'keterangan' => ['nullable', 'string'],
             'value' => ['nullable', 'string'],
@@ -52,7 +52,7 @@ class PengaturanController extends Controller
         $request->validate([
             'key' => ['required', 'string', 'max:255', 'unique:pengaturan,key,' . $pengaturan->id],
             'label' => ['required', 'string', 'max:255'],
-            'tipe' => ['required', 'in:string,integer,decimal,boolean,json,time,date'],
+            'tipe' => ['required', 'in:string,integer,decimal,currency,boolean,json,time,date'],
             'grup' => ['nullable', 'string', 'max:255'],
             'keterangan' => ['nullable', 'string'],
             'value' => ['nullable', 'string'],
@@ -84,6 +84,7 @@ class PengaturanController extends Controller
         return match ($tipe) {
             'integer' => $this->normalizeInteger($value),
             'decimal' => $this->normalizeDecimal($value),
+            'currency' => $this->normalizeCurrency($value),
             'boolean' => $this->normalizeBoolean($value),
             'json' => $this->normalizeJson($value),
             'time' => $this->normalizeTime($value),
@@ -91,7 +92,19 @@ class PengaturanController extends Controller
             default => trim((string) $value),
         };
     }
+    private function normalizeCurrency(mixed $value): string
+    {
+        // Hilangkan semua karakter selain angka
+        $normalized = preg_replace('/[^0-9]/', '', (string) $value);
 
+        if ($normalized === '') {
+            throw ValidationException::withMessages([
+                'value' => 'Nilai harus berupa angka.',
+            ]);
+        }
+
+        return $normalized;
+    }
     private function normalizeInteger(mixed $value): string
     {
         if (filter_var($value, FILTER_VALIDATE_INT) === false) {

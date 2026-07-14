@@ -89,14 +89,23 @@
                             </div>
 
                             <div class="mb-4">
-                                <label class="form-label small mb-1">Bukti</label>
-                                <input type="file" name="bukti"
-                                    class="form-control @error('bukti') is-invalid @enderror"
+                                <label class="form-label small mb-1">
+                                    Bukti
+                                </label>
+
+                                <input type="file" name="bukti[]" multiple
+                                    class="form-control @error('bukti') is-invalid @enderror @error('bukti.*') is-invalid @enderror"
                                     accept=".jpg,.jpeg,.png,.pdf">
+
                                 @error('bukti')
                                 <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
+
+                                @error('bukti.*')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
+                            <div id="file-list" class="mt-2 mb-4 small text-muted"></div>
 
                             <button class="btn btn-primary w-100">
                                 <i data-feather="send"></i> Kirim Pengajuan
@@ -159,6 +168,38 @@
                                                 class="badge bg-{{ $badge }}-soft text-{{ $badge }} text-capitalize">{{
                                                 $item->status }}</span></td>
                                         <td class="text-center">
+                                            @if($item->buktiFile->isNotEmpty())
+
+                                            <div class="dropdown d-inline">
+                                                <button class="btn btn-datatable btn-icon btn-transparent-dark"
+                                                    data-bs-toggle="dropdown">
+                                                    <i data-feather="paperclip"></i>
+                                                </button>
+
+                                                <ul class="dropdown-menu">
+
+                                                    @foreach($item->buktiFile as $index => $bukti)
+
+                                                    <li>
+                                                        <a class="dropdown-item" target="_blank"
+                                                            href="{{ asset('storage/'.$bukti->file) }}">
+                                                            Bukti {{ $index + 1 }}
+                                                        </a>
+                                                    </li>
+
+                                                    @endforeach
+
+                                                </ul>
+                                            </div>
+
+                                            @endif
+                                            {{-- @if($item->buktiFile)
+                                            <a href="{{ asset('storage/' . $item->buktiFile->file) }}" target="_blank"
+                                                class="btn btn-datatable btn-icon btn-transparent-dark me-1"
+                                                title="Lihat Bukti">
+                                                <i data-feather="paperclip"></i>
+                                            </a>
+                                            @endif --}}
                                             @if($item->bukti)
                                             <a href="{{ asset('storage/' . $item->bukti) }}" target="_blank"
                                                 class="btn btn-datatable btn-icon btn-transparent-dark me-1"
@@ -167,16 +208,15 @@
                                             </a>
                                             @endif
                                             @if($item->status === 'pending')
-                                            <form action="{{ route('karyawan.reimbursement.destroy', $item->id) }}"
+                                            <button class="btn btn-datatable btn-icon btn-transparent-dark text-danger"
+                                                onclick="confirmDelete({{ $item->id }})" title="Hapus">
+                                                <i data-feather="trash-2"></i>
+                                            </button>
+                                            <form id="delete-form-{{ $item->id }}"
+                                                action="{{ route('karyawan.reimbursement.destroy', $item->id) }}"
                                                 method="POST" class="d-inline">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button
-                                                    class="btn btn-datatable btn-icon btn-transparent-dark text-danger"
-                                                    onclick="return confirm('Yakin hapus pengajuan ini?')"
-                                                    title="Hapus">
-                                                    <i data-feather="trash-2"></i>
-                                                </button>
                                             </form>
                                             @endif
                                         </td>
@@ -189,11 +229,98 @@
                                     @endforelse
                                 </tbody>
                             </table>
+
                         </div>
                     </div>
                 </div>
+                {{-- @if($item->buktiFile->count())
+                <div class="modal fade" id="buktiModal{{ $item->id }}" tabindex="-1">
+
+                    <div class="modal-dialog modal-lg">
+
+                        <div class="modal-content">
+
+                            <div class="modal-header">
+                                <h5 class="modal-title">
+                                    Bukti Reimbursement
+                                </h5>
+
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+
+                            <div class="modal-body">
+
+                                <div class="row">
+
+                                    @foreach($item->bukti as $bukti)
+
+                                    <div class="col-md-4 mb-3">
+
+                                        @php
+                                        $ext = strtolower(pathinfo($bukti->file, PATHINFO_EXTENSION));
+                                        @endphp
+
+                                        @if(in_array($ext,['jpg','jpeg','png','gif','webp']))
+
+                                        <a href="{{ asset('storage/'.$bukti->file) }}" target="_blank">
+
+                                            <img src="{{ asset('storage/'.$bukti->file) }}"
+                                                class="img-fluid rounded border">
+
+                                        </a>
+
+                                        @else
+
+                                        <a href="{{ asset('storage/'.$bukti->file) }}" target="_blank"
+                                            class="btn btn-outline-danger w-100">
+
+                                            <i data-feather="file-text"></i>
+                                            Lihat PDF
+
+                                        </a>
+
+                                        @endif
+
+                                    </div>
+
+                                    @endforeach
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+                @endif --}}
             </div>
         </div>
     </div>
 </main>
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+    const input = document.querySelector('input[name="bukti[]"]');
+    const list = document.getElementById('file-list');
+
+    input.addEventListener('change', function () {
+        list.innerHTML = '';
+
+        if (this.files.length === 0) return;
+
+        let html = '<strong>File dipilih:</strong><ul class="mb-0 mt-1">';
+
+        Array.from(this.files).forEach(file => {
+            html += `<li>${file.name}</li>`;
+        });
+
+        html += '</ul>';
+
+        list.innerHTML = html;
+    });
+});
+</script>
+@endpush
 @endsection
