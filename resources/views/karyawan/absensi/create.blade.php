@@ -18,9 +18,9 @@
                             Tambah Absensi
                         </h1>
 
-                        <div class="page-header-subtitle">
+                        {{-- <div class="page-header-subtitle">
                             Input data absensi karyawan secara manual
-                        </div>
+                        </div> --}}
                     </div>
 
 

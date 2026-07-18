@@ -322,4 +322,14 @@ class DataGajiController extends Controller
             ->route('admin.penggajian.show', $id)
             ->with('success', 'Gaji berhasil ditandai sebagai dibayar.');
     }
+
+    public function destroy(int $id)
+    {
+        $penggajian = Penggajian::findOrFail($id);
+        $penggajian->delete();
+
+        return redirect()
+            ->route('admin.penggajian')
+            ->with('success', 'Data penggajian berhasil dihapus.');
+    }
 }

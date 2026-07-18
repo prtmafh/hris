@@ -4,11 +4,94 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\AbsensiSesi;
+use App\Models\Absensi;
+use App\Models\Karyawan;
+use App\Models\Pengaturan;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
 
 class AbsensiSesiController extends Controller
 {
+    public function create()
+    {
+        $karyawanList = Karyawan::where('status', 'aktif')
+            ->where('status_gaji', 'harian')
+            ->orderBy('nama')
+            ->get();
+        $maxSesi = (int) Pengaturan::getValue('max_sesi_harian', 3);
+
+        return view('admin.absensi.create-sesi', compact('karyawanList', 'maxSesi'));
+    }
+
+    public function store(Request $request)
+    {
+        $maxSesi = (int) Pengaturan::getValue('max_sesi_harian', 3);
+        $validated = $request->validate([
+            'karyawan_id' => [
+                'required',
+                Rule::exists('karyawan', 'id')->where(fn ($query) => $query
+                    ->where('status', 'aktif')
+                    ->where('status_gaji', 'harian')),
+            ],
+            'tanggal' => 'required|date',
+            'sesi_ke' => ['required', 'integer', 'between:1,' . $maxSesi],
+            'jam_checkin' => 'nullable|date_format:H:i|required_with:jam_checkout',
+            'jam_checkout' => 'nullable|date_format:H:i|after_or_equal:jam_checkin',
+            'status' => 'required|in:hadir,izin,alpha,terlambat',
+            'keterangan' => 'nullable|string|max:1000',
+        ], [
+            'karyawan_id.exists' => 'Karyawan harian tidak ditemukan atau sudah tidak aktif.',
+            'sesi_ke.between' => "Nomor sesi harus antara 1 sampai {$maxSesi}.",
+            'jam_checkin.required_with' => 'Jam check-in harus diisi jika jam check-out diisi.',
+            'jam_checkout.after_or_equal' => 'Jam check-out harus sama dengan atau setelah jam check-in.',
+        ]);
+
+        $duplicate = AbsensiSesi::whereHas('absensi', fn ($query) => $query
+                ->where('karyawan_id', $validated['karyawan_id'])
+                ->whereDate('tanggal', $validated['tanggal']))
+            ->where('sesi_ke', $validated['sesi_ke'])
+            ->exists();
+
+        if ($duplicate) {
+            return back()->withInput()->with('error', 'Absensi untuk karyawan, tanggal, dan sesi tersebut sudah ada.');
+        }
+
+        DB::transaction(function () use ($validated) {
+            $absensi = Absensi::firstOrCreate(
+                [
+                    'karyawan_id' => $validated['karyawan_id'],
+                    'tanggal' => $validated['tanggal'],
+                ],
+                ['status' => $validated['status']]
+            );
+
+            AbsensiSesi::create([
+                'absensi_id' => $absensi->id,
+                'sesi_ke' => $validated['sesi_ke'],
+                'jam_checkin' => $validated['jam_checkin'] ?? null,
+                'jam_checkout' => $validated['jam_checkout'] ?? null,
+                'status' => $validated['status'],
+                'keterangan' => $validated['keterangan'] ?? null,
+            ]);
+
+            $sesi = $absensi->sesi()->get();
+            $status = $sesi->contains('status', 'hadir') ? 'hadir'
+                : ($sesi->contains('status', 'terlambat') ? 'terlambat'
+                : ($sesi->contains('status', 'izin') ? 'izin' : 'alpha'));
+
+            $absensi->update([
+                'jam_masuk' => $sesi->whereNotNull('jam_checkin')->min('jam_checkin'),
+                'jam_keluar' => $sesi->whereNotNull('jam_checkout')->max('jam_checkout'),
+                'status' => $status,
+            ]);
+        });
+
+        return redirect()->route('data_absen', ['type' => 'sesi'])
+            ->with('success', 'Absensi sesi manual berhasil ditambahkan.');
+    }
+
     public function show($id)
     {
         $sesi = AbsensiSesi::with(['absensi.karyawan.jabatan'])->findOrFail($id);

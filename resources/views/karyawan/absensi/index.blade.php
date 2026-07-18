@@ -5,7 +5,7 @@
 @section('content')
 <main>
     {{-- HEADER --}}
-    <header class="page-header page-header-compact page-header-light border-bottom bg-white mb-4 py-2">
+    <header class="page-header page-header-compact page-header-light border-bottom bg-white mb-4 ">
         <div class="container-xl px-4">
             <div class="page-header-content">
                 <div class="row align-items-center justify-content-between pt-3">
@@ -16,7 +16,13 @@
                             Data Absensi
                         </h1>
                     </div>
-
+                    <div class="col-auto mb-3">
+                        <a href="{{ request('type') === 'sesi' ? route('karyawan.absensi-sesi.create') : route('karyawan.absensi.create') }}"
+                            class="btn btn-sm btn-light text-primary">
+                            <i data-feather="plus-circle" class="me-1"></i>
+                            {{ request('type') === 'sesi' ? 'Tambah Absensi Sesi Manual' : 'Tambah Absensi Manual' }}
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>

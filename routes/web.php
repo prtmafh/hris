@@ -98,6 +98,8 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/rekap-tahunan', [DataAbsensiController::class, 'rekap'])->name('rekap.tahunan');
 
     // AbsensiSesi Routes
+    Route::get('/admin/absensi-sesi/tambah/manual', [AbsensiSesiController::class, 'create'])->name('admin.absensi-sesi.create');
+    Route::post('/admin/absensi-sesi', [AbsensiSesiController::class, 'store'])->name('admin.absensi-sesi.store');
     Route::get('/admin/absensi-sesi/{id}', [AbsensiSesiController::class, 'show'])->name('admin.absensi-sesi.show');
     Route::get('/admin/absensi-sesi/{id}/edit', [AbsensiSesiController::class, 'edit'])->name('admin.absensi-sesi.edit');
     Route::put('/admin/absensi-sesi/{id}', [AbsensiSesiController::class, 'update'])->name('admin.absensi-sesi.update');
@@ -115,6 +117,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::post('/admin/penggajian/generate', [DataGajiController::class, 'generate'])->name('admin.penggajian.generate');
     Route::get('/admin/penggajian/{id}', [DataGajiController::class, 'show'])->name('admin.penggajian.show');
     Route::post('/admin/penggajian/{id}/bayar', [DataGajiController::class, 'markBayar'])->name('admin.penggajian.bayar');
+    Route::delete('/admin/penggajian/{id}', [DataGajiController::class, 'destroy'])->name('admin.penggajian.destroy');
 
     Route::get('/admin/pengaturan', [PengaturanController::class, 'index'])->name('admin.pengaturan');
     Route::post('/admin/pengaturan', [PengaturanController::class, 'store'])->name('admin.pengaturan.store');
@@ -211,6 +214,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/karyawan/absensi-sesi/{id}/edit', [KaryawanAbsensiSesiController::class, 'edit'])->name('karyawan.absensi-sesi.edit');
     Route::put('/karyawan/absensi-sesi/{id}', [KaryawanAbsensiSesiController::class, 'update'])->name('karyawan.absensi-sesi.update');
     Route::delete('/karyawan/absensi-sesi/{id}', [KaryawanAbsensiSesiController::class, 'destroy'])->name('karyawan.absensi-sesi.destroy');
+
+    Route::get('/karyawan/absensi-sesi/tambah/manual', [KaryawanAbsensiSesiController::class, 'create'])->name('karyawan.absensi-sesi.create');
+    Route::post('/karyawan/absensi-sesi', [KaryawanAbsensiSesiController::class, 'store'])->name('karyawan.absensi-sesi.store');
 });
 // Route::middleware(['auth', 'admin_dan_admin_kecil'])->group(function () {
 //     Route::get('/admin/absensi/export', [DataAbsensiController::class, 'export'])->name('admin.absensi.export');

@@ -9,6 +9,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
 use App\Exports\AbsensiExport;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Models\AbsensiSesi;
@@ -68,11 +69,17 @@ class DataAbsensiController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'karyawan_id'  => 'required|exists:karyawan,id',
+            'karyawan_id'  => [
+                'required',
+                Rule::exists('karyawan', 'id')->where('status', 'aktif'),
+            ],
             'tanggal'      => 'required|date',
             'jam_masuk'    => 'nullable|date_format:H:i',
-            'jam_keluar'   => 'nullable|date_format:H:i',
+            'jam_keluar'   => 'nullable|date_format:H:i|after_or_equal:jam_masuk',
             'status'       => 'required|in:hadir,izin,alpha,terlambat',
+        ], [
+            'karyawan_id.exists' => 'Karyawan tidak ditemukan atau sudah tidak aktif.',
+            'jam_keluar.after_or_equal' => 'Jam keluar harus sama dengan atau setelah jam masuk.',
         ]);
 
         $exists = Absensi::where('karyawan_id', $request->karyawan_id)

@@ -204,6 +204,20 @@
                                         <i data-feather="eye"></i>
                                     </a>
 
+                                    <button type="button"
+                                        class="btn btn-datatable btn-icon btn-transparent-dark text-danger"
+                                        title="Hapus data penggajian"
+                                        onclick="confirmDelete({{ $g->id }})">
+                                        <i data-feather="trash-2"></i>
+                                    </button>
+
+                                    <form id="delete-form-{{ $g->id }}"
+                                        action="{{ route('admin.penggajian.destroy', $g->id) }}" method="POST"
+                                        class="d-none">
+                                        @csrf
+                                        @method('DELETE')
+                                    </form>
+
                                 </td>
 
                             </tr>
