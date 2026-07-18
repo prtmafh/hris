@@ -193,9 +193,9 @@
 
                     </table>
                 </div>
-                <div class="mt-4">
+                {{-- <div class="mt-4">
                     {{ $lembur->withQueryString()->links() }}
-                </div>
+                </div> --}}
             </div>
         </div>
     </div>
