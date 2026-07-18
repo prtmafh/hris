@@ -35,7 +35,7 @@ class DataGajiController extends Controller
             $query->where('status', $request->status);
         }
 
-        $penggajian   = $query->latest()->paginate(10);
+        $penggajian = $query->latest()->get();
         $karyawanList = Karyawan::orderBy('nama')->get();
         $daftarTahun = range(Carbon::now()->year, Carbon::now()->year - 3);
 

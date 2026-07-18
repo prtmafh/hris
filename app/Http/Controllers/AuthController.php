@@ -50,6 +50,9 @@ class AuthController extends Controller
             case 'pimpinan':
                 return redirect()->route('pimpinan.dashboard');
 
+            case 'admin_kecil':
+                return redirect()->route('dashboard.karyawan');
+
             default:
                 Auth::logout();
 

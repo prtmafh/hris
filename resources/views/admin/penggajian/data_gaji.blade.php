@@ -154,7 +154,7 @@
                             <tr>
 
                                 <td>
-                                    {{ $penggajian->firstItem() + $index }}
+                                    {{ $index + 1 }}
                                 </td>
 
                                 <td>

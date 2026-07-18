@@ -9,6 +9,7 @@ use App\Models\Pengaturan;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class AbsensiController extends Controller
@@ -17,7 +18,7 @@ class AbsensiController extends Controller
     {
         /** @var \App\Models\Karyawan $karyawan */
         $karyawan = Auth::user();
-        
+
         $statusGaji = $karyawan->status_gaji;
 
         $bulan = $request->get('bulan', Carbon::now()->month);
@@ -182,11 +183,10 @@ class AbsensiController extends Controller
         }
 
         $now     = Carbon::now();
-        $today   = Carbon::today();
         $maxSesi = (int) Pengaturan::getValue('max_sesi_harian', 3);
 
         // Tentukan sesi_ke berdasarkan window waktu dari pengaturan
-        [$sesiKe, $jamMulaiSesi] = $this->deteksiSesiAktif($now, $maxSesi);
+        [$sesiKe,, $tanggalKerja] = $this->deteksiSesiAktif($now, $maxSesi);
 
         if (!$sesiKe) {
             return response()->json([
@@ -195,62 +195,66 @@ class AbsensiController extends Controller
             ]);
         }
 
-        $absensi = Absensi::firstOrCreate(
-            ['karyawan_id' => $karyawan->id, 'tanggal' => $today],
-            ['status' => 'hadir']
-        );
-
-        // Cek sudah absen masuk sesi ini hari ini
-        $sudahMasukSesiIni = AbsensiSesi::where('absensi_id', $absensi->id)
-            ->where('sesi_ke', $sesiKe)
-            ->exists();
-
-        if ($sudahMasukSesiIni) {
-            return response()->json([
-                'status'  => 'error',
-                'message' => "Anda sudah melakukan absen masuk sesi {$sesiKe} hari ini.",
-            ]);
-        }
-
-        // Cek ada sesi aktif yang belum ditutup
-        $aktiveSesi = AbsensiSesi::where('absensi_id', $absensi->id)
-            ->whereNotNull('jam_checkin')
-            ->whereNull('jam_checkout')
+        $absensiAktif = Absensi::where('karyawan_id', $karyawan->id)
+            ->whereNotNull('jam_masuk')
+            ->whereNull('jam_keluar')
+            ->latest('tanggal')
             ->first();
 
-        if ($aktiveSesi) {
+        if ($absensiAktif) {
             return response()->json([
                 'status'  => 'error',
-                'message' => "Anda masih dalam sesi {$aktiveSesi->sesi_ke}. Selesaikan absen pulang sesi ini dulu.",
+                'message' => 'Anda sudah melakukan absen masuk. Silakan lakukan absen pulang satu kali setelah pekerjaan selesai.',
             ]);
         }
 
-        $toleransiMenit = (int) Pengaturan::getValue('toleransi_keterlambatan', 10);
-        $batasLambat    = $jamMulaiSesi->copy()->addMinutes($toleransiMenit);
-        $status         = $now->gt($batasLambat) ? 'terlambat' : 'hadir';
+        $sudahSelesai = Absensi::where('karyawan_id', $karyawan->id)
+            ->whereDate('tanggal', $tanggalKerja)
+            ->whereNotNull('jam_keluar')
+            ->exists();
+
+        if ($sudahSelesai) {
+            return response()->json([
+                'status'  => 'error',
+                'message' => 'Absensi untuk rangkaian sesi kerja ini sudah selesai.',
+            ]);
+        }
+
+        // Absensi karyawan harian per sesi tidak menggunakan status terlambat.
+        $status = 'hadir';
 
         $fotoPath = $this->simpanFoto($request->foto, 'absen_masuk_sesi', $karyawan->id, $now);
 
-        AbsensiSesi::create([
-            'absensi_id'      => $absensi->id,
-            'sesi_ke'         => $sesiKe,
-            'jam_checkin'     => $now->format('H:i:s'),
-            'status'          => $status,
-            'latitude_masuk'  => $request->latitude,
-            'longitude_masuk' => $request->longitude,
-            'foto_masuk'      => $fotoPath,
-        ]);
+        DB::transaction(function () use ($karyawan, $tanggalKerja, $now, $status, $request, $fotoPath, $sesiKe) {
+            $absensi = Absensi::updateOrCreate(
+                ['karyawan_id' => $karyawan->id, 'tanggal' => $tanggalKerja],
+                [
+                    'status'          => $status,
+                    'jam_masuk'       => $now->format('H:i:s'),
+                    'jam_keluar'      => null,
+                    'latitude_masuk'  => $request->latitude,
+                    'longitude_masuk' => $request->longitude,
+                    'foto_masuk'      => $fotoPath,
+                ]
+            );
 
-        // Update parent: set jam_masuk & status dari sesi pertama yang masuk
-        if (!$absensi->jam_masuk) {
-            $absensi->update(['status' => $status, 'jam_masuk' => $now->format('H:i:s')]);
-        }
-
-        $label = $status === 'terlambat' ? 'Terlambat' : 'Hadir';
+            AbsensiSesi::updateOrCreate(
+                ['absensi_id' => $absensi->id, 'sesi_ke' => $sesiKe],
+                [
+                    // Sesi pertama memakai waktu check-in aktual.
+                    'jam_checkin'     => $now->format('H:i:s'),
+                    'jam_checkout'    => null,
+                    'status'          => $status,
+                    'latitude_masuk'  => $request->latitude,
+                    'longitude_masuk' => $request->longitude,
+                    'foto_masuk'      => $fotoPath,
+                ]
+            );
+        });
 
         return response()->json([
             'status'  => 'success',
-            'message' => "Absen masuk sesi {$sesiKe} berhasil! Status: {$label}",
+            'message' => "Absen masuk berhasil pada sesi {$sesiKe}! Status: Hadir. Anda cukup absen pulang satu kali.",
         ]);
     }
 
@@ -267,10 +271,10 @@ class AbsensiController extends Controller
             ]);
         }
 
-        $today = Carbon::today();
-
         $absensi = Absensi::where('karyawan_id', $karyawan->id)
-            ->whereDate('tanggal', $today)
+            ->whereNotNull('jam_masuk')
+            ->whereNull('jam_keluar')
+            ->latest('tanggal')
             ->first();
 
         if (!$absensi) {
@@ -280,33 +284,80 @@ class AbsensiController extends Controller
             ]);
         }
 
-        $aktiveSesi = AbsensiSesi::where('absensi_id', $absensi->id)
-            ->whereNotNull('jam_checkin')
-            ->whereNull('jam_checkout')
-            ->first();
-
-        if (!$aktiveSesi) {
-            return response()->json([
-                'status'  => 'error',
-                'message' => 'Tidak ada sesi aktif untuk diakhiri.',
-            ]);
-        }
-
         $now      = Carbon::now();
         $fotoPath = $this->simpanFoto($request->foto, 'absen_keluar_sesi', $karyawan->id, $now);
 
-        $aktiveSesi->update([
-            'jam_checkout'     => $now->format('H:i:s'),
-            'latitude_keluar'  => $request->latitude,
-            'longitude_keluar' => $request->longitude,
-            'foto_keluar'      => $fotoPath,
-        ]);
+        $tanggalKerja = Carbon::parse($absensi->tanggal)->startOfDay();
+        $maxSesi      = (int) Pengaturan::getValue('max_sesi_harian', 3);
+        $jadwalKerja  = $this->jadwalSesi($tanggalKerja, $maxSesi);
+        $sesiPertama  = AbsensiSesi::where('absensi_id', $absensi->id)
+            ->whereNotNull('jam_checkin')
+            ->orderBy('sesi_ke')
+            ->first();
+        $jadwalPertama = collect($jadwalKerja)->firstWhere('sesi_ke', $sesiPertama?->sesi_ke);
+        $jamMasuk     = ($jadwalPertama['mulai'] ?? $tanggalKerja)->copy()
+            ->setTimeFromTimeString($absensi->jam_masuk);
+        $sesiTerhitung = [];
 
-        $absensi->update(['jam_keluar' => $now->format('H:i:s')]);
+        // Tentukan sesi terakhir yang dilalui. Checkout sesi terakhir memakai
+        // waktu aktual, sementara batas antar-sesi mengikuti Pengaturan.
+        $sesiTerakhirKe = collect($jadwalKerja)
+            ->filter(function ($jadwal) use ($absensi, $jamMasuk, $now) {
+                $sudahDibuat = AbsensiSesi::where('absensi_id', $absensi->id)
+                    ->where('sesi_ke', $jadwal['sesi_ke'])
+                    ->exists();
+
+                return $sudahDibuat
+                    || ($jamMasuk->lt($jadwal['selesai']) && $now->gt($jadwal['mulai']));
+            })
+            ->last()['sesi_ke'] ?? null;
+
+        DB::transaction(function () use ($absensi, $jadwalKerja, $jamMasuk, $now, $request, $fotoPath, $sesiPertama, $sesiTerakhirKe, &$sesiTerhitung) {
+            foreach ($jadwalKerja as $jadwal) {
+                $existing = AbsensiSesi::where('absensi_id', $absensi->id)
+                    ->where('sesi_ke', $jadwal['sesi_ke'])
+                    ->first();
+
+                // Sesi dihitung jika waktu kerja beririsan dengan window sesi tersebut.
+                // Sesi yang sudah dibuat tetap ditutup jika pengaturan berubah
+                // ketika absensi sedang berjalan.
+                if ($existing || ($jamMasuk->lt($jadwal['selesai']) && $now->gt($jadwal['mulai']))) {
+                    AbsensiSesi::updateOrCreate(
+                        ['absensi_id' => $absensi->id, 'sesi_ke' => $jadwal['sesi_ke']],
+                        [
+                            'jam_checkin'     => $jadwal['sesi_ke'] === $sesiPertama?->sesi_ke
+                                ? $jamMasuk->format('H:i:s')
+                                : $jadwal['mulai']->format('H:i:s'),
+                            'jam_checkout'    => $jadwal['sesi_ke'] === $sesiTerakhirKe
+                                ? $now->format('H:i:s')
+                                : $jadwal['selesai']->format('H:i:s'),
+                            'status'          => $existing?->status ?? 'hadir',
+                            'latitude_masuk'  => $existing?->latitude_masuk ?? $absensi->latitude_masuk,
+                            'longitude_masuk' => $existing?->longitude_masuk ?? $absensi->longitude_masuk,
+                            'foto_masuk'      => $existing?->foto_masuk ?? $absensi->foto_masuk,
+                            'latitude_keluar' => $request->latitude,
+                            'longitude_keluar' => $request->longitude,
+                            'foto_keluar'     => $fotoPath,
+                        ]
+                    );
+
+                    $sesiTerhitung[] = $jadwal['sesi_ke'];
+                }
+            }
+
+            $absensi->update([
+                'jam_keluar'       => $now->format('H:i:s'),
+                'latitude_keluar'  => $request->latitude,
+                'longitude_keluar' => $request->longitude,
+                'foto_keluar'      => $fotoPath,
+            ]);
+        });
+
+        $daftarSesi = implode(', ', $sesiTerhitung);
 
         return response()->json([
             'status'  => 'success',
-            'message' => "Absen pulang sesi {$aktiveSesi->sesi_ke} berhasil!",
+            'message' => "Absen pulang berhasil! Sesi yang dihitung: {$daftarSesi}.",
         ]);
     }
 
@@ -316,10 +367,27 @@ class AbsensiController extends Controller
 
     /**
      * Deteksi sesi yang sedang aktif berdasarkan window waktu di pengaturan.
-     * Mengembalikan [sesi_ke, Carbon jamMulai] atau [null, null] jika di luar window.
+     * Mengembalikan [sesi_ke, jam mulai, tanggal kerja] dan mendukung sesi lintas hari.
      */
     public static function deteksiSesiAktif(Carbon $now, int $maxSesi): array
     {
+        foreach ([$now->copy()->startOfDay(), $now->copy()->subDay()->startOfDay()] as $tanggalKerja) {
+            foreach (self::jadwalSesi($tanggalKerja, $maxSesi) as $jadwal) {
+                if ($now->betweenIncluded($jadwal['mulai'], $jadwal['selesai'])) {
+                    return [$jadwal['sesi_ke'], $jadwal['mulai'], $tanggalKerja];
+                }
+            }
+        }
+
+        return [null, null, null];
+    }
+
+    /** Susun window sesi berurutan mulai dari tanggal kerja sesi pertama. */
+    private static function jadwalSesi(Carbon $tanggalKerja, int $maxSesi): array
+    {
+        $jadwal = [];
+        $mulaiSebelumnya = null;
+
         for ($i = 1; $i <= $maxSesi; $i++) {
             $mulai   = Pengaturan::getValue("sesi_{$i}_mulai");
             $selesai = Pengaturan::getValue("sesi_{$i}_selesai");
@@ -328,15 +396,21 @@ class AbsensiController extends Controller
                 continue;
             }
 
-            $jamMulai   = Carbon::parse($mulai);
-            $jamSelesai = Carbon::parse($selesai);
-
-            if ($now->between($jamMulai, $jamSelesai)) {
-                return [$i, $jamMulai];
+            $jamMulai = $tanggalKerja->copy()->setTimeFromTimeString($mulai);
+            while ($mulaiSebelumnya && $jamMulai->lte($mulaiSebelumnya)) {
+                $jamMulai->addDay();
             }
+
+            $jamSelesai = $jamMulai->copy()->setTimeFromTimeString($selesai);
+            if ($jamSelesai->lt($jamMulai)) {
+                $jamSelesai->addDay();
+            }
+
+            $jadwal[] = ['sesi_ke' => $i, 'mulai' => $jamMulai, 'selesai' => $jamSelesai];
+            $mulaiSebelumnya = $jamMulai;
         }
 
-        return [null, null];
+        return $jadwal;
     }
 
     private function simpanFoto(?string $base64, string $prefix, int $karyawanId, Carbon $now): ?string

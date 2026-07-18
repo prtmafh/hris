@@ -22,7 +22,7 @@ class DaftarKaryawanController extends Controller
 
         $karyawan = Karyawan::with(['jabatan', 'role'])
             ->whereHas('role', function ($query) {
-                $query->where('nama_role', 'karyawan');
+                $query->whereIn('nama_role', ['karyawan', 'admin_kecil']);
             })
             ->latest('tgl_masuk')
             ->get();

@@ -19,6 +19,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'karyawan' => \App\Http\Middleware\KaryawanMiddleware::class,
             'pimpinan' => \App\Http\Middleware\PimpinanMiddleware::class,
             'cekBulanan' => \App\Http\Middleware\CekKaryawanBulanan::class,
+            'admin_dan_admin_kecil' => \App\Http\Middleware\AdminDanAdminKecil::class,
         ]);
         $middleware->append(HandleCors::class);
     })

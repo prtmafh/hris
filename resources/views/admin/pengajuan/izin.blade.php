@@ -115,7 +115,7 @@
 
                             <tr>
 
-                                <td>{{ $izin->firstItem() + $index }}</td>
+                                <td>{{ $index + 1 }}</td>
 
                                 {{-- KARYAWAN --}}
                                 <td>

@@ -35,23 +35,42 @@ class DashboardController extends Controller
         $aktiveSesi   = null;
         $sesiSaatIni  = null; // sesi_ke berdasarkan window waktu saat ini
         $bisaMasukSesi = false;
+        $bisaPulangSesi = false;
         $maxSesi      = (int) Pengaturan::getValue('max_sesi_harian', 3);
 
         if ($statusGaji === 'harian') {
-            [$sesiSaatIni] = AbsensiController::deteksiSesiAktif(Carbon::now(), $maxSesi);
+            [$sesiSaatIni, , $tanggalKerja] = AbsensiController::deteksiSesiAktif(Carbon::now(), $maxSesi);
+
+            $absensiAktif = Absensi::where('karyawan_id', $karyawan->id)
+                ->whereNotNull('jam_masuk')
+                ->whereNull('jam_keluar')
+                ->latest('tanggal')
+                ->first();
+
+            if ($absensiAktif) {
+                $cek = $absensiAktif;
+            }
 
             if ($cek) {
                 $sesiHariIni = AbsensiSesi::where('absensi_id', $cek->id)
                     ->orderBy('sesi_ke')
                     ->get();
 
-                $aktiveSesi = $sesiHariIni->first(fn($s) => $s->jam_checkin && !$s->jam_checkout);
+                // Baris sesi lama bisa saja masih memiliki checkout kosong. Absensi induk
+                // tetap menjadi sumber status utama agar tombol pulang tidak aktif kembali.
+                if (!$cek->jam_keluar) {
+                    $aktiveSesi = $sesiHariIni->first(fn($s) => $s->jam_checkin && !$s->jam_checkout);
+                }
+
+                $bisaPulangSesi = (bool) $cek->jam_masuk && !$cek->jam_keluar;
             }
 
-            // Bisa masuk sesi jika: ada window aktif, tidak ada sesi aktif yang belum ditutup,
-            // dan sesi tersebut belum diisi hari ini
-            $sudahMasukSesiIni = $sesiSaatIni && $sesiHariIni->contains('sesi_ke', $sesiSaatIni);
-            $bisaMasukSesi     = $sesiSaatIni && !$aktiveSesi && !$sudahMasukSesiIni;
+            // Check-in dan check-out hanya sekali untuk seluruh rangkaian sesi kerja.
+            $absensiRangkaianSelesai = $tanggalKerja && Absensi::where('karyawan_id', $karyawan->id)
+                ->whereDate('tanggal', $tanggalKerja)
+                ->whereNotNull('jam_keluar')
+                ->exists();
+            $bisaMasukSesi = $sesiSaatIni && !$absensiAktif && !$absensiRangkaianSelesai;
         }
 
         $totalHadirBulanIni = Absensi::where('karyawan_id', $karyawan->id)
@@ -92,6 +111,7 @@ class DashboardController extends Controller
             'aktiveSesi',
             'sesiSaatIni',
             'bisaMasukSesi',
+            'bisaPulangSesi',
             'maxSesi',
             'totalHadirBulanIni',
             'totalIzinPending',

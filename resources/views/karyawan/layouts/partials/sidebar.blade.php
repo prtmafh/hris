@@ -71,7 +71,28 @@
                     </div>
                     Slip Gaji
                 </a>
+                @php
+                $absensi = request()->is(['karyawan/absensi*']);
+                @endphp
+                @if (auth()->user()?->role_id === 4)
+                <a class="nav-link {{ $absensi ? '' : 'collapsed' }}" href="#" data-bs-toggle="collapse"
+                    data-bs-target="#collapseAbsensi">
+                    <div class="nav-link-icon"><i data-feather="calendar"></i></div>
+                    Absensi
+                    <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                </a>
 
+                <div class="collapse {{ $absensi ? 'show' : '' }}" id="collapseAbsensi">
+                    <nav class="sidenav-menu-nested nav">
+                        <a class="nav-link {{ request()->is('karyawan/absensi*') ? 'active' : '' }}"
+                            href="{{ route('data_absenKaryawan') }}">Data
+                            Absen</a>
+
+                        {{-- <a class="nav-link {{ request()->is('admin/rekap-tahunan*') ? 'active' : '' }}"
+                            href="{{ route('rekap.tahunan') }}">Rekap</a> --}}
+                    </nav>
+                </div>
+                @endif
             </div>
         </div>
 

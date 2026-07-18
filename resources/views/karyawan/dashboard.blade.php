@@ -205,13 +205,10 @@
                                 <div class="action-group justify-content-center mb-4">
                                     @if($statusGaji === 'harian')
                                     @php
-                                    $bisaPulangSesi = !!$aktiveSesi;
                                     $labelMasuk = $bisaMasukSesi && $sesiSaatIni
-                                    ? "Absen Masuk Sesi {$sesiSaatIni}"
-                                    : 'Absen Masuk Sesi';
-                                    $labelPulang = $aktiveSesi
-                                    ? "Absen Pulang Sesi {$aktiveSesi->sesi_ke}"
-                                    : 'Absen Pulang Sesi';
+                                    ? "Absen Masuk (Sesi {$sesiSaatIni})"
+                                    : 'Absen Masuk';
+                                    $labelPulang = 'Absen Pulang';
                                     @endphp
                                     <button id="btnMasukSesi" class="btn btn-absen btn-success-absen text-white" {{
                                         $bisaMasukSesi ? '' : 'disabled' }}>

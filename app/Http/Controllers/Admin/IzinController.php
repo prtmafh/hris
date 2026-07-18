@@ -25,7 +25,7 @@ class IzinController extends Controller
             $query->where('karyawan_id', $request->karyawan_id);
         }
 
-        $izin = $query->latest()->paginate(10);
+        $izin = $query->latest()->get();
         $karyawanList = Karyawan::all();
 
         return view('admin.pengajuan.izin', compact('izin', 'karyawanList'));

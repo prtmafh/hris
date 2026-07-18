@@ -25,6 +25,10 @@ use App\Http\Controllers\Karyawan\LemburController as KaryawanLemburController;
 use App\Http\Controllers\Karyawan\ProfileController;
 use App\Http\Controllers\Karyawan\ReimbursementController as KaryawanReimbursementController;
 use App\Http\Controllers\Karyawan\SlipGajiController;
+use App\Http\Controllers\Karyawan\DataAbsensiController as KaryawanDataAbsensiController;
+use App\Http\Controllers\Karyawan\AbsensiSesiController as KaryawanAbsensiSesiController;
+
+
 use App\Http\Controllers\landing\HomeController;
 use App\Http\Controllers\Pimpinan\DashboardController as PimpinanDashboardController;
 use App\Http\Controllers\Pimpinan\LaporanController as PimpinanLaporanController;
@@ -190,4 +194,37 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/karyawan/profile-saya', [ProfileController::class, 'index'])->name('karyawan.profile');
     Route::put('/karyawan/{id}/password', [ProfileController::class, 'updatePassword'])->name('karyawan.updatePassword');
+
+    Route::get('/karyawan/absensi', [KaryawanDataAbsensiController::class, 'index'])->name('data_absenKaryawan');
+    // Route::get('/karyawan/absensi', [DataAbsensiController::class, 'index'])->name('data_absen');
+    Route::get('/karyawan/absensi/export', [KaryawanDataAbsensiController::class, 'export'])->name('karyawan.absensi.export');
+    Route::get('/karyawan/absensi/tambah', [KaryawanDataAbsensiController::class, 'create'])->name('karyawan.absensi.create');
+    Route::post('/karyawan/absensi', [KaryawanDataAbsensiController::class, 'store'])->name('karyawan.absensi.store');
+    Route::get('/karyawan/absensi/{id}', [KaryawanDataAbsensiController::class, 'show'])->name('karyawan.absensi.show');
+    Route::get('/karyawan/absensi/{id}/edit', [KaryawanDataAbsensiController::class, 'edit'])->name('karyawan.absensi.edit');
+    Route::put('/karyawan/absensi/{id}', [KaryawanDataAbsensiController::class, 'update'])->name('karyawan.absensi.update');
+    Route::delete('/karyawan/absensi/{id}', [KaryawanDataAbsensiController::class, 'destroy'])->name('karyawan.absensi.destroy');
+    Route::get('/karyawan/rekap-tahunan', [KaryawanDataAbsensiController::class, 'rekap'])->name('rekap.tahunan');
+
+    // AbsensiSesi Routes
+    Route::get('/karyawan/absensi-sesi/{id}', [KaryawanAbsensiSesiController::class, 'show'])->name('karyawan.absensi-sesi.show');
+    Route::get('/karyawan/absensi-sesi/{id}/edit', [KaryawanAbsensiSesiController::class, 'edit'])->name('karyawan.absensi-sesi.edit');
+    Route::put('/karyawan/absensi-sesi/{id}', [KaryawanAbsensiSesiController::class, 'update'])->name('karyawan.absensi-sesi.update');
+    Route::delete('/karyawan/absensi-sesi/{id}', [KaryawanAbsensiSesiController::class, 'destroy'])->name('karyawan.absensi-sesi.destroy');
 });
+// Route::middleware(['auth', 'admin_dan_admin_kecil'])->group(function () {
+//     Route::get('/admin/absensi/export', [DataAbsensiController::class, 'export'])->name('admin.absensi.export');
+//     Route::get('/admin/absensi/tambah', [DataAbsensiController::class, 'create'])->name('admin.absensi.create');
+//     Route::post('/admin/absensi', [DataAbsensiController::class, 'store'])->name('admin.absensi.store');
+//     Route::get('/admin/absensi/{id}', [DataAbsensiController::class, 'show'])->name('admin.absensi.show');
+//     Route::get('/admin/absensi/{id}/edit', [DataAbsensiController::class, 'edit'])->name('admin.absensi.edit');
+//     Route::put('/admin/absensi/{id}', [DataAbsensiController::class, 'update'])->name('admin.absensi.update');
+//     Route::delete('/admin/absensi/{id}', [DataAbsensiController::class, 'destroy'])->name('admin.absensi.destroy');
+//     Route::get('/admin/rekap-tahunan', [DataAbsensiController::class, 'rekap'])->name('rekap.tahunan');
+
+//     // AbsensiSesi Routes
+//     Route::get('/admin/absensi-sesi/{id}', [AbsensiSesiController::class, 'show'])->name('admin.absensi-sesi.show');
+//     Route::get('/admin/absensi-sesi/{id}/edit', [AbsensiSesiController::class, 'edit'])->name('admin.absensi-sesi.edit');
+//     Route::put('/admin/absensi-sesi/{id}', [AbsensiSesiController::class, 'update'])->name('admin.absensi-sesi.update');
+//     Route::delete('/admin/absensi-sesi/{id}', [AbsensiSesiController::class, 'destroy'])->name('admin.absensi-sesi.destroy');
+// });

@@ -111,7 +111,7 @@
 
                             <tr>
 
-                                <td>{{ $lembur->firstItem() + $index }}</td>
+                                <td>{{ $index + 1 }}</td>
 
                                 {{-- KARYAWAN --}}
                                 <td>
