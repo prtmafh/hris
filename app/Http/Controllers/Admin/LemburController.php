@@ -25,7 +25,7 @@ class LemburController extends Controller
             $query->where('status', $request->status);
         }
 
-        $lembur = $query->latest()->paginate(10);
+        $lembur = $query->latest()->get();
         $karyawanList = Karyawan::orderBy('nama')->get();
         $hasFilter = $request->filled('tanggal')
             || $request->filled('karyawan_id')
