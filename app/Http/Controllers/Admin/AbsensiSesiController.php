@@ -31,7 +31,7 @@ class AbsensiSesiController extends Controller
         $validated = $request->validate([
             'karyawan_id' => [
                 'required',
-                Rule::exists('karyawan', 'id')->where(fn ($query) => $query
+                Rule::exists('karyawan', 'id')->where(fn($query) => $query
                     ->where('status', 'aktif')
                     ->where('status_gaji', 'harian')),
             ],
@@ -48,9 +48,9 @@ class AbsensiSesiController extends Controller
             'jam_checkout.after_or_equal' => 'Jam check-out harus sama dengan atau setelah jam check-in.',
         ]);
 
-        $duplicate = AbsensiSesi::whereHas('absensi', fn ($query) => $query
-                ->where('karyawan_id', $validated['karyawan_id'])
-                ->whereDate('tanggal', $validated['tanggal']))
+        $duplicate = AbsensiSesi::whereHas('absensi', fn($query) => $query
+            ->where('karyawan_id', $validated['karyawan_id'])
+            ->whereDate('tanggal', $validated['tanggal']))
             ->where('sesi_ke', $validated['sesi_ke'])
             ->exists();
 
@@ -79,7 +79,7 @@ class AbsensiSesiController extends Controller
             $sesi = $absensi->sesi()->get();
             $status = $sesi->contains('status', 'hadir') ? 'hadir'
                 : ($sesi->contains('status', 'terlambat') ? 'terlambat'
-                : ($sesi->contains('status', 'izin') ? 'izin' : 'alpha'));
+                    : ($sesi->contains('status', 'izin') ? 'izin' : 'alpha'));
 
             $absensi->update([
                 'jam_masuk' => $sesi->whereNotNull('jam_checkin')->min('jam_checkin'),
