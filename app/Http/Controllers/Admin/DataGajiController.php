@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Absensi;
 use App\Models\Karyawan;
+use App\Models\KomponenGajiKaryawan;
 use App\Models\Lembur;
 use App\Models\Pengaturan;
 use App\Models\Penggajian;
@@ -60,14 +61,14 @@ class DataGajiController extends Controller
             'tahun' => 'required|integer|min:2000|max:' . (date('Y') + 1),
         ]);
 
-        $bulan             = (int) $request->bulan;
-        $tahun             = (int) $request->tahun;
+        $bulan = (int) $request->bulan;
+        $tahun = (int) $request->tahun;
         $dendaPerTerlambat = (float) Pengaturan::getValue('denda_keterlambatan', 0);
 
         $karyawanList = Karyawan::where('status', 'aktif')->get();
 
         $generated = 0;
-        $skipped   = 0;
+        $skipped = 0;
 
         foreach ($karyawanList as $karyawan) {
             $exists = Penggajian::where('karyawan_id', $karyawan->id)
@@ -77,6 +78,7 @@ class DataGajiController extends Controller
 
             if ($exists) {
                 $skipped++;
+
                 continue;
             }
 
@@ -96,15 +98,15 @@ class DataGajiController extends Controller
                 ->get();
 
             // Hitung absensi biasa
-            $totalHadirBiasa      = $absensi->whereIn('status', ['hadir', 'terlambat'])->count();
-            $totalTerlambatBiasa  = $absensi->where('status', 'terlambat')->count();
+            $totalHadirBiasa = $absensi->whereIn('status', ['hadir', 'terlambat'])->count();
+            $totalTerlambatBiasa = $absensi->where('status', 'terlambat')->count();
 
             // Hitung absensi sesi
             $hitungSesi = $this->hitungAbsensiSesi($absensiDenganSesi);
 
             // Total kehadiran gabungan (untuk status harian dan gaji)
-            $totalHadir      = $totalHadirBiasa + $hitungSesi['total_sesi_hadir'];
-            $totalTerlambat  = $totalTerlambatBiasa + $hitungSesi['total_sesi_terlambat'];
+            $totalHadir = $totalHadirBiasa + $hitungSesi['total_sesi_hadir'];
+            $totalTerlambat = $totalTerlambatBiasa + $hitungSesi['total_sesi_terlambat'];
 
             $ringkasanLembur = $this->hitungRingkasanLembur($karyawan->id, $bulan, $tahun);
 
@@ -122,7 +124,20 @@ class DataGajiController extends Controller
                 $gajiDasar = (float) ($karyawan->gaji_pokok ?? 0);
             }
 
-            $totalGaji = max($gajiDasar + $ringkasanLembur['total_upah'] - $potongan, 0);
+            $komponenKaryawan = $this->hitungKomponenKaryawan(
+                $karyawan->id,
+                $bulan,
+                $tahun,
+                $gajiDasar
+            );
+            $totalPotongan = $potongan + $komponenKaryawan['total_potongan'];
+            $totalGaji = max(
+                $gajiDasar
+                    + $ringkasanLembur['total_upah']
+                    + $komponenKaryawan['total_pemasukan']
+                    - $totalPotongan,
+                0
+            );
 
             DB::transaction(function () use (
                 $karyawan,
@@ -132,21 +147,23 @@ class DataGajiController extends Controller
                 $totalTerlambat,
                 $ringkasanLembur,
                 $potongan,
+                $totalPotongan,
                 $totalGaji,
                 $gajiDasar,
+                $komponenKaryawan,
                 $hitungSesi,
                 $totalHadirBiasa,
                 $totalTerlambatBiasa
             ) {
                 $penggajian = Penggajian::create([
-                    'karyawan_id'   => $karyawan->id,
+                    'karyawan_id' => $karyawan->id,
                     'periode_bulan' => $bulan,
                     'periode_tahun' => $tahun,
-                    'total_hadir'   => $totalHadir,
-                    'total_lembur'  => $ringkasanLembur['total_upah'],
-                    'potongan'      => $potongan,
-                    'total_gaji'    => $totalGaji,
-                    'status'        => 'proses',
+                    'total_hadir' => $totalHadir,
+                    'total_lembur' => $ringkasanLembur['total_upah'],
+                    'potongan' => $totalPotongan,
+                    'total_gaji' => $totalGaji,
+                    'status' => 'proses',
                 ]);
 
                 // Detail breakdown gaji
@@ -159,8 +176,8 @@ class DataGajiController extends Controller
                         $gajiHarian = (float) ($karyawan->gaji_per_hari ?? 0) * $totalHadirBiasa;
                         $details[] = [
                             'keterangan' => 'Gaji Harian (' . $totalHadirBiasa . ' hari x Rp ' . number_format((float) ($karyawan->gaji_per_hari ?? 0), 0, ',', '.') . ')',
-                            'jumlah'     => $gajiHarian,
-                            'tipe'       => 'pemasukan',
+                            'jumlah' => $gajiHarian,
+                            'tipe' => 'pemasukan',
                         ];
                     }
 
@@ -171,8 +188,8 @@ class DataGajiController extends Controller
                             $totalSesiDibayar = $hitungSesi['total_sesi_hadir'] + $hitungSesi['total_sesi_terlambat'];
                             $details[] = [
                                 'keterangan' => 'Gaji Sesi (' . $totalSesiDibayar . ' sesi x Rp ' . number_format($this->hitungUpahPerSesi($karyawan), 0, ',', '.') . ')',
-                                'jumlah'     => $gajiSesi,
-                                'tipe'       => 'pemasukan',
+                                'jumlah' => $gajiSesi,
+                                'tipe' => 'pemasukan',
                             ];
                         }
                     }
@@ -180,17 +197,18 @@ class DataGajiController extends Controller
                     // Untuk karyawan bulanan: gaji pokok tetap
                     $details[] = [
                         'keterangan' => 'Gaji Pokok (Bulanan)',
-                        'jumlah'     => $gajiDasar,
-                        'tipe'       => 'pemasukan',
+                        'jumlah' => $gajiDasar,
+                        'tipe' => 'pemasukan',
                     ];
                 }
 
                 // Lembur
                 if ($ringkasanLembur['total_upah'] > 0) {
                     $details[] = [
-                        'keterangan' => 'Upah Lembur (' . $this->formatJamLembur($ringkasanLembur['total_jam']) . ' jam)',
-                        'jumlah'     => $ringkasanLembur['total_upah'],
-                        'tipe'       => 'pemasukan',
+                        'keterangan' => 'Upah Lembur',
+                        // 'keterangan' => 'Upah Lembur ('.$this->formatJamLembur($ringkasanLembur['total_jam']).' jam)',
+                        'jumlah' => $ringkasanLembur['total_upah'],
+                        'tipe' => 'pemasukan',
                     ];
                 }
 
@@ -199,11 +217,12 @@ class DataGajiController extends Controller
                     $totalTerlambat = $totalTerlambatBiasa + $hitungSesi['total_sesi_terlambat'];
                     $details[] = [
                         'keterangan' => "Potongan Keterlambatan ({$totalTerlambat}x)",
-                        'jumlah'     => $potongan,
-                        'tipe'       => 'potongan',
+                        'jumlah' => $potongan,
+                        'tipe' => 'potongan',
                     ];
                 }
 
+                $details = array_merge($details, $komponenKaryawan['details']);
                 $penggajian->details()->createMany($details);
             });
 
@@ -220,6 +239,68 @@ class DataGajiController extends Controller
             ->with('success', $msg);
     }
 
+    private function hitungKomponenKaryawan(
+        int $karyawanId,
+        int $bulan,
+        int $tahun,
+        float $gajiDasar
+    ): array {
+        $awalPeriode = Carbon::create($tahun, $bulan, 1)->startOfMonth();
+        $akhirPeriode = $awalPeriode->copy()->endOfMonth();
+
+        $pengaturan = KomponenGajiKaryawan::with('komponen')
+            ->where('karyawan_id', $karyawanId)
+            ->where('status', 'aktif')
+            ->whereHas('komponen', fn($query) => $query->where('status', 'aktif'))
+            ->where(function ($query) use ($akhirPeriode) {
+                $query->whereNull('tanggal_mulai')
+                    ->orWhereDate('tanggal_mulai', '<=', $akhirPeriode);
+            })
+            ->where(function ($query) use ($awalPeriode) {
+                $query->whereNull('tanggal_selesai')
+                    ->orWhereDate('tanggal_selesai', '>=', $awalPeriode);
+            })
+            ->get();
+
+        $details = [];
+        $totalPemasukan = 0.0;
+        $totalPotongan = 0.0;
+
+        foreach ($pengaturan as $item) {
+            $jumlah = $item->metode === 'persentase'
+                ? round($gajiDasar * (float) $item->nilai / 100, 2)
+                : (float) $item->nilai;
+
+            if ($jumlah <= 0) {
+                continue;
+            }
+
+            $keterangan = $item->komponen->nama;
+            if ($item->metode === 'persentase') {
+                $persentase = rtrim(rtrim(number_format((float) $item->nilai, 2, '.', ''), '0'), '.');
+                $keterangan .= " ({$persentase}% dari gaji dasar)";
+            }
+
+            $details[] = [
+                'keterangan' => $keterangan,
+                'jumlah' => $jumlah,
+                'tipe' => $item->komponen->tipe,
+            ];
+
+            if ($item->komponen->tipe === 'pemasukan') {
+                $totalPemasukan += $jumlah;
+            } else {
+                $totalPotongan += $jumlah;
+            }
+        }
+
+        return [
+            'details' => $details,
+            'total_pemasukan' => round($totalPemasukan, 2),
+            'total_potongan' => round($totalPotongan, 2),
+        ];
+    }
+
     private function hitungRingkasanLembur(int $karyawanId, int $bulan, int $tahun): array
     {
         $lemburDisetujui = Lembur::where('karyawan_id', $karyawanId)
@@ -228,11 +309,11 @@ class DataGajiController extends Controller
             ->where('status', 'disetujui')
             ->get();
 
-        $totalJam  = 0.0;
+        $totalJam = 0.0;
         $totalUpah = 0.0;
 
         foreach ($lemburDisetujui as $lembur) {
-            $totalJam  += (float) ($lembur->total_jam ?? 0);
+            $totalJam += (float) ($lembur->total_jam ?? 0);
             $totalUpah += (float) ($lembur->total_upah ?? 0);
         }
 
@@ -254,9 +335,9 @@ class DataGajiController extends Controller
      */
     private function hitungAbsensiSesi($absensiDenganSesi): array
     {
-        $totalSesiHadir      = 0;
-        $totalSesiTerlambat  = 0;
-        $totalSesiAlpha      = 0;
+        $totalSesiHadir = 0;
+        $totalSesiTerlambat = 0;
+        $totalSesiAlpha = 0;
 
         foreach ($absensiDenganSesi as $abs) {
             foreach ($abs->sesi as $sesi) {
@@ -272,9 +353,9 @@ class DataGajiController extends Controller
         }
 
         return [
-            'total_sesi_hadir'      => $totalSesiHadir,
-            'total_sesi_terlambat'  => $totalSesiTerlambat,
-            'total_sesi_alpha'      => $totalSesiAlpha,
+            'total_sesi_hadir' => $totalSesiHadir,
+            'total_sesi_terlambat' => $totalSesiTerlambat,
+            'total_sesi_alpha' => $totalSesiAlpha,
         ];
     }
 
@@ -314,7 +395,7 @@ class DataGajiController extends Controller
     {
         $penggajian = Penggajian::findOrFail($id);
         $penggajian->update([
-            'status'      => 'dibayar',
+            'status' => 'dibayar',
             'tgl_dibayar' => Carbon::today(),
         ]);
 

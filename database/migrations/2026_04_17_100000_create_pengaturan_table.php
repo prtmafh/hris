@@ -22,7 +22,8 @@ return new class extends Migration
                 'boolean',
                 'json',
                 'time',
-                'date'
+                'date',
+                'currency'
             ])->default('string');
             $table->string('grup')->default('umum');
             $table->string('label')->nullable();

@@ -3,226 +3,186 @@
 @section('title', 'Slip Gaji')
 
 @section('content')
-@php
-$namaBulan = ['', 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
-'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
-$pemasukan = $penggajian->details->where('tipe', 'pemasukan');
-$potongan = $penggajian->details->where('tipe', 'potongan');
-$totalPemasukan = $pemasukan->sum('jumlah');
-$totalPotongan = $potongan->sum('jumlah');
-$k = $penggajian->karyawan;
-@endphp
+    @php
+        $namaBulan = [
+            '',
+            'Januari',
+            'Februari',
+            'Maret',
+            'April',
+            'Mei',
+            'Juni',
+            'Juli',
+            'Agustus',
+            'September',
+            'Oktober',
+            'November',
+            'Desember',
+        ];
+        $pemasukan = $penggajian->details->where('tipe', 'pemasukan')->values();
+        $potongan = $penggajian->details->where('tipe', 'potongan')->values();
+        $totalPemasukan = $pemasukan->sum('jumlah');
+        $totalPotongan = $potongan->sum('jumlah');
+        $jumlahBaris = max($pemasukan->count(), $potongan->count(), 1);
+        $k = $penggajian->karyawan;
+    @endphp
 
-<main>
-    <header class="page-header page-header-compact page-header-light border-bottom bg-white mb-4 py-2">
-        <div class="container-xl px-4">
-            <div class="page-header-content">
-                <div class="row align-items-center justify-content-between pt-3">
-                    <div class="col-auto mb-3">
-                        <h1 class="page-header-title">
-                            <div class="page-header-icon"><i data-feather="file-text"></i></div>
-                            Slip Gaji — {{ $namaBulan[$penggajian->periode_bulan] }} {{ $penggajian->periode_tahun }}
-                        </h1>
-                    </div>
-                    <div class="col-auto mb-3 d-flex gap-2">
-                        <a href="{{ route('karyawan.slip_gaji') }}" class="btn btn-sm btn-light">
-                            <i data-feather="arrow-left" class="me-1"></i> Kembali
-                        </a>
-                        <a href="{{ route('karyawan.slip_gaji.pdf', $penggajian->id) }}"
-                            class="btn btn-sm btn-light text-success" target="_blank">
-                            <i data-feather="download" class="me-1"></i> Unduh PDF
-                        </a>
+    <main>
+        <header class="page-header page-header-compact page-header-light border-bottom bg-white mb-4 py-2">
+            <div class="container-xl px-4">
+                <div class="page-header-content">
+                    <div class="row align-items-center justify-content-between pt-3">
+                        <div class="col-auto mb-3">
+                            <h1 class="page-header-title">
+                                <div class="page-header-icon"><i data-feather="file-text"></i></div>
+                                Slip Gaji — {{ $namaBulan[$penggajian->periode_bulan] }} {{ $penggajian->periode_tahun }}
+                            </h1>
+                        </div>
+                        <div class="col-auto mb-3 d-flex gap-2">
+                            <a href="{{ route('karyawan.slip_gaji') }}" class="btn btn-sm btn-light">
+                                <i data-feather="arrow-left" class="me-1"></i>Kembali
+                            </a>
+                            <a href="{{ route('karyawan.slip_gaji.pdf', $penggajian->id) }}" class="btn btn-sm btn-success"
+                                target="_blank">
+                                <i data-feather="download" class="me-1"></i>Unduh PDF
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </header>
+        </header>
 
-    <div class="container-xl px-4 pb-4">
-        <div style="max-width: 760px; margin: 0 auto;">
-
-            {{-- ── Slip Card ── --}}
-            <div class="card shadow">
-
-                {{-- Header Slip --}}
-                <div class="card-body border-bottom pb-4 pt-4 px-4">
-                    <div class="row align-items-center">
-                        <div class="col">
-                            <div class="fw-bold text-primary" style="font-size:1.2rem;letter-spacing:0.3px;">
-                                TSI GROUP
-                            </div>
-                            <div class="text-muted small">Sistem Manajemen Sumber Daya Manusia</div>
+        <div class="container-xl px-4 pb-4">
+            <div class="card shadow-sm mx-auto" style="max-width: 980px;">
+                <div class="card-body p-4 p-md-5">
+                    <div class="d-flex flex-column flex-md-row align-items-md-center border-bottom border-dark pb-3 mb-4">
+                        <img src="{{ asset('assets/img/logotsi.png') }}" alt="TSI Group" style="width:50px;height:auto;"
+                            class="me-md-4 mb-3 mb-md-0">
+                        <div>
+                            <h2 class="fw-bold mb-1">PT. TIDARJAYA SOLIDINDO</h2>
+                            <div class="small text-muted">Jl. Abdul Ghani No. 105, Mustikajaya, Kota Bekasi</div>
+                            <div class="small text-muted">Slip Gaji Karyawan</div>
                         </div>
-                        <div class="col-auto text-end">
-                            <div class="text-muted small text-uppercase fw-semibold mb-1" style="letter-spacing:.06em;">
-                                Slip Gaji Karyawan</div>
-                            <div class="fw-semibold small">
-                                Periode: {{ $namaBulan[$penggajian->periode_bulan] }} {{ $penggajian->periode_tahun }}
-                            </div>
-                            @if($penggajian->status === 'dibayar')
-                            <span class="badge bg-green-soft text-green rounded-pill mt-1 px-3">Sudah Dibayar</span>
-                            @else
-                            <span class="badge bg-yellow-soft text-yellow rounded-pill mt-1 px-3">Dalam Proses</span>
+                        <div class="ms-md-auto text-md-end mt-3 mt-md-0">
+                            <div class="fw-bold">{{ $namaBulan[$penggajian->periode_bulan] }}
+                                {{ $penggajian->periode_tahun }}</div>
+                            <span
+                                class="badge {{ $penggajian->status === 'dibayar' ? 'bg-green-soft text-green' : 'bg-yellow-soft text-yellow' }}">
+                                {{ $penggajian->status === 'dibayar' ? 'Sudah Dibayar' : 'Dalam Proses' }}
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 small mb-4">
+                        <div class="col-md-6">
+                            <table class="table table-sm table-borderless mb-0">
+                                <tr>
+                                    <td class="text-muted" style="width:110px;">Nama</td>
+                                    <td style="width:12px;">:</td>
+                                    <td class="fw-semibold">{{ $k->nama }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-muted">Jabatan</td>
+                                    <td>:</td>
+                                    <td class="fw-semibold">{{ $k->jabatan->nama_jabatan ?? '-' }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-muted">Periode</td>
+                                    <td>:</td>
+                                    <td class="fw-semibold">{{ $namaBulan[$penggajian->periode_bulan] }}
+                                        {{ $penggajian->periode_tahun }}</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-md-6">
+                            <table class="table table-sm table-borderless mb-0">
+                                <tr>
+                                    <td class="text-muted" style="width:110px;">NIK</td>
+                                    <td style="width:12px;">:</td>
+                                    <td class="fw-semibold">{{ $k->nik ?? '-' }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-muted">Status Gaji</td>
+                                    <td>:</td>
+                                    <td class="fw-semibold text-capitalize">{{ $k->status_gaji }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-muted">Kehadiran</td>
+                                    <td>:</td>
+                                    <td class="fw-semibold">{{ $penggajian->total_hadir }} hari</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-sm align-middle">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th colspan="2" style="width:50%;">PENERIMAAN</th>
+                                    <th colspan="2" style="width:50%;">POTONGAN</th>
+                                </tr>
+                                <tr class="table-light">
+                                    <th>Keterangan</th>
+                                    <th class="text-end">Jumlah</th>
+                                    <th>Keterangan</th>
+                                    <th class="text-end">Jumlah</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @for ($i = 0; $i < $jumlahBaris; $i++)
+                                    @php
+                                        $masuk = $pemasukan->get($i);
+                                        $keluar = $potongan->get($i);
+                                    @endphp
+                                    <tr>
+                                        <td>{{ $masuk?->keterangan ?? '-' }}</td>
+                                        <td class="text-end text-success fw-semibold">
+                                            {{ $masuk ? 'Rp ' . number_format($masuk->jumlah, 0, ',', '.') : '-' }}
+                                        </td>
+                                        <td>{{ $keluar?->keterangan ?? '-' }}</td>
+                                        <td class="text-end text-danger fw-semibold">
+                                            {{ $keluar ? 'Rp ' . number_format($keluar->jumlah, 0, ',', '.') : '-' }}
+                                        </td>
+                                    </tr>
+                                @endfor
+                            </tbody>
+                            <tfoot>
+                                <tr class="table-light fw-bold">
+                                    <td>TOTAL PENGHASILAN BRUTO</td>
+                                    <td class="text-end text-success">Rp {{ number_format($totalPemasukan, 0, ',', '.') }}
+                                    </td>
+                                    <td>TOTAL POTONGAN</td>
+                                    <td class="text-end text-danger">Rp {{ number_format($totalPotongan, 0, ',', '.') }}
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+
+                    <div
+                        class="border-top border-dark mt-3 pt-3 d-flex flex-column flex-sm-row justify-content-between align-items-sm-center">
+                        <div>
+                            <div class="small text-muted">Total penghasilan bruto dikurangi total potongan</div>
+                            @if ($penggajian->tgl_dibayar)
+                                <div class="small text-muted">
+                                    Dibayar
+                                    {{ \Carbon\Carbon::parse($penggajian->tgl_dibayar)->translatedFormat('d F Y') }}
+                                </div>
                             @endif
                         </div>
+                        <div class="text-sm-end mt-3 mt-sm-0">
+                            <div class="small fw-bold">TOTAL DITERIMA KARYAWAN</div>
+                            <div class="h3 fw-bold text-primary mb-0">Rp
+                                {{ number_format($penggajian->total_gaji, 0, ',', '.') }}</div>
+                        </div>
+                    </div>
+
+                    <div class="text-center small text-muted mt-5">
+                        Slip gaji ini diterbitkan secara otomatis oleh sistem dan sah tanpa tanda tangan.
                     </div>
                 </div>
-
-                {{-- Info Karyawan --}}
-                <div class="card-body border-bottom py-3 px-4" style="background:#f8fafc;">
-                    <div class="small fw-semibold text-uppercase text-muted mb-3"
-                        style="letter-spacing:.07em; font-size:.7rem;">
-                        <i class="fas fa-id-card me-1"></i> Informasi Karyawan
-                    </div>
-                    <div class="row g-3 small">
-                        <div class="col-sm-6">
-                            <div class="text-muted mb-1">Nama Karyawan</div>
-                            <div class="fw-semibold">{{ $k->nama }}</div>
-                        </div>
-                        <div class="col-sm-6">
-                            <div class="text-muted mb-1">NIK</div>
-                            <div class="fw-semibold">{{ $k->nik ?? '-' }}</div>
-                        </div>
-                        <div class="col-sm-6">
-                            <div class="text-muted mb-1">Jabatan</div>
-                            <div class="fw-semibold">{{ $k->jabatan->nama_jabatan ?? '-' }}</div>
-                        </div>
-                        <div class="col-sm-6">
-                            <div class="text-muted mb-1">Status Gaji</div>
-                            <div class="fw-semibold text-capitalize">{{ $k->status_gaji }}</div>
-                        </div>
-                        <div class="col-sm-6">
-                            <div class="text-muted mb-1">Hari Hadir</div>
-                            <div class="fw-semibold">{{ $penggajian->total_hadir }} hari</div>
-                        </div>
-                        @if($penggajian->tgl_dibayar)
-                        <div class="col-sm-6">
-                            <div class="text-muted mb-1">Tanggal Dibayar</div>
-                            <div class="fw-semibold">
-                                {{ \Carbon\Carbon::parse($penggajian->tgl_dibayar)->translatedFormat('d F Y') }}
-                            </div>
-                        </div>
-                        @endif
-                    </div>
-                </div>
-
-                {{-- Komponen Gaji --}}
-                <div class="card-body px-4 pt-4 pb-2">
-
-                    {{-- Pemasukan --}}
-                    <div class="d-flex align-items-center gap-2 mb-2">
-                        <span class="badge bg-success-soft text-success px-3 py-2 rounded-pill"
-                            style="font-size:.7rem;letter-spacing:.05em;">
-                            <i class="fas fa-plus-circle me-1"></i> PEMASUKAN
-                        </span>
-                    </div>
-                    <table class="table table-hover align-middle small mb-0">
-                        <thead class="table-light">
-                            <tr>
-                                <th class="py-2 text-muted fw-semibold" style="font-size:.7rem;letter-spacing:.05em;">
-                                    KETERANGAN</th>
-                                <th class="py-2 text-end text-muted fw-semibold"
-                                    style="font-size:.7rem;letter-spacing:.05em;">JUMLAH</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @forelse($pemasukan as $d)
-                            <tr>
-                                <td class="py-2">{{ $d->keterangan }}</td>
-                                <td class="py-2 text-end fw-semibold text-success">
-                                    Rp {{ number_format($d->jumlah, 0, ',', '.') }}
-                                </td>
-                            </tr>
-                            @empty
-                            <tr>
-                                <td colspan="2" class="text-center text-muted py-3 fst-italic">
-                                    Tidak ada komponen pemasukan.
-                                </td>
-                            </tr>
-                            @endforelse
-                        </tbody>
-                        <tfoot>
-                            <tr class="table-success">
-                                <td class="py-2 fw-bold">Subtotal Pemasukan</td>
-                                <td class="py-2 text-end fw-bold text-success">
-                                    Rp {{ number_format($totalPemasukan, 0, ',', '.') }}
-                                </td>
-                            </tr>
-                        </tfoot>
-                    </table>
-
-                    {{-- Potongan --}}
-                    <div class="d-flex align-items-center gap-2 mt-4 mb-2">
-                        <span class="badge bg-danger-soft text-danger px-3 py-2 rounded-pill"
-                            style="font-size:.7rem;letter-spacing:.05em;">
-                            <i class="fas fa-minus-circle me-1"></i> POTONGAN
-                        </span>
-                    </div>
-                    <table class="table table-hover align-middle small mb-0">
-                        <thead class="table-light">
-                            <tr>
-                                <th class="py-2 text-muted fw-semibold" style="font-size:.7rem;letter-spacing:.05em;">
-                                    KETERANGAN</th>
-                                <th class="py-2 text-end text-muted fw-semibold"
-                                    style="font-size:.7rem;letter-spacing:.05em;">JUMLAH</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @forelse($potongan as $d)
-                            <tr>
-                                <td class="py-2">{{ $d->keterangan }}</td>
-                                <td class="py-2 text-end fw-semibold text-danger">
-                                    Rp {{ number_format($d->jumlah, 0, ',', '.') }}
-                                </td>
-                            </tr>
-                            @empty
-                            <tr>
-                                <td colspan="2" class="text-center text-muted py-3 fst-italic">
-                                    Tidak ada potongan.
-                                </td>
-                            </tr>
-                            @endforelse
-                        </tbody>
-                        <tfoot>
-                            <tr class="table-danger">
-                                <td class="py-2 fw-bold">Subtotal Potongan</td>
-                                <td class="py-2 text-end fw-bold text-danger">
-                                    Rp {{ number_format($totalPotongan, 0, ',', '.') }}
-                                </td>
-                            </tr>
-                        </tfoot>
-                    </table>
-                </div>
-
-                {{-- Total Bersih --}}
-                <div class="card-footer bg-gradient-primary-to-secondary text-white rounded-bottom px-4 py-3">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <div class="small opacity-75 mb-1">Total Gaji Bersih Diterima</div>
-                            <div class="fw-bold fs-5">
-                                Rp {{ number_format($penggajian->total_gaji, 0, ',', '.') }}
-                            </div>
-                        </div>
-                        <div class="text-end">
-                            <i class="fas fa-wallet fa-2x opacity-50"></i>
-                        </div>
-                    </div>
-                </div>
-
             </div>
-
-            {{-- Footer note --}}
-            <div class="text-center mt-3 mb-2">
-                <p class="text-muted small mb-1">
-                    Slip gaji ini diterbitkan secara otomatis oleh sistem dan sah tanpa tanda tangan.
-                </p>
-                <a href="{{ route('karyawan.slip_gaji.pdf', $penggajian->id) }}"
-                    class="btn btn-sm btn-light text-success rounded-pill px-4 mt-1" target="_blank">
-                    <i data-feather="download" class="me-1"></i> Unduh Slip PDF
-                </a>
-            </div>
-
         </div>
-    </div>
-</main>
+    </main>
 @endsection

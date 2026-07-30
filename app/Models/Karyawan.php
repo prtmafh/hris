@@ -2,14 +2,14 @@
 
 namespace App\Models;
 
-use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
 class Karyawan extends Authenticatable
 {
-    use HasFactory, Notifiable, HasApiTokens;
+    use HasApiTokens, HasFactory, Notifiable;
 
     protected $table = 'karyawan';
 
@@ -75,5 +75,10 @@ class Karyawan extends Authenticatable
     public function absensi()
     {
         return $this->hasMany(Absensi::class);
+    }
+
+    public function komponenGaji()
+    {
+        return $this->hasMany(KomponenGajiKaryawan::class);
     }
 }

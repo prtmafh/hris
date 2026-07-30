@@ -1,4 +1,3 @@
-{{-- resources/views/pdf/slip-gaji.blade.php --}}
 <!DOCTYPE html>
 <html lang="id">
 
@@ -7,412 +6,335 @@
     <title>Slip Gaji</title>
     <style>
         @page {
-            size: 180mm 120mm;
-            margin: 0;
+            margin: 14mm;
         }
 
         * {
-            margin: 0;
-            padding: 0;
             box-sizing: border-box;
         }
 
         body {
-            width: 165mm;
             font-family: Arial, Helvetica, sans-serif;
             font-size: 10px;
-            line-height: 1.15;
-            color: #000;
+            color: #111;
+            margin: 0;
         }
 
         .slip {
-            width: 165mm;
-            padding: 5mm 7mm;
+            border: 1.5px solid #111;
+            padding: 18px 20px 22px;
         }
 
-        .top-table,
-        .info-table,
-        .detail-table,
-        .total-table {
+        table {
             width: 100%;
             border-collapse: collapse;
+        }
+
+        .header {
+            border-bottom: 2px solid #111;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+
+        .header-logo {
+            width: 30px;
+            height: auto;
+            vertical-align: middle;
+            padding-bottom: 2px;
+        }
+
+        .company {
+            vertical-align: middle;
+            padding-left: 0px;
         }
 
         .company-name {
-            font-size: 20px;
-            font-weight: 700;
-            line-height: 1.05;
+            font-family: "Times New Roman", serif;
+            font-size: 22px;
+            font-weight: bold;
         }
 
-        .company-address {
-            margin-top: 3px;
-            font-size: 11px;
-            line-height: 1.2;
+        .company-info {
+            font-size: 9px;
+            line-height: 1.45;
+            margin-top: 2px;
         }
 
-        /* .brand {
+        .slip-title {
+            width: 125px;
             text-align: right;
-            white-space: nowrap;
-        }
-
-        .brand-mark {
-            display: inline-block;
-            width: 23px;
-            height: 24px;
-            margin-right: 6px;
             vertical-align: middle;
-            position: relative;
         }
 
-        .brand-blue,
-        .brand-red {
+        .slip-title strong {
             display: block;
-            position: absolute;
-            background: #0719b8;
+            font-size: 15px;
         }
 
-        .brand-blue.one {
-            width: 22px;
-            height: 4px;
-            top: 0;
-            right: 0;
-        }
-
-        .brand-blue.two {
-            width: 6px;
-            height: 20px;
-            top: 4px;
-            right: 6px;
-        }
-
-        .brand-blue.three {
-            width: 13px;
-            height: 5px;
-            bottom: 0;
-            right: 6px;
-        }
-
-        .brand-red {
-            width: 8px;
-            height: 8px;
-            left: 0;
-            bottom: 6px;
-            background: #e30613;
-        }
-
-        .brand-text {
+        .status {
             display: inline-block;
-            vertical-align: middle;
-            font-family: "Times New Roman", Times, serif;
-            font-size: 27px;
-            font-weight: 700;
-            color: #08119b;
-            line-height: 1;
-        } */
-        .brand {
-            text-align: right;
-            vertical-align: top;
+            margin-top: 4px;
+            padding: 3px 7px;
+            border: 1px solid #777;
+            font-size: 8px;
         }
 
-        .company-logo {
-            width: 170px;
-            height: auto;
-        }
-
-        .title {
-            margin-top: 1px;
-            padding-bottom: 7px;
-            border-bottom: 1px solid #000;
-            text-align: center;
-            font-size: 20px;
-            font-weight: 700;
-            letter-spacing: .3px;
-        }
-
-        .info-table {
-            margin-top: 13px;
+        .info {
             margin-bottom: 18px;
         }
 
-        .info-table td {
-            padding: 0;
-            font-size: 11px;
-        }
-
-        .info-label {
-            width: 47px;
-        }
-
-        .info-separator {
-            width: 9px;
-            text-align: center;
-        }
-
-        .section-head td {
-            background: #d9d9d9;
-            padding: 5px 11px;
-            font-size: 14px;
-            font-weight: 700;
-        }
-
-        .section-head .right-col {
-            width: 43%;
-            padding-left: 9px;
-        }
-
-        .items td {
-            padding: 8px 11px 2px;
-            font-size: 11px;
+        .info td {
+            padding: 2px 0;
             vertical-align: top;
         }
 
-        .items .amount {
-            width: 115px;
-            padding-left: 0;
-            text-align: left;
+        .info .label {
+            width: 65px;
         }
 
-        .items .spacer {
-            width: 88px;
+        .info .separator {
+            width: 12px;
         }
 
-        .items .deduction-label {
-            width: 155px;
-            padding-left: 9px;
+        .info .gap {
+            width: 55px;
         }
 
-        .items .deduction-amount {
-            width: 100px;
-            text-align: left;
-        }
-
-        .summary {
-            margin-top: 18px;
-            border-top: 1px solid #000;
-        }
-
-        .summary td {
-            padding: 5px 11px 0;
-            font-size: 15px;
-            font-weight: 700;
-            vertical-align: top;
-        }
-
-        .summary .summary-label {
-            width: 185px;
-        }
-
-        .summary .summary-amount {
-            width: 165px;
-        }
-
-        .summary .right-label {
-            width: 170px;
-            padding-left: 9px;
-        }
-
-        .summary .right-amount {
-            width: 100px;
-        }
-
-        .net-box {
-            width: 61mm;
-            border: 1px solid #000;
-            text-align: center;
-            padding: 3px;
-            margin-top: 8px;
-            margin-left: auto;
-        }
-
-        .net-label {
-            font-size: 11px;
-            line-height: 1.1;
-        }
-
-        .net-amount {
-            margin-top: 4px;
-            font-size: 21px;
-            font-weight: 700;
-            line-height: 1;
-        }
-
-        .detail-table,
-        .summary {
-            width: 100%;
-            border-collapse: collapse;
+        .components {
             table-layout: fixed;
         }
 
-        .detail-table col.col-desc,
-        .summary col.col-desc {
-            width: 38%;
+        .components col.desc {
+            width: 31%;
         }
 
-        .detail-table col.col-amount,
-        .summary col.col-amount {
-            width: 17%;
+        .components col.amount {
+            width: 19%;
         }
 
-        .detail-table col.col-spacer,
-        .summary col.col-spacer {
-            width: 8%;
+        .components th {
+            background: #e5e5e5;
+            border: 1px solid #555;
+            padding: 7px 8px;
+            font-size: 11px;
+            text-align: left;
         }
 
-        .detail-table col.col-deduction,
-        .summary col.col-deduction {
-            width: 25%;
-        }
-
-        .detail-table col.col-deduction-amount,
-        .summary col.col-deduction-amount {
-            width: 12%;
-        }
-
-        .amount,
-        .deduction-amount {
+        .components th.amount,
+        .components td.amount {
             text-align: right;
         }
 
-        .summary {
-            margin-top: 12px;
-            border-top: 1px solid #000;
+        .components td {
+            border-left: 1px solid #777;
+            border-right: 1px solid #777;
+            padding: 6px 8px;
+            vertical-align: top;
         }
 
-        .summary td {
-            padding: 5px 11px;
-            font-size: 14px;
-            font-weight: 700;
+        .components tbody tr:last-child td {
+            padding-bottom: 14px;
+        }
+
+        .components tfoot td {
+            border: 1px solid #555;
+            border-top: 1.5px solid #111;
+            padding: 8px;
+            font-weight: bold;
+            font-size: 10px;
+        }
+
+        .net {
+            margin-top: 13px;
+            border-top: 1.5px solid #111;
+            padding-top: 10px;
+        }
+
+        .net-label {
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .net-amount {
+            font-size: 18px;
+            font-weight: bold;
+            text-align: right;
+        }
+
+        .explanation {
+            font-size: 8px;
+            color: #555;
+            padding-top: 3px;
+        }
+
+        .signature {
+            margin-top: 55px;
+        }
+
+        .signature td {
+            width: 50%;
+            text-align: center;
+            vertical-align: bottom;
+        }
+
+        .signature-space {
+            height: 45px;
+        }
+
+        .signature-name {
+            font-weight: bold;
+            text-decoration: underline;
+        }
+
+        .footer {
+            margin-top: 18px;
+            padding-top: 7px;
+            border-top: 1px solid #aaa;
+            text-align: center;
+            font-size: 8px;
+            color: #666;
         }
     </style>
-
 </head>
 
 <body>
     @php
-    $pemasukan = $penggajian->details->where('tipe', 'pemasukan')->values();
-    $potongan = $penggajian->details->where('tipe', 'potongan')->values();
-    $k = $penggajian->karyawan;
-    $totalIn = $pemasukan->sum('jumlah');
-    $totalOut = $potongan->sum('jumlah');
-    $maxRows = max($pemasukan->count(), $potongan->count(), 1);
-    $periode = sprintf('01/%02d/%d', $penggajian->periode_bulan, $penggajian->periode_tahun);
+        $pemasukan = $penggajian->details->where('tipe', 'pemasukan')->values();
+        $potongan = $penggajian->details->where('tipe', 'potongan')->values();
+        $totalPemasukan = $pemasukan->sum('jumlah');
+        $totalPotongan = $potongan->sum('jumlah');
+        $jumlahBaris = max($pemasukan->count(), $potongan->count(), 1);
+        $k = $penggajian->karyawan;
     @endphp
 
     <div class="slip">
-        <table class="top-table">
+        <table class="header">
             <tr>
-                <td>
-                    <div class="company-name">PT. Tidarjaya Solidindo</div>
-                    <div class="company-address">
-                        Jl. Abdul Ghani No 105, Mustikajaya,<br>
-                        Kota Bekasi
+                <td style="width:45px;">
+                    <img src="{{ public_path('assets/img/logotsi.png') }}" class="header-logo" alt="TSI Group">
+                </td>
+                <td class="company">
+                    <div class="company-name">PT. TIDARJAYA SOLIDINDO</div>
+                    <div class="company-info">
+                        Jl. Abdul Ghani No. 105, Mustikajaya, Kota Bekasi<br>
+                        {{-- Slip gaji karyawan --}}
                     </div>
                 </td>
-                <td class="brand">
-                    <img src="{{ public_path('assets/img/tsigrouplogo.png') }}" alt="TSI GROUP" class="company-logo">
+                <td class="slip-title">
+                    {{-- <strong>SLIP GAJI</strong> --}}
+                    <strong>{{ $namaBulan[$penggajian->periode_bulan] }} {{ $penggajian->periode_tahun }}</strong>
+                    {{-- <div class="status">{{ $penggajian->status === 'dibayar' ? 'SUDAH DIBAYAR' : 'DALAM PROSES' }}</div> --}}
                 </td>
             </tr>
         </table>
 
-        <div class="title">SLIP GAJI</div>
-
-        <table class="info-table">
+        <table class="info">
             <tr>
-                <td class="info-label">Nama</td>
-                <td class="info-separator">:</td>
+                <td class="label">Nama</td>
+                <td class="separator">:</td>
                 <td>{{ $k->nama }}</td>
-            </tr>
-            <tr>
-                <td class="info-label">NIK</td>
-                <td class="info-separator">:</td>
+                <td class="gap"></td>
+                <td class="label">NIK</td>
+                <td class="separator">:</td>
                 <td>{{ $k->nik ?? '-' }}</td>
             </tr>
             <tr>
-                <td class="info-label">Jabatan</td>
-                <td class="info-separator">:</td>
+                <td class="label">Jabatan</td>
+                <td class="separator">:</td>
                 <td>{{ $k->jabatan->nama_jabatan ?? '-' }}</td>
+                <td class="gap"></td>
+                <td class="label">Status Gaji</td>
+                <td class="separator">:</td>
+                <td>{{ ucfirst($k->status_gaji) }}</td>
             </tr>
             <tr>
-                <td class="info-label">Periode</td>
-                <td class="info-separator">:</td>
-                <td>{{ $periode }}</td>
+                <td class="label">Periode</td>
+                <td class="separator">:</td>
+                <td>{{ $namaBulan[$penggajian->periode_bulan] }} {{ $penggajian->periode_tahun }}</td>
+                <td class="gap"></td>
+                <td class="label">Kehadiran</td>
+                <td class="separator">:</td>
+                <td>{{ $penggajian->total_hadir }} hari</td>
             </tr>
         </table>
 
-        <table class="detail-table">
-
+        <table class="components">
             <colgroup>
-                <col class="col-desc">
-                <col class="col-amount">
-                <col class="col-spacer">
-                <col class="col-deduction">
-                <col class="col-deduction-amount">
+                <col class="desc">
+                <col class="amount">
+                <col class="desc">
+                <col class="amount">
             </colgroup>
-
-            <tr class="section-head">
-                <td colspan="2">Pendapatan</td>
-                <td></td>
-                <td colspan="2">Potongan</td>
-            </tr>
-
-            @for ($i = 0; $i < $maxRows; $i++) @php $income=$pemasukan->get($i);
-                $deduction = $potongan->get($i);
-                @endphp
-
-                <tr class="items">
-                    <td>{{ $income->keterangan ?? '' }}</td>
-
-                    <td class="amount">
-                        {{ $income ? number_format($income->jumlah, 0, ',', '.') : '' }}
-                    </td>
-
-                    <td></td>
-
-                    <td>
-                        {{ $deduction->keterangan ?? '' }}
-                    </td>
-
-                    <td class="deduction-amount">
-                        {{ $deduction ? number_format($deduction->jumlah, 0, ',', '.') : '' }}
-                    </td>
+            <thead>
+                <tr>
+                    <th colspan="2">PENERIMAAN</th>
+                    <th colspan="2">POTONGAN</th>
                 </tr>
+                <tr>
+                    <th>Keterangan</th>
+                    <th class="amount">Jumlah</th>
+                    <th>Keterangan</th>
+                    <th class="amount">Jumlah</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for ($i = 0; $i < $jumlahBaris; $i++)
+                    @php
+                        $masuk = $pemasukan->get($i);
+                        $keluar = $potongan->get($i);
+                    @endphp
+                    <tr>
+                        <td>{{ $masuk?->keterangan ?? '' }}</td>
+                        <td class="amount">{{ $masuk ? 'Rp ' . number_format($masuk->jumlah, 0, ',', '.') : '' }}</td>
+                        <td>{{ $keluar?->keterangan ?? '' }}</td>
+                        <td class="amount">{{ $keluar ? 'Rp ' . number_format($keluar->jumlah, 0, ',', '.') : '' }}
+                        </td>
+                    </tr>
                 @endfor
-
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td>TOTAL PENGHASILAN BRUTO</td>
+                    <td class="amount">Rp {{ number_format($totalPemasukan, 0, ',', '.') }}</td>
+                    <td>TOTAL POTONGAN</td>
+                    <td class="amount">Rp {{ number_format($totalPotongan, 0, ',', '.') }}</td>
+                </tr>
+            </tfoot>
         </table>
 
-        <table class="summary">
-
-            <colgroup>
-                <col class="col-desc">
-                <col class="col-amount">
-                <col class="col-spacer">
-                <col class="col-deduction">
-                <col class="col-deduction-amount">
-            </colgroup>
-
+        <table class="net">
             <tr>
-                <td>Total Pendapatan</td>
-
-                <td class="amount">
-                    {{ number_format($totalIn, 0, ',', '.') }}
+                <td>
+                    <div class="net-label">TOTAL DITERIMA KARYAWAN</div>
+                    <div class="explanation">Total penghasilan bruto dikurangi total potongan</div>
                 </td>
+                <td class="net-amount">Rp {{ number_format($penggajian->total_gaji, 0, ',', '.') }}</td>
+            </tr>
+        </table>
 
-                <td></td>
-
-                <td>Total Potongan</td>
-
-                <td class="deduction-amount">
-                    {{ number_format($totalOut, 0, ',', '.') }}
+        <table class="signature">
+            <tr>
+                <td>Dibuat oleh,<br>PT. Tidarjaya Solidindo</td>
+                <td>Disetujui oleh,</td>
+            </tr>
+            <tr>
+                <td colspan="2" class="signature-space"></td>
+            </tr>
+            <tr>
+                <td><span class="signature-name">Manager Keuangan</span></td>
+                <td>
+                    <span class="signature-name">{{ $k->nama }}</span><br>
+                    {{ $k->jabatan->nama_jabatan ?? 'Karyawan' }}
                 </td>
             </tr>
-
         </table>
-        <div class="net-box">
-            <div class="net-label">Total bersih Bulan ini</div>
-            <div class="net-amount">{{ number_format($penggajian->total_gaji, 0, ',', '.') }}</div>
+
+        <div class="footer">
+            Slip gaji ini diterbitkan otomatis oleh sistem.
+            @if ($penggajian->tgl_dibayar)
+                Tanggal pembayaran: {{ \Carbon\Carbon::parse($penggajian->tgl_dibayar)->format('d/m/Y') }}.
+            @endif
         </div>
-
-
     </div>
 </body>
 

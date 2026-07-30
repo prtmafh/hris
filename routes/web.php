@@ -1,40 +1,37 @@
 <?php
 
+use App\Http\Controllers\Admin\AbsensiSesiController;
 use App\Http\Controllers\Admin\DaftarAdminController;
-use App\Http\Controllers\Admin\DaftarPimpinanController;
 use App\Http\Controllers\Admin\DaftarKaryawanController;
+use App\Http\Controllers\Admin\DaftarPimpinanController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\DataAbsensiController;
-use App\Http\Controllers\Admin\AbsensiSesiController;
 use App\Http\Controllers\Admin\DataGajiController;
+use App\Http\Controllers\Admin\HariLiburController;
 use App\Http\Controllers\Admin\IzinController;
 use App\Http\Controllers\Admin\JabatanController;
-use App\Http\Controllers\Admin\HariLiburController;
 use App\Http\Controllers\Admin\KategoriReimbursementController;
+use App\Http\Controllers\Admin\KomponenGajiController;
 use App\Http\Controllers\Admin\LemburController;
 use App\Http\Controllers\Admin\LowonganController;
 use App\Http\Controllers\Admin\PelamarController;
 use App\Http\Controllers\Admin\PengaturanController;
 use App\Http\Controllers\Admin\ReimbursementController as AdminReimbursementController;
-use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Karyawan\AbsensiController as KaryawanAbsensiController;
+use App\Http\Controllers\Karyawan\AbsensiSesiController as KaryawanAbsensiSesiController;
 use App\Http\Controllers\Karyawan\DashboardController as KaryawanDashboardController;
+use App\Http\Controllers\Karyawan\DataAbsensiController as KaryawanDataAbsensiController;
 use App\Http\Controllers\Karyawan\IzinController as KaryawanIzinController;
 use App\Http\Controllers\Karyawan\LemburController as KaryawanLemburController;
 use App\Http\Controllers\Karyawan\ProfileController;
 use App\Http\Controllers\Karyawan\ReimbursementController as KaryawanReimbursementController;
 use App\Http\Controllers\Karyawan\SlipGajiController;
-use App\Http\Controllers\Karyawan\DataAbsensiController as KaryawanDataAbsensiController;
-use App\Http\Controllers\Karyawan\AbsensiSesiController as KaryawanAbsensiSesiController;
-
-
 use App\Http\Controllers\landing\HomeController;
 use App\Http\Controllers\Pimpinan\DashboardController as PimpinanDashboardController;
 use App\Http\Controllers\Pimpinan\LaporanController as PimpinanLaporanController;
 use App\Http\Controllers\Pimpinan\PenilaianController as PimpinanPenilaianController;
 use Illuminate\Support\Facades\Route;
-
 
 Route::get('/', [AuthController::class, 'loginForm'])->name('login');
 Route::get('/login', [AuthController::class, 'loginForm'])->name('login');
@@ -118,6 +115,17 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/penggajian/{id}', [DataGajiController::class, 'show'])->name('admin.penggajian.show');
     Route::post('/admin/penggajian/{id}/bayar', [DataGajiController::class, 'markBayar'])->name('admin.penggajian.bayar');
     Route::delete('/admin/penggajian/{id}', [DataGajiController::class, 'destroy'])->name('admin.penggajian.destroy');
+
+    Route::get('/admin/komponen-gaji', [KomponenGajiController::class, 'index'])->name('admin.komponen-gaji');
+    Route::post('/admin/komponen-gaji', [KomponenGajiController::class, 'store'])->name('admin.komponen-gaji.store');
+    Route::put('/admin/komponen-gaji/{id}', [KomponenGajiController::class, 'update'])->name('admin.komponen-gaji.update');
+    Route::post('/admin/komponen-gaji/{id}/toggle', [KomponenGajiController::class, 'toggle'])->name('admin.komponen-gaji.toggle');
+    Route::delete('/admin/komponen-gaji/{id}', [KomponenGajiController::class, 'destroy'])->name('admin.komponen-gaji.destroy');
+
+    Route::get('/admin/komponen-gaji-karyawan', [KomponenGajiController::class, 'karyawan'])->name('admin.komponen-gaji.karyawan');
+    Route::post('/admin/komponen-gaji-karyawan', [KomponenGajiController::class, 'storeKaryawan'])->name('admin.komponen-gaji.karyawan.store');
+    Route::put('/admin/komponen-gaji-karyawan/{id}', [KomponenGajiController::class, 'updateKaryawan'])->name('admin.komponen-gaji.karyawan.update');
+    Route::delete('/admin/komponen-gaji-karyawan/{id}', [KomponenGajiController::class, 'destroyKaryawan'])->name('admin.komponen-gaji.karyawan.destroy');
 
     Route::get('/admin/pengaturan', [PengaturanController::class, 'index'])->name('admin.pengaturan');
     Route::post('/admin/pengaturan', [PengaturanController::class, 'store'])->name('admin.pengaturan.store');

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Karyawan;
 
 use App\Http\Controllers\Controller;
+use App\Models\Karyawan;
 use App\Models\Penggajian;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
@@ -13,7 +14,7 @@ class SlipGajiController extends Controller
 {
     public function index(Request $request)
     {
-        /** @var \App\Models\Karyawan $user */
+        /** @var Karyawan $user */
         $karyawan = Auth::user();
         // $karyawan = $user->karyawan()->firstOrFail();
 
@@ -29,9 +30,10 @@ class SlipGajiController extends Controller
 
         return view('karyawan.slip-gaji', compact('penggajian', 'tahun', 'daftarTahun', 'karyawan'));
     }
+
     public function showSlip(int $id)
     {
-        /** @var \App\Models\Karyawan $user */
+        /** @var Karyawan $user */
         $karyawan = Auth::user();
         // $karyawan   = $user->karyawan()->firstOrFail();
         $penggajian = Penggajian::with(['details', 'karyawan.jabatan'])
@@ -43,7 +45,7 @@ class SlipGajiController extends Controller
 
     public function downloadSlipPdf(int $id)
     {
-        /** @var \App\Models\Karyawan $user */
+        /** @var Karyawan $user */
         $karyawan = Auth::user();
         // $karyawan   = $user->karyawan()->firstOrFail();
         $penggajian = Penggajian::with(['details', 'karyawan.jabatan'])
@@ -63,15 +65,27 @@ class SlipGajiController extends Controller
             'September',
             'Oktober',
             'November',
-            'Desember'
+            'Desember',
         ];
 
-        $pdf = Pdf::loadView('pdf.slip-gaji', compact('penggajian', 'namaBulan'))
-            ->setPaper('a6', 'landscape');
+        $jumlahBaris = max(
+            $penggajian->details->where('tipe', 'pemasukan')->count(),
+            $penggajian->details->where('tipe', 'potongan')->count(),
+            1
+        );
 
-        $filename = 'slip-gaji-' . $penggajian->karyawan->nik . '-'
-            . $namaBulan[$penggajian->periode_bulan] . '-'
-            . $penggajian->periode_tahun . '.pdf';
+        // Tinggi kertas mengikuti isi slip. Setiap baris komponen tambahan
+        // menambah ruang agar bagian bawah halaman tetap rapat dengan konten.
+        $tinggiKertasMm = 220 + max(0, $jumlahBaris - 3) * 7;
+        $mmKePoint = 72 / 25.4;
+        $ukuranKertas = [0, 0, 210 * $mmKePoint, $tinggiKertasMm * $mmKePoint];
+
+        $pdf = Pdf::loadView('pdf.slip-gaji', compact('penggajian', 'namaBulan'))
+            ->setPaper($ukuranKertas);
+
+        $filename = 'slip-gaji-'.$penggajian->karyawan->nik.'-'
+            .$namaBulan[$penggajian->periode_bulan].'-'
+            .$penggajian->periode_tahun.'.pdf';
 
         return $pdf->download($filename);
     }

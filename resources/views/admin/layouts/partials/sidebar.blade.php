@@ -1,14 +1,18 @@
 @php
-$dataKaryawan =
-request()->is(['admin/daftar_karyawan*','admin/daftar_admin*','admin/daftar_pimpinan*','admin/jabatan*']);
-$absensi = request()->is(['admin/absensi*','admin/rekap-tahunan*']);
-$pengajuan = request()->is(['admin/lembur*','admin/izin*']);
-$gaji = request()->is(['admin/penggajian*']);
+    $dataKaryawan = request()->is([
+        'admin/daftar_karyawan*',
+        'admin/daftar_admin*',
+        'admin/daftar_pimpinan*',
+        'admin/jabatan*',
+    ]);
+    $absensi = request()->is(['admin/absensi*', 'admin/rekap-tahunan*']);
+    $pengajuan = request()->is(['admin/lembur*', 'admin/izin*']);
+    $gaji = request()->is(['admin/penggajian*', 'admin/komponen-gaji*']);
 
-$reimbursement = request()->is(['admin/kategori-reimbursement*','admin/reimbursement*']);
-$rekrutmen = request()->is(['admin/lowongan*','admin/pelamar*']);
+    $reimbursement = request()->is(['admin/kategori-reimbursement*', 'admin/reimbursement*']);
+    $rekrutmen = request()->is(['admin/lowongan*', 'admin/pelamar*']);
 
-$pengaturan = request()->is(['admin/pengaturan*','admin/hari-libur*']);
+    $pengaturan = request()->is(['admin/pengaturan*', 'admin/hari-libur*']);
 @endphp
 
 <div id="layoutSidenav_nav">
@@ -99,6 +103,10 @@ $pengaturan = request()->is(['admin/pengaturan*','admin/hari-libur*']);
                     <nav class="sidenav-menu-nested nav">
                         <a class="nav-link {{ request()->is('admin/penggajian*') ? 'active' : '' }}"
                             href="{{ route('admin.penggajian') }}">Data Gaji</a>
+                        <a class="nav-link {{ request()->is('admin/komponen-gaji') ? 'active' : '' }}"
+                            href="{{ route('admin.komponen-gaji') }}">Komponen Gaji</a>
+                        <a class="nav-link {{ request()->is('admin/komponen-gaji-karyawan*') ? 'active' : '' }}"
+                            href="{{ route('admin.komponen-gaji.karyawan') }}">Komponen Gaji Karyawan</a>
                     </nav>
                 </div>
 
