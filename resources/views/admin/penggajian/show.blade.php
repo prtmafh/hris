@@ -132,8 +132,13 @@
                                 </span>
 
                                 <strong>
-                                    {{ $namaBulan[$penggajian->periode_bulan] }}
-                                    {{ $penggajian->periode_tahun }}
+                                    @if($penggajian->karyawan->status_gaji === 'harian' && $penggajian->tanggal_mulai && $penggajian->tanggal_selesai)
+                                        {{ $penggajian->tanggal_mulai->locale('id')->translatedFormat('d F Y') }} -
+                                        {{ $penggajian->tanggal_selesai->locale('id')->translatedFormat('d F Y') }}
+                                    @else
+                                        {{ $namaBulan[$penggajian->periode_bulan] }}
+                                        {{ $penggajian->periode_tahun }}
+                                    @endif
                                 </strong>
                             </div>
 

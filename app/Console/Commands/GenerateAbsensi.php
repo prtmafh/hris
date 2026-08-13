@@ -6,16 +6,18 @@ use App\Models\Absensi;
 use App\Models\AbsensiSesi;
 use App\Models\HariLibur;
 use App\Models\Karyawan;
+// use App\Services\AbsensiGeneratorService;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 
 class GenerateAbsensi extends Command
 {
     protected $signature = 'absensi:generate
+                            // {--tanggal= : Satu tanggal (Y-m-d)}
                             {--bulan= : Bulan (1-12)}
                             {--tahun= : Tahun}';
 
-    protected $description = 'Generate data absensi dummy';
+    protected $description = 'Generate placeholder absensi alpha untuk tanggal atau bulan tertentu';
 
     public function handle(): int
     {
@@ -176,15 +178,41 @@ class GenerateAbsensi extends Command
                 }
 
                 $tanggal->addDay();
+                // if ($this->option('tanggal')) {
+                //     try {
+                //         $tanggal = Carbon::createFromFormat('Y-m-d', $this->option('tanggal'))->startOfDay();
+                //     } catch (\Throwable) {
+                //         $this->error('Format --tanggal harus Y-m-d.');
+
+                //         return self::FAILURE;
+                //     }
+                //     $hasil = $generator->generateTanggal($tanggal);
+                //     $periode = $tanggal->format('d/m/Y');
+                // } else {
+                //     $bulan = (int) ($this->option('bulan') ?: now()->month);
+                //     $tahun = (int) ($this->option('tahun') ?: now()->year);
+                //     if ($bulan < 1 || $bulan > 12 || $tahun < 2000) {
+                //         $this->error('Bulan harus 1-12 dan tahun minimal 2000.');
+
+                //         return self::FAILURE;
+                //     }
+                //     $hasil = $generator->generateBulan($bulan, $tahun);
+                //     $periode = Carbon::create($tahun, $bulan)->locale('id')->translatedFormat('F Y');
             }
+            $this->newLine();
+
+            $this->info("Total Absensi : {$totalAbsensi}");
+            $this->info("Total Sesi    : {$totalSesi}");
+            $this->info('Generate absensi selesai.');
+            // $this->info("Generate absensi selesai untuk {$periode}.");
+            // $this->table(['Absensi dibuat', 'Sudah tersedia', 'Weekend/libur', 'Sesi dibuat'], [[
+            //     $hasil['dibuat'], $hasil['sudah_tersedia'], $hasil['hari_libur'], $hasil['sesi_dibuat'],
+            // ]]);
+
+            // return self::SUCCESS;
         }
 
-        $this->newLine();
-
-        $this->info("Total Absensi : {$totalAbsensi}");
-        $this->info("Total Sesi    : {$totalSesi}");
-        $this->info('Generate absensi selesai.');
-
+        // Ensure we always return an int status
         return self::SUCCESS;
     }
 }

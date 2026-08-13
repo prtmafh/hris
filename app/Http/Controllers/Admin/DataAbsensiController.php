@@ -2,20 +2,46 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Exports\AbsensiExport;
 use App\Http\Controllers\Controller;
 use App\Models\Absensi;
+use App\Models\AbsensiSesi;
 use App\Models\Karyawan;
+use App\Services\AbsensiGeneratorService;
 use Carbon\Carbon;
-use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
-use App\Exports\AbsensiExport;
 use Maatwebsite\Excel\Facades\Excel;
-use App\Models\AbsensiSesi;
 
 class DataAbsensiController extends Controller
 {
+    public function generate(Request $request, AbsensiGeneratorService $generator)
+    {
+        $validated = $request->validate([
+            'mode' => ['required', Rule::in(['tanggal', 'bulan'])],
+            'tanggal' => ['nullable', 'required_if:mode,tanggal', 'date'],
+            'bulan' => ['nullable', 'required_if:mode,bulan', 'integer', 'between:1,12'],
+            'tahun' => ['nullable', 'required_if:mode,bulan', 'integer', 'min:2000', 'max:'.(now()->year + 1)],
+        ]);
+
+        if ($validated['mode'] === 'tanggal') {
+            $tanggal = Carbon::parse($validated['tanggal']);
+            $hasil = $generator->generateTanggal($tanggal);
+            $periode = $tanggal->locale('id')->translatedFormat('d F Y');
+        } else {
+            $hasil = $generator->generateBulan((int) $validated['bulan'], (int) $validated['tahun']);
+            $periode = Carbon::create($validated['tahun'], $validated['bulan'])->locale('id')->translatedFormat('F Y');
+        }
+
+        $pesan = "Generate absensi berhasil. Periode: {$periode}. Absensi dibuat: {$hasil['dibuat']}. "
+            ."Data sudah tersedia: {$hasil['sudah_tersedia']}. Weekend/libur: {$hasil['hari_libur']} hari. "
+            ."Sesi dibuat: {$hasil['sesi_dibuat']}.";
+
+        return redirect()->route('data_absen')->with('success', $pesan);
+    }
+
     public function index(Request $request)
     {
         $type = $request->get('type', 'biasa');
@@ -63,20 +89,21 @@ class DataAbsensiController extends Controller
     public function create()
     {
         $karyawanList = Karyawan::where('status', 'aktif')->orderBy('nama')->get();
+
         return view('admin.absensi.create', compact('karyawanList'));
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'karyawan_id'  => [
+            'karyawan_id' => [
                 'required',
                 Rule::exists('karyawan', 'id')->where('status', 'aktif'),
             ],
-            'tanggal'      => 'required|date',
-            'jam_masuk'    => 'nullable|date_format:H:i',
-            'jam_keluar'   => 'nullable|date_format:H:i|after_or_equal:jam_masuk',
-            'status'       => 'required|in:hadir,izin,alpha,terlambat',
+            'tanggal' => 'required|date',
+            'jam_masuk' => 'nullable|date_format:H:i',
+            'jam_keluar' => 'nullable|date_format:H:i|after_or_equal:jam_masuk',
+            'status' => 'required|in:hadir,izin,alpha,terlambat',
         ], [
             'karyawan_id.exists' => 'Karyawan tidak ditemukan atau sudah tidak aktif.',
             'jam_keluar.after_or_equal' => 'Jam keluar harus sama dengan atau setelah jam masuk.',
@@ -92,10 +119,10 @@ class DataAbsensiController extends Controller
 
         Absensi::create([
             'karyawan_id' => $request->karyawan_id,
-            'tanggal'     => $request->tanggal,
-            'jam_masuk'   => $request->jam_masuk,
-            'jam_keluar'  => $request->jam_keluar,
-            'status'      => $request->status,
+            'tanggal' => $request->tanggal,
+            'jam_masuk' => $request->jam_masuk,
+            'jam_keluar' => $request->jam_keluar,
+            'status' => $request->status,
         ]);
 
         return redirect()->route('data_absen')->with('success', 'Data absensi berhasil ditambahkan.');
@@ -104,12 +131,14 @@ class DataAbsensiController extends Controller
     public function show($id)
     {
         $absensi = Absensi::with(['karyawan.jabatan'])->findOrFail($id);
+
         return view('admin.absensi.show', compact('absensi'));
     }
 
     public function edit($id)
     {
         $absensi = Absensi::with('karyawan')->findOrFail($id);
+
         return view('admin.absensi.edit', compact('absensi'));
     }
 
@@ -118,15 +147,15 @@ class DataAbsensiController extends Controller
         $absensi = Absensi::findOrFail($id);
 
         $request->validate([
-            'jam_masuk'  => 'nullable|date_format:H:i',
+            'jam_masuk' => 'nullable|date_format:H:i',
             'jam_keluar' => 'nullable|date_format:H:i',
-            'status'     => 'required|in:hadir,izin,alpha,terlambat',
+            'status' => 'required|in:hadir,izin,alpha,terlambat',
         ]);
 
         $absensi->update([
-            'jam_masuk'  => $request->jam_masuk,
+            'jam_masuk' => $request->jam_masuk,
             'jam_keluar' => $request->jam_keluar,
-            'status'     => $request->status,
+            'status' => $request->status,
         ]);
 
         return redirect()->route('data_absen')->with('success', 'Data absensi berhasil diperbarui.');
@@ -168,11 +197,11 @@ class DataAbsensiController extends Controller
 
             $data = $query->get();
 
-            $hadir     = $data->where('status', 'hadir')->count();
+            $hadir = $data->where('status', 'hadir')->count();
             $terlambat = $data->where('status', 'terlambat')->count();
-            $izin      = $data->where('status', 'izin')->count();
-            $alpha     = $data->where('status', 'alpha')->count();
-            $total     = $data->count();
+            $izin = $data->where('status', 'izin')->count();
+            $alpha = $data->where('status', 'alpha')->count();
+            $total = $data->count();
 
             // Hadir + Terlambat dianggap masuk kerja
             $persentase = $total > 0
@@ -180,12 +209,12 @@ class DataAbsensiController extends Controller
                 : 0;
 
             return [
-                'karyawan'   => $k,
-                'hadir'      => $hadir,
-                'terlambat'  => $terlambat,
-                'izin'       => $izin,
-                'alpha'      => $alpha,
-                'total'      => $total,
+                'karyawan' => $k,
+                'hadir' => $hadir,
+                'terlambat' => $terlambat,
+                'izin' => $izin,
+                'alpha' => $alpha,
+                'total' => $total,
                 'persentase' => $persentase,
             ];
         });
@@ -219,13 +248,13 @@ class DataAbsensiController extends Controller
     {
         return AbsensiSesi::with(['absensi.karyawan.jabatan'])
             ->when($request->filled('tanggal_dari'), function ($query) use ($request) {
-                $query->whereHas('absensi', fn($q) => $q->whereDate('tanggal', '>=', $request->tanggal_dari));
+                $query->whereHas('absensi', fn ($q) => $q->whereDate('tanggal', '>=', $request->tanggal_dari));
             })
             ->when($request->filled('tanggal_sampai'), function ($query) use ($request) {
-                $query->whereHas('absensi', fn($q) => $q->whereDate('tanggal', '<=', $request->tanggal_sampai));
+                $query->whereHas('absensi', fn ($q) => $q->whereDate('tanggal', '<=', $request->tanggal_sampai));
             })
             ->when($request->filled('karyawan_id'), function ($query) use ($request) {
-                $query->whereHas('absensi', fn($q) => $q->where('karyawan_id', $request->karyawan_id));
+                $query->whereHas('absensi', fn ($q) => $q->where('karyawan_id', $request->karyawan_id));
             })
             ->when($request->filled('status'), function ($query) use ($request) {
                 $query->where('status', $request->status);

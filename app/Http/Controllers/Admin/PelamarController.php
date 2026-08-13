@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Mail\PanggilanInterviewMail;
 use App\Mail\UpdateProsesLamaranMail;
 use App\Models\Lowongan;
 use App\Models\Pelamar;
@@ -39,14 +38,29 @@ class PelamarController extends Controller
 
         $validated = $request->validate([
             'status' => 'required|in:pending,screening,interview,offering,diterima,ditolak',
-            'jadwal_interview' => 'nullable|date',
-            'catatan_hr' => 'nullable|string|max:2000',
+            'jadwal_interview' => 'nullable|date|required_if:status,interview',
+            'catatan_hr' => 'nullable|string|max:3000|required_if:kirim_email,1',
+            'kirim_email' => 'nullable|boolean',
         ]);
 
+        $kirimEmail = $request->boolean('kirim_email');
+        unset($validated['kirim_email']);
+        $validated['jadwal_interview'] = $validated['status'] === 'interview'
+            ? ($validated['jadwal_interview'] ?? null)
+            : null;
         $validated['processed_at'] = now();
         $pelamar->update($validated);
 
-        return redirect()->route('admin.pelamar')->with('success', 'Data pelamar berhasil diperbarui.');
+        if ($kirimEmail) {
+            $pelamar->loadMissing(['lowongan.jabatan']);
+            Mail::to($pelamar->email)->send(new UpdateProsesLamaranMail($pelamar, $pelamar->catatan_hr));
+        }
+
+        $message = $kirimEmail
+            ? 'Data pelamar diperbarui dan email pemberitahuan berhasil dikirim.'
+            : 'Data pelamar berhasil diperbarui.';
+
+        return redirect()->route('admin.pelamar')->with('success', $message);
     }
 
     public function destroy($id)
@@ -66,46 +80,4 @@ class PelamarController extends Controller
         return redirect()->route('admin.pelamar')->with('success', 'Data pelamar berhasil dihapus.');
     }
 
-    public function kirimPanggilan(Request $request, $id)
-    {
-        $pelamar = Pelamar::with(['lowongan.jabatan'])->findOrFail($id);
-
-        $validated = $request->validate([
-            'jadwal_interview' => 'required|date',
-            'pesan' => 'required|string|max:3000',
-        ]);
-
-        $pelamar->update([
-            'status' => 'interview',
-            'jadwal_interview' => $validated['jadwal_interview'],
-            'catatan_hr' => $validated['pesan'],
-            'processed_at' => now(),
-        ]);
-
-        Mail::to($pelamar->email)->send(new PanggilanInterviewMail($pelamar, $validated['pesan']));
-
-        return redirect()->route('admin.pelamar')->with('success', 'Email panggilan berhasil dikirim.');
-    }
-
-    public function kirimUpdateProses(Request $request, $id)
-    {
-        $pelamar = Pelamar::with(['lowongan.jabatan'])->findOrFail($id);
-
-        $validated = $request->validate([
-            'status' => 'required|in:pending,screening,interview,offering,diterima,ditolak',
-            'jadwal_interview' => 'nullable|date',
-            'pesan' => 'required|string|max:3000',
-        ]);
-
-        $pelamar->update([
-            'status' => $validated['status'],
-            'jadwal_interview' => $validated['jadwal_interview'] ?? $pelamar->jadwal_interview,
-            'catatan_hr' => $validated['pesan'],
-            'processed_at' => now(),
-        ]);
-
-        Mail::to($pelamar->email)->send(new UpdateProsesLamaranMail($pelamar, $validated['pesan']));
-
-        return redirect()->route('admin.pelamar')->with('success', 'Email update proses lamaran berhasil dikirim.');
-    }
 }

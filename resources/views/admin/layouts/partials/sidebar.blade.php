@@ -10,7 +10,7 @@
     $gaji = request()->is(['admin/penggajian*', 'admin/komponen-gaji*']);
 
     $reimbursement = request()->is(['admin/kategori-reimbursement*', 'admin/reimbursement*']);
-    $rekrutmen = request()->is(['admin/lowongan*', 'admin/pelamar*']);
+    $rekrutmen = request()->is(['admin/lowongan*', 'admin/pelamar*', 'admin/hasil-tes-rekrutmen*']);
 
     $pengaturan = request()->is(['admin/pengaturan*', 'admin/hari-libur*']);
 @endphp
@@ -138,7 +138,7 @@
                     <nav class="sidenav-menu-nested nav">
                         <a class="nav-link {{ request()->is('admin/lowongan*') ? 'active' : '' }}"
                             href="{{ route('admin.lowongan') }}">Lowongan</a>
-                        <a class="nav-link {{ request()->is('admin/pelamar*') ? 'active' : '' }}"
+                        <a class="nav-link {{ request()->is(['admin/pelamar*', 'admin/hasil-tes-rekrutmen*']) ? 'active' : '' }}"
                             href="{{ route('admin.pelamar') }}">Pelamar</a>
                     </nav>
                 </div>

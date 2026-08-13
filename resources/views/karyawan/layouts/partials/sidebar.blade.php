@@ -13,22 +13,22 @@
                     Dashboard Absensi
                 </a>
                 @if (auth()->user()?->role_id === 1)
-                <a class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}"
-                    href="{{ route('admin.dashboard') }}">
-                    <div class="nav-link-icon">
-                        <i data-feather="home"></i>
-                    </div>
-                    Dashboard Admin
-                </a>
+                    <a class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}"
+                        href="{{ route('admin.dashboard') }}">
+                        <div class="nav-link-icon">
+                            <i data-feather="home"></i>
+                        </div>
+                        Dashboard Admin
+                    </a>
                 @endif
                 @if (auth()->user()?->role_id === 2)
-                <a class="nav-link {{ request()->routeIs('pimpinan.dashboard') ? 'active' : '' }}"
-                    href="{{ route('pimpinan.dashboard') }}">
-                    <div class="nav-link-icon">
-                        <i data-feather="home"></i>
-                    </div>
-                    Dashboard Pimpinan
-                </a>
+                    <a class="nav-link {{ request()->routeIs('pimpinan.dashboard') ? 'active' : '' }}"
+                        href="{{ route('pimpinan.dashboard') }}">
+                        <div class="nav-link-icon">
+                            <i data-feather="home"></i>
+                        </div>
+                        Dashboard Pimpinan
+                    </a>
                 @endif
                 <div class="sidenav-menu-heading">Menu</div>
 
@@ -40,21 +40,21 @@
                     Absensi Saya
                 </a>
                 @if (auth()->user()?->status_gaji === 'bulanan')
-                <a class="nav-link {{ request()->routeIs('karyawan.izin*') ? 'active' : '' }}"
-                    href="{{ route('karyawan.izin') }}">
-                    <div class="nav-link-icon">
-                        <i data-feather="file-text"></i>
-                    </div>
-                    Pengajuan Izin
-                </a>
+                    <a class="nav-link {{ request()->routeIs('karyawan.izin*') ? 'active' : '' }}"
+                        href="{{ route('karyawan.izin') }}">
+                        <div class="nav-link-icon">
+                            <i data-feather="file-text"></i>
+                        </div>
+                        Pengajuan Izin
+                    </a>
 
-                <a class="nav-link {{ request()->routeIs('karyawan.lembur*') ? 'active' : '' }}"
-                    href="{{ route('karyawan.lembur') }}">
-                    <div class="nav-link-icon">
-                        <i data-feather="clock"></i>
-                    </div>
-                    Pengajuan Lembur
-                </a>
+                    <a class="nav-link {{ request()->routeIs('karyawan.lembur*') ? 'active' : '' }}"
+                        href="{{ route('karyawan.lembur') }}">
+                        <div class="nav-link-icon">
+                            <i data-feather="clock"></i>
+                        </div>
+                        Pengajuan Lembur
+                    </a>
                 @endif
                 <a class="nav-link {{ request()->routeIs('karyawan.reimbursement*') ? 'active' : '' }}"
                     href="{{ route('karyawan.reimbursement') }}">
@@ -69,29 +69,29 @@
                     <div class="nav-link-icon">
                         <i data-feather="dollar-sign"></i>
                     </div>
-                    Slip Gaji
+                    Gaji
                 </a>
                 @php
-                $absensi = request()->is(['karyawan/absensi*']);
+                    $absensi = request()->is(['karyawan/absensi*']);
                 @endphp
                 @if (auth()->user()?->role_id === 4)
-                <a class="nav-link {{ $absensi ? '' : 'collapsed' }}" href="#" data-bs-toggle="collapse"
-                    data-bs-target="#collapseAbsensi">
-                    <div class="nav-link-icon"><i data-feather="calendar"></i></div>
-                    Absensi
-                    <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-                </a>
+                    <a class="nav-link {{ $absensi ? '' : 'collapsed' }}" href="#" data-bs-toggle="collapse"
+                        data-bs-target="#collapseAbsensi">
+                        <div class="nav-link-icon"><i data-feather="calendar"></i></div>
+                        Absensi
+                        <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                    </a>
 
-                <div class="collapse {{ $absensi ? 'show' : '' }}" id="collapseAbsensi">
-                    <nav class="sidenav-menu-nested nav">
-                        <a class="nav-link {{ request()->is('karyawan/absensi*') ? 'active' : '' }}"
-                            href="{{ route('data_absenKaryawan') }}">Data
-                            Absen</a>
+                    <div class="collapse {{ $absensi ? 'show' : '' }}" id="collapseAbsensi">
+                        <nav class="sidenav-menu-nested nav">
+                            <a class="nav-link {{ request()->is('karyawan/absensi*') ? 'active' : '' }}"
+                                href="{{ route('data_absenKaryawan') }}">Data
+                                Absen</a>
 
-                        {{-- <a class="nav-link {{ request()->is('admin/rekap-tahunan*') ? 'active' : '' }}"
+                            {{-- <a class="nav-link {{ request()->is('admin/rekap-tahunan*') ? 'active' : '' }}"
                             href="{{ route('rekap.tahunan') }}">Rekap</a> --}}
-                    </nav>
-                </div>
+                        </nav>
+                    </div>
                 @endif
             </div>
         </div>

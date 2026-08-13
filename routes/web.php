@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\DataAbsensiController;
 use App\Http\Controllers\Admin\DataGajiController;
 use App\Http\Controllers\Admin\HariLiburController;
+use App\Http\Controllers\Admin\HasilTesRekrutmenController;
 use App\Http\Controllers\Admin\IzinController;
 use App\Http\Controllers\Admin\JabatanController;
 use App\Http\Controllers\Admin\KategoriReimbursementController;
@@ -88,6 +89,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/absensi/export', [DataAbsensiController::class, 'export'])->name('admin.absensi.export');
     Route::get('/admin/absensi/tambah', [DataAbsensiController::class, 'create'])->name('admin.absensi.create');
     Route::post('/admin/absensi', [DataAbsensiController::class, 'store'])->name('admin.absensi.store');
+    Route::post('/admin/absensi/generate', [DataAbsensiController::class, 'generate'])->name('admin.absensi.generate');
     Route::get('/admin/absensi/{id}', [DataAbsensiController::class, 'show'])->name('admin.absensi.show');
     Route::get('/admin/absensi/{id}/edit', [DataAbsensiController::class, 'edit'])->name('admin.absensi.edit');
     Route::put('/admin/absensi/{id}', [DataAbsensiController::class, 'update'])->name('admin.absensi.update');
@@ -157,9 +159,14 @@ Route::middleware(['auth', 'admin'])->group(function () {
 
     Route::get('/admin/pelamar', [PelamarController::class, 'index'])->name('admin.pelamar');
     Route::put('/admin/pelamar/{id}', [PelamarController::class, 'update'])->name('admin.pelamar.update');
-    Route::post('/admin/pelamar/{id}/kirim-panggilan', [PelamarController::class, 'kirimPanggilan'])->name('admin.pelamar.kirim-panggilan');
-    Route::post('/admin/pelamar/{id}/kirim-update-proses', [PelamarController::class, 'kirimUpdateProses'])->name('admin.pelamar.kirim-update-proses');
     Route::delete('/admin/pelamar/{id}', [PelamarController::class, 'destroy'])->name('admin.pelamar.destroy');
+
+    Route::get('/admin/hasil-tes-rekrutmen', [HasilTesRekrutmenController::class, 'index'])->name('admin.hasil-tes-rekrutmen.index');
+    Route::post('/admin/hasil-tes-rekrutmen', [HasilTesRekrutmenController::class, 'store'])->name('admin.hasil-tes-rekrutmen.store');
+    Route::post('/admin/hasil-tes-rekrutmen/pelamar/{pelamar}/terapkan', [HasilTesRekrutmenController::class, 'terapkanRekomendasi'])->name('admin.hasil-tes-rekrutmen.terapkan');
+    Route::get('/admin/hasil-tes-rekrutmen/pelamar/{pelamar}/pdf', [HasilTesRekrutmenController::class, 'downloadPdf'])->name('admin.hasil-tes-rekrutmen.pdf');
+    Route::put('/admin/hasil-tes-rekrutmen/{hasilTes}', [HasilTesRekrutmenController::class, 'update'])->name('admin.hasil-tes-rekrutmen.update');
+    Route::delete('/admin/hasil-tes-rekrutmen/{hasilTes}', [HasilTesRekrutmenController::class, 'destroy'])->name('admin.hasil-tes-rekrutmen.destroy');
 });
 
 Route::middleware(['auth', 'pimpinan'])->prefix('pimpinan')->group(function () {

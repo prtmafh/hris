@@ -38,4 +38,30 @@ class Pelamar extends Model
     {
         return $this->belongsTo(Lowongan::class, 'lowongan_id');
     }
+
+    public function hasilTes()
+    {
+        return $this->hasMany(HasilTesRekrutmen::class, 'pelamar_id');
+    }
+
+    public function rekomendasiHasilTes(): string
+    {
+        $hasilTes = $this->relationLoaded('hasilTes')
+            ? $this->hasilTes
+            : $this->hasilTes()->get();
+
+        if ($hasilTes->isEmpty()) {
+            return 'belum_ada';
+        }
+
+        if ($hasilTes->contains('hasil', 'tidak_lulus')) {
+            return 'tidak_direkomendasikan';
+        }
+
+        if ($hasilTes->contains('hasil', 'dipertimbangkan')) {
+            return 'dipertimbangkan';
+        }
+
+        return 'direkomendasikan';
+    }
 }

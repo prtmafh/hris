@@ -90,6 +90,7 @@ class KomponenGajiPenggajianTest extends TestCase
         ]);
 
         $request = Request::create('/admin/penggajian/generate', 'POST', [
+            'jenis_gaji' => 'bulanan',
             'bulan' => 7,
             'tahun' => 2026,
         ]);

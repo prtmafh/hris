@@ -3,306 +3,394 @@
 @section('title', 'Data Absensi')
 
 @section('content')
-<main>
-    {{-- HEADER --}}
-    <header class="page-header page-header-compact page-header-light border-bottom bg-white mb-4 ">
-        <div class="container-xl px-4">
-            <div class="page-header-content">
-                <div class="row align-items-center justify-content-between pt-3">
+    <main>
+        {{-- HEADER --}}
+        <header class="page-header page-header-compact page-header-light border-bottom bg-white mb-4 ">
+            <div class="container-xl px-4">
+                <div class="page-header-content">
+                    <div class="row align-items-center justify-content-between pt-3">
 
-                    <div class="col-auto mb-3">
-                        <h1 class="page-header-title">
-                            <div class="page-header-icon"><i data-feather="clock"></i></div>
-                            Data Absensi
-                        </h1>
+                        <div class="col-auto mb-3">
+                            <h1 class="page-header-title">
+                                <div class="page-header-icon"><i data-feather="clock"></i></div>
+                                Data Absensi
+                            </h1>
+                        </div>
+
+                        <div class="col-auto mb-3">
+                            {{-- <button type="button" class="btn btn-sm btn-primary me-2" data-bs-toggle="modal"
+                            data-bs-target="#modalGenerateAbsensi">
+                            <i data-feather="calendar" class="me-1"></i> Generate Absensi
+                        </button> --}}
+                            <a href="{{ request('type') === 'sesi' ? route('admin.absensi-sesi.create') : route('admin.absensi.create') }}"
+                                class="btn btn-sm btn-light text-primary">
+                                <i data-feather="plus-circle" class="me-1"></i>
+                                {{ request('type') === 'sesi' ? 'Tambah Absensi Sesi Manual' : 'Tambah Absensi Manual' }}
+                            </a>
+                        </div>
+
                     </div>
-
-                    <div class="col-auto mb-3">
-                        <a href="{{ request('type') === 'sesi' ? route('admin.absensi-sesi.create') : route('admin.absensi.create') }}"
-                            class="btn btn-sm btn-light text-primary">
-                            <i data-feather="plus-circle" class="me-1"></i>
-                            {{ request('type') === 'sesi' ? 'Tambah Absensi Sesi Manual' : 'Tambah Absensi Manual' }}
-                        </a>
-                    </div>
-
                 </div>
             </div>
-        </div>
-    </header>
+        </header>
 
-    <div class="container-xl px-4">
-        {{-- TAB NAVIGATION --}}
-        <nav class="nav nav-borders mb-4">
-            <a class="nav-link {{ request('type') !== 'sesi' ? 'active' : '' }}"
-                href="{{ route('data_absen', array_merge(request()->query(), ['type' => 'biasa'])) }}">
-                <i data-feather="clock" class="me-2" style="width: 16px;"></i>
-                Absensi Biasa
-            </a>
-            <a class="nav-link {{ request('type') === 'sesi' ? 'active' : '' }}"
-                href="{{ route('data_absen', array_merge(request()->query(), ['type' => 'sesi'])) }}">
-                <i data-feather="layers" class="me-2" style="width: 16px;"></i>
-                Absensi Sesi
-            </a>
-        </nav>
+        <div class="container-xl px-4">
+            {{-- TAB NAVIGATION --}}
+            <nav class="nav nav-borders mb-4">
+                <a class="nav-link {{ request('type') !== 'sesi' ? 'active' : '' }}"
+                    href="{{ route('data_absen', array_merge(request()->query(), ['type' => 'biasa'])) }}">
+                    <i data-feather="clock" class="me-2" style="width: 16px;"></i>
+                    Absensi Biasa
+                </a>
+                <a class="nav-link {{ request('type') === 'sesi' ? 'active' : '' }}"
+                    href="{{ route('data_absen', array_merge(request()->query(), ['type' => 'sesi'])) }}">
+                    <i data-feather="layers" class="me-2" style="width: 16px;"></i>
+                    Absensi Sesi
+                </a>
+            </nav>
 
-        {{-- FILTER --}}
-        <div class="card mb-4">
-            <div class="card-body">
-                <form method="GET" action="{{ route('data_absen') }}" class="row gx-2 gy-2 align-items-end">
-                    <input type="hidden" name="type" value="{{ request('type', 'biasa') }}">
-                    <div class="col-md-3">
-                        <label class="form-label small mb-1">Bulan</label>
-                        <select name="bulan" class="form-select form-select-sm">
-                            @foreach(range(1,12) as $b)
-                            <option value="{{ $b }}" {{ $bulan==$b ? 'selected' : '' }}>
-                                {{ \Carbon\Carbon::create()->month($b)->locale('id')->isoFormat('MMMM') }}
-                            </option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <label class="form-label small mb-1">Tahun</label>
-                        <select name="tahun" class="form-select form-select-sm">
-                            @foreach($daftarTahun as $t)
-                            <option value="{{ $t }}" {{ $tahun==$t ? 'selected' : '' }}>{{ $t }}</option>
-                            @endforeach
-                        </select>
-                    </div>
+            {{-- FILTER --}}
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form method="GET" action="{{ route('data_absen') }}" class="row gx-2 gy-2 align-items-end">
+                        <input type="hidden" name="type" value="{{ request('type', 'biasa') }}">
+                        <div class="col-md-3">
+                            <label class="form-label small mb-1">Bulan</label>
+                            <select name="bulan" class="form-select form-select-sm">
+                                @foreach (range(1, 12) as $b)
+                                    <option value="{{ $b }}" {{ $bulan == $b ? 'selected' : '' }}>
+                                        {{ \Carbon\Carbon::create()->month($b)->locale('id')->isoFormat('MMMM') }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label small mb-1">Tahun</label>
+                            <select name="tahun" class="form-select form-select-sm">
+                                @foreach ($daftarTahun as $t)
+                                    <option value="{{ $t }}" {{ $tahun == $t ? 'selected' : '' }}>
+                                        {{ $t }}</option>
+                                @endforeach
+                            </select>
+                        </div>
 
-                    <div class="col-md-2">
-                        <label class="small mb-1">Karyawan</label>
-                        <select name="karyawan_id" class="form-select form-select-sm">
-                            <option value="">Semua</option>
-                            @foreach($karyawanList as $k)
-                            <option value="{{ $k->id }}" {{ request('karyawan_id')==$k->id ? 'selected' : '' }}>
-                                {{ $k->nama }}
-                            </option>
-                            @endforeach
-                        </select>
-                    </div>
+                        <div class="col-md-2">
+                            <label class="small mb-1">Karyawan</label>
+                            <select name="karyawan_id" class="form-select form-select-sm">
+                                <option value="">Semua</option>
+                                @foreach ($karyawanList as $k)
+                                    <option value="{{ $k->id }}"
+                                        {{ request('karyawan_id') == $k->id ? 'selected' : '' }}>
+                                        {{ $k->nama }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
 
-                    <div class="col-md-2">
-                        <label class="small mb-1">Status</label>
-                        <select name="status" class="form-select form-select-sm">
-                            <option value="">Semua</option>
-                            <option value="hadir" {{ request('status')=='hadir' ? 'selected' : '' }}>Hadir</option>
-                            <option value="terlambat" {{ request('status')=='terlambat' ? 'selected' : '' }}>Terlambat
-                            </option>
-                            <option value="izin" {{ request('status')=='izin' ? 'selected' : '' }}>Izin</option>
-                            <option value="alpha" {{ request('status')=='alpha' ? 'selected' : '' }}>Alpha</option>
-                        </select>
-                    </div>
+                        <div class="col-md-2">
+                            <label class="small mb-1">Status</label>
+                            <select name="status" class="form-select form-select-sm">
+                                <option value="">Semua</option>
+                                <option value="hadir" {{ request('status') == 'hadir' ? 'selected' : '' }}>Hadir</option>
+                                <option value="terlambat" {{ request('status') == 'terlambat' ? 'selected' : '' }}>Terlambat
+                                </option>
+                                <option value="izin" {{ request('status') == 'izin' ? 'selected' : '' }}>Izin</option>
+                                <option value="alpha" {{ request('status') == 'alpha' ? 'selected' : '' }}>Alpha</option>
+                            </select>
+                        </div>
 
-                    <div class="col-md-2 d-flex gap-1">
-                        <button type="submit" class="btn btn-primary btn-sm w-100">
-                            <i data-feather="search"></i>
-                        </button>
-                        {{-- <a href="{{ route('admin.absensi.export', request()->query()) }}"
+                        <div class="col-md-2 d-flex gap-1">
+                            <button type="submit" class="btn btn-primary btn-sm w-100">
+                                <i data-feather="search"></i>
+                            </button>
+                            {{-- <a href="{{ route('admin.absensi.export', request()->query()) }}"
                             class="btn btn-success btn-sm">
                             <i data-feather="download"></i>
                         </a> --}}
-                        <a href="{{ route('data_absen') }}" class="btn btn-light btn-sm">
-                            <i data-feather="x"></i>
-                        </a>
-                    </div>
-                </form>
-            </div>
-        </div>
-
-        {{-- TABLE --}}
-        <div class="card mb-4">
-            <div class="card-header">
-                @if(request('type') === 'sesi')
-                Data Absensi Sesi {{ \Carbon\Carbon::create()->month((int)$bulan)->locale('id')->isoFormat('MMMM') }} {{
-                $tahun
-                }}
-                @else
-                Data Absensi {{ \Carbon\Carbon::create()->month((int)$bulan)->locale('id')->isoFormat('MMMM') }} {{
-                $tahun
-                }}
-                @endif
-            </div>
-            <div class="card-body">
-                <div class="table-responsive">
-                    <table id="datatablesSimple" class="table responsive">
-                        <thead>
-                            <tr>
-                                <th>No</th>
-                                <th>Karyawan</th>
-                                <th>Jabatan</th>
-                                <th>Tanggal</th>
-                                @if(request('type') === 'sesi')
-                                <th>Sesi</th>
-                                <th>Check In</th>
-                                <th>Check Out</th>
-                                @else
-                                <th>Masuk</th>
-                                <th>Keluar</th>
-                                @endif
-                                <th>Status</th>
-                                <th>Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @if(request('type') === 'sesi')
-                            @forelse($absensi as $index => $sesi)
-                            <tr>
-                                {{-- <td>{{ $absensi->firstItem() + $index }}</td> --}}
-                                <td>{{ $loop->iteration }}</td>
-                                <td>
-                                    <div class="d-flex align-items-center">
-                                        <div class="avatar me-2">
-                                            <img class="avatar-img img-fluid"
-                                                src="{{ $sesi->absensi->karyawan->foto
-                                                    ? asset('storage/'.$sesi->absensi->karyawan->foto)
-                                                    : 'https://ui-avatars.com/api/?name='.urlencode($sesi->absensi->karyawan->nama) }}">
-                                        </div>
-                                        <div class="fw-semibold text-capitalize">
-                                            {{ $sesi->absensi->karyawan->nama }}
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="text-capitalize">
-                                    {{ optional($sesi->absensi->karyawan->jabatan)->nama_jabatan ?? '-' }}
-                                </td>
-                                {{-- <td>{{ $sesi->absensi->tanggal->translatedFormat('d F Y') }}</td> --}}
-                                <td>{{ \Carbon\Carbon::parse($sesi->absensi->tanggal)->locale('id')->isoFormat('D MMM
-                                    YYYY') }}</td>
-                                <td class="fw-semibold">Sesi {{ $sesi->sesi_ke }}</td>
-                                <td>{{ $sesi->jam_checkin ?? '-' }}</td>
-                                <td>{{ $sesi->jam_checkout ?? '-' }}</td>
-                                <td>
-                                    @php
-                                    $badge = match($sesi->status) {
-                                    'hadir' => 'green',
-                                    'terlambat' => 'yellow',
-                                    'izin' => 'blue',
-                                    'alpha' => 'red',
-                                    default => 'secondary',
-                                    };
-                                    @endphp
-                                    <span class="badge bg-{{ $badge }}-soft text-{{ $badge }} text-capitalize">
-                                        {{ $sesi->status }}
-                                    </span>
-                                </td>
-                                <td>
-                                    <a href="{{ route('admin.absensi-sesi.show', $sesi->id) }}"
-                                        class="btn btn-datatable btn-icon btn-transparent-dark me-2">
-                                        <i data-feather="eye"></i>
-                                    </a>
-                                    <a href="{{ route('admin.absensi-sesi.edit', $sesi->id) }}"
-                                        class="btn btn-datatable btn-icon btn-transparent-dark me-2">
-                                        <i data-feather="edit"></i>
-                                    </a>
-                                    <button class="btn btn-datatable btn-icon btn-transparent-dark text-danger"
-                                        onclick="confirmDeleteSesi({{ $sesi->id }})">
-                                        <i data-feather="trash-2"></i>
-                                    </button>
-                                    <form id="delete-form-{{ $sesi->id }}"
-                                        action="{{ route('admin.absensi-sesi.destroy', $sesi->id) }}" method="POST"
-                                        style="display:none;">
-                                        @csrf
-                                        @method('DELETE')
-                                    </form>
-                                </td>
-                            </tr>
-                            @empty
-                            <tr>
-                                <td colspan="9" class="text-center text-muted py-4">
-                                    Tidak ada data absensi sesi
-                                </td>
-                            </tr>
-                            @endforelse
-                            @else
-                            @forelse($absensi as $index => $a)
-                            <tr>
-                                {{-- <td>{{ $absensi->firstItem() + $index }}</td> --}}
-                                <td>{{ $loop->iteration }}</td>
-                                {{-- KARYAWAN --}}
-                                <td>
-                                    <div class="d-flex align-items-center">
-                                        <div class="avatar me-2">
-                                            <img class="avatar-img img-fluid"
-                                                src="{{ $a->karyawan->foto
-                                                    ? asset('storage/'.$a->karyawan->foto)
-                                                    : 'https://ui-avatars.com/api/?name='.urlencode($a->karyawan->nama) }}">
-                                        </div>
-                                        <div class="fw-semibold text-capitalize">
-                                            {{ $a->karyawan->nama }}
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="text-capitalize">
-                                    {{ optional($a->karyawan->jabatan)->nama_jabatan ?? '-' }}
-                                </td>
-                                <td>{{ \Carbon\Carbon::parse($a->tanggal)->locale('id')->isoFormat('D MMM
-                                    YYYY') }}</td>
-                                <td>{{ $a->jam_masuk ?? '-' }}</td>
-                                <td>{{ $a->jam_keluar ?? '-' }}</td>
-                                {{-- STATUS --}}
-                                <td>
-                                    @php
-                                    $badge = match($a->status) {
-                                    'hadir' => 'green',
-                                    'terlambat' => 'yellow',
-                                    'izin' => 'blue',
-                                    'alpha' => 'red',
-                                    default => 'secondary',
-                                    };
-                                    @endphp
-
-                                    <span class="badge bg-{{ $badge }}-soft text-{{ $badge }} text-capitalize">
-                                        {{ $a->status }}
-                                    </span>
-                                </td>
-                                {{-- AKSI --}}
-                                <td>
-                                    <a href="{{ route('admin.absensi.show', $a->id) }}"
-                                        class="btn btn-datatable btn-icon btn-transparent-dark me-2">
-                                        <i data-feather="eye"></i>
-                                    </a>
-                                    <a href="{{ route('admin.absensi.edit', $a->id) }}"
-                                        class="btn btn-datatable btn-icon btn-transparent-dark me-2">
-                                        <i data-feather="edit"></i>
-                                    </a>
-                                    <button class="btn btn-datatable btn-icon btn-transparent-dark text-danger"
-                                        onclick="confirmDelete({{ $a->id }})">
-                                        <i data-feather="trash-2"></i>
-                                    </button>
-                                    <form id="delete-form-{{ $a->id }}"
-                                        action="{{ route('admin.absensi.destroy', $a->id) }}" method="POST"
-                                        style="display:none;">
-                                        @csrf
-                                        @method('DELETE')
-                                    </form>
-                                </td>
-                            </tr>
-                            @empty
-                            <tr>
-                                <td colspan="8" class="text-center text-muted py-4">
-                                    Tidak ada data absensi biasa
-                                </td>
-                            </tr>
-                            @endforelse
-                            @endif
-                        </tbody>
-                    </table>
+                            <a href="{{ route('data_absen') }}" class="btn btn-light btn-sm">
+                                <i data-feather="x"></i>
+                            </a>
+                        </div>
+                    </form>
                 </div>
-                {{-- <div class="mt-3">
+            </div>
+
+            {{-- TABLE --}}
+            <div class="card mb-4">
+                <div class="card-header">
+                    @if (request('type') === 'sesi')
+                        Data Absensi Sesi
+                        {{ \Carbon\Carbon::create()->month((int) $bulan)->locale('id')->isoFormat('MMMM') }}
+                        {{ $tahun }}
+                    @else
+                        Data Absensi {{ \Carbon\Carbon::create()->month((int) $bulan)->locale('id')->isoFormat('MMMM') }}
+                        {{ $tahun }}
+                    @endif
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table id="datatablesSimple" class="table responsive">
+                            <thead>
+                                <tr>
+                                    <th>No</th>
+                                    <th>Karyawan</th>
+                                    <th>Jabatan</th>
+                                    <th>Tanggal</th>
+                                    @if (request('type') === 'sesi')
+                                        <th>Sesi</th>
+                                        <th>Check In</th>
+                                        <th>Check Out</th>
+                                    @else
+                                        <th>Masuk</th>
+                                        <th>Keluar</th>
+                                    @endif
+                                    <th>Status</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (request('type') === 'sesi')
+                                    @forelse($absensi as $index => $sesi)
+                                        <tr>
+                                            {{-- <td>{{ $absensi->firstItem() + $index }}</td> --}}
+                                            <td>{{ $loop->iteration }}</td>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <div class="avatar me-2">
+                                                        <img class="avatar-img img-fluid"
+                                                            src="{{ $sesi->absensi->karyawan->foto
+                                                                ? asset('storage/' . $sesi->absensi->karyawan->foto)
+                                                                : 'https://ui-avatars.com/api/?name=' . urlencode($sesi->absensi->karyawan->nama) }}">
+                                                    </div>
+                                                    <div class="fw-semibold text-capitalize">
+                                                        {{ $sesi->absensi->karyawan->nama }}
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="text-capitalize">
+                                                {{ optional($sesi->absensi->karyawan->jabatan)->nama_jabatan ?? '-' }}
+                                            </td>
+                                            {{-- <td>{{ $sesi->absensi->tanggal->translatedFormat('d F Y') }}</td> --}}
+                                            <td>{{ \Carbon\Carbon::parse($sesi->absensi->tanggal)->locale('id')->isoFormat('D MMM
+                                                                                YYYY') }}
+                                            </td>
+                                            <td class="fw-semibold">Sesi {{ $sesi->sesi_ke }}</td>
+                                            <td>{{ $sesi->jam_checkin ?? '-' }}</td>
+                                            <td>{{ $sesi->jam_checkout ?? '-' }}</td>
+                                            <td>
+                                                @php
+                                                    $badge = match ($sesi->status) {
+                                                        'hadir' => 'green',
+                                                        'terlambat' => 'yellow',
+                                                        'izin' => 'blue',
+                                                        'alpha' => 'red',
+                                                        default => 'secondary',
+                                                    };
+                                                @endphp
+                                                <span
+                                                    class="badge bg-{{ $badge }}-soft text-{{ $badge }} text-capitalize">
+                                                    {{ $sesi->status }}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <a href="{{ route('admin.absensi-sesi.show', $sesi->id) }}"
+                                                    class="btn btn-datatable btn-icon btn-transparent-dark me-2">
+                                                    <i data-feather="eye"></i>
+                                                </a>
+                                                <a href="{{ route('admin.absensi-sesi.edit', $sesi->id) }}"
+                                                    class="btn btn-datatable btn-icon btn-transparent-dark me-2">
+                                                    <i data-feather="edit"></i>
+                                                </a>
+                                                <button class="btn btn-datatable btn-icon btn-transparent-dark text-danger"
+                                                    onclick="confirmDeleteSesi({{ $sesi->id }})">
+                                                    <i data-feather="trash-2"></i>
+                                                </button>
+                                                <form id="delete-form-{{ $sesi->id }}"
+                                                    action="{{ route('admin.absensi-sesi.destroy', $sesi->id) }}"
+                                                    method="POST" style="display:none;">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    @empty
+                                        <tr>
+                                            <td colspan="9" class="text-center text-muted py-4">
+                                                Tidak ada data absensi sesi
+                                            </td>
+                                        </tr>
+                                    @endforelse
+                                @else
+                                    @forelse($absensi as $index => $a)
+                                        <tr>
+                                            {{-- <td>{{ $absensi->firstItem() + $index }}</td> --}}
+                                            <td>{{ $loop->iteration }}</td>
+                                            {{-- KARYAWAN --}}
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <div class="avatar me-2">
+                                                        <img class="avatar-img img-fluid"
+                                                            src="{{ $a->karyawan->foto
+                                                                ? asset('storage/' . $a->karyawan->foto)
+                                                                : 'https://ui-avatars.com/api/?name=' . urlencode($a->karyawan->nama) }}">
+                                                    </div>
+                                                    <div class="fw-semibold text-capitalize">
+                                                        {{ $a->karyawan->nama }}
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="text-capitalize">
+                                                {{ optional($a->karyawan->jabatan)->nama_jabatan ?? '-' }}
+                                            </td>
+                                            <td>{{ \Carbon\Carbon::parse($a->tanggal)->locale('id')->isoFormat('D MMM
+                                                                                YYYY') }}
+                                            </td>
+                                            <td>{{ $a->jam_masuk ?? '-' }}</td>
+                                            <td>{{ $a->jam_keluar ?? '-' }}</td>
+                                            {{-- STATUS --}}
+                                            <td>
+                                                @php
+                                                    $badge = match ($a->status) {
+                                                        'hadir' => 'green',
+                                                        'terlambat' => 'yellow',
+                                                        'izin' => 'blue',
+                                                        'alpha' => 'red',
+                                                        default => 'secondary',
+                                                    };
+                                                @endphp
+
+                                                <span
+                                                    class="badge bg-{{ $badge }}-soft text-{{ $badge }} text-capitalize">
+                                                    {{ $a->status }}
+                                                </span>
+                                            </td>
+                                            {{-- AKSI --}}
+                                            <td>
+                                                <a href="{{ route('admin.absensi.show', $a->id) }}"
+                                                    class="btn btn-datatable btn-icon btn-transparent-dark me-2">
+                                                    <i data-feather="eye"></i>
+                                                </a>
+                                                <a href="{{ route('admin.absensi.edit', $a->id) }}"
+                                                    class="btn btn-datatable btn-icon btn-transparent-dark me-2">
+                                                    <i data-feather="edit"></i>
+                                                </a>
+                                                <button class="btn btn-datatable btn-icon btn-transparent-dark text-danger"
+                                                    onclick="confirmDelete({{ $a->id }})">
+                                                    <i data-feather="trash-2"></i>
+                                                </button>
+                                                <form id="delete-form-{{ $a->id }}"
+                                                    action="{{ route('admin.absensi.destroy', $a->id) }}" method="POST"
+                                                    style="display:none;">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    @empty
+                                        <tr>
+                                            <td colspan="8" class="text-center text-muted py-4">
+                                                Tidak ada data absensi biasa
+                                            </td>
+                                        </tr>
+                                    @endforelse
+                                @endif
+                            </tbody>
+                        </table>
+                    </div>
+                    {{-- <div class="mt-3">
                     {{ $absensi->links() }}
                 </div> --}}
+                </div>
             </div>
         </div>
+    </main>
+
+    <div class="modal fade" id="modalGenerateAbsensi" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <form id="formGenerateAbsensi" method="POST" action="{{ route('admin.absensi.generate') }}"
+                class="modal-content">
+                @csrf
+                <div class="modal-header">
+                    <h5 class="modal-title">Generate Absensi</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <label class="form-label">Generate berdasarkan</label>
+                    <div class="d-flex gap-4 mb-3">
+                        <label><input type="radio" name="mode" value="tanggal" checked> Tanggal</label>
+                        <label><input type="radio" name="mode" value="bulan"> Bulan</label>
+                    </div>
+                    <div id="fieldTanggal">
+                        <label class="form-label">Tanggal</label>
+                        <input type="date" name="tanggal" class="form-control" value="{{ now()->toDateString() }}">
+                    </div>
+                    <div id="fieldBulan" class="row g-3 d-none">
+                        <div class="col-6">
+                            <label class="form-label">Bulan</label>
+                            <select name="bulan" class="form-select">
+                                @foreach (range(1, 12) as $nomorBulan)
+                                    <option value="{{ $nomorBulan }}" @selected($nomorBulan === now()->month)>
+                                        {{ \Carbon\Carbon::create()->month($nomorBulan)->locale('id')->translatedFormat('F') }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label">Tahun</label>
+                            <input type="number" name="tahun" class="form-control" value="{{ now()->year }}"
+                                min="2000" max="{{ now()->year + 1 }}">
+                        </div>
+                    </div>
+                    <div class="small text-muted mt-3">Data yang sudah tersedia tidak akan diubah.</div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-primary">Generate</button>
+                </div>
+            </form>
+        </div>
     </div>
-</main>
 @endsection
 
 @push('scripts')
-<script>
-    function confirmDeleteSesi(id) {
-        if (confirm('Apakah Anda yakin ingin menghapus data absensi sesi ini?')) {
-            document.getElementById('delete-form-' + id).submit();
+    <script>
+        function confirmDeleteSesi(id) {
+            if (confirm('Apakah Anda yakin ingin menghapus data absensi sesi ini?')) {
+                document.getElementById('delete-form-' + id).submit();
+            }
         }
-    }
-</script>
+
+        document.querySelectorAll('input[name="mode"]').forEach((radio) => {
+            radio.addEventListener('change', () => {
+                const bulanan = radio.value === 'bulan' && radio.checked;
+                document.getElementById('fieldTanggal').classList.toggle('d-none', bulanan);
+                document.getElementById('fieldBulan').classList.toggle('d-none', !bulanan);
+            });
+        });
+
+        document.getElementById('formGenerateAbsensi').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const mode = this.querySelector('input[name="mode"]:checked').value;
+            const tanggal = this.querySelector('[name="tanggal"]').value;
+            const bulan = this.querySelector('[name="bulan"]');
+            const tahun = this.querySelector('[name="tahun"]').value;
+            const namaBulan = bulan.options[bulan.selectedIndex].text.trim();
+            const judul = mode === 'tanggal' ? 'Generate Absensi?' : `Generate Absensi ${namaBulan} ${tahun}?`;
+            const pesan = mode === 'tanggal' ?
+                `Sistem akan membuat data absensi untuk ${tanggal}. Data yang sudah tersedia tidak akan diubah.` :
+                `Sistem akan membuat data untuk seluruh hari kerja pada ${namaBulan} ${tahun}. Weekend, hari libur, dan data tersedia akan dilewati.`;
+
+            Swal.fire({
+                    title: judul,
+                    text: pesan,
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: 'Ya, Generate',
+                    cancelButtonText: 'Batal'
+                })
+                .then((result) => {
+                    if (result.isConfirmed) this.submit();
+                });
+        });
+    </script>
 @endpush
