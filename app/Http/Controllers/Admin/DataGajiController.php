@@ -99,11 +99,20 @@ class DataGajiController extends Controller
         $generated = 0;
         $skipped = 0;
 
-        DB::transaction(function () use ($karyawanList, $bulan, $tahun, $tanggalMulai, $tanggalSelesai, $dendaPerTerlambat, &$generated, &$skipped) {
+        DB::transaction(function () use ($karyawanList, $jenisGaji, $bulan, $tahun, $tanggalMulai, $tanggalSelesai, $dendaPerTerlambat, &$generated, &$skipped) {
             foreach ($karyawanList as $karyawan) {
                 $exists = Penggajian::where('karyawan_id', $karyawan->id)
-                    ->where('periode_bulan', $bulan)
-                    ->where('periode_tahun', $tahun)
+                    ->when(
+                        $jenisGaji === 'harian',
+                        fn ($query) => $query
+                            ->whereDate('tanggal_mulai', $tanggalMulai->toDateString())
+                            ->whereDate('tanggal_selesai', $tanggalSelesai->toDateString()),
+                        fn ($query) => $query
+                            ->where('periode_bulan', $bulan)
+                            ->where('periode_tahun', $tahun)
+                            ->whereNull('tanggal_mulai')
+                            ->whereNull('tanggal_selesai')
+                    )
                     ->exists();
 
                 if ($exists) {
@@ -268,7 +277,7 @@ class DataGajiController extends Controller
             : Carbon::create($tahun, $bulan)->locale('id')->translatedFormat('F Y');
         $msg = "Generate penggajian berhasil. Jenis: {$labelJenis}. Periode: {$namaPeriode}. Berhasil dibuat: {$generated}.";
         if ($skipped > 0) {
-            $msg .= " {$skipped} karyawan dilewati karena sudah ada data.";
+            $msg .= " {$skipped} karyawan dilewati karena penggajian untuk periode yang sama sudah tersedia.";
         }
 
         return redirect()
