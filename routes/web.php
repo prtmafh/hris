@@ -109,6 +109,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::post('/admin/izin/{id}/reject', [IzinController::class, 'reject'])->name('izin.reject');
 
     Route::get('/admin/lembur', [LemburController::class, 'index'])->name('admin.lembur');
+    Route::post('/admin/lembur', [LemburController::class, 'store'])->name('admin.lembur.store');
     Route::post('/admin/lembur/{id}/approve', [LemburController::class, 'approve'])->name('admin.lembur.approve');
     Route::post('/admin/lembur/{id}/reject', [LemburController::class, 'reject'])->name('admin.lembur.reject');
 

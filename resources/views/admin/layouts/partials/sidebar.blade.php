@@ -5,6 +5,7 @@
         'admin/daftar_pimpinan*',
         'admin/jabatan*',
     ]);
+    $dataPerusahaan = request()->is(['admin/daftar_perusahaan*']);
     $absensi = request()->is(['admin/absensi*', 'admin/rekap-tahunan*']);
     $pengajuan = request()->is(['admin/lembur*', 'admin/izin*']);
     $gaji = request()->is(['admin/penggajian*', 'admin/komponen-gaji*']);
@@ -57,6 +58,28 @@
                             href="{{ route('admin.jabatan') }}">Jabatan</a>
                     </nav>
                 </div>
+
+                {{-- <a class="nav-link {{ $dataPerusahaan ? '' : 'collapsed' }}" href="#" data-bs-toggle="collapse"
+                    data-bs-target="#collapsePerusahaan">
+                    <div class="nav-link-icon"><i data-feather="building"></i></div>
+                    Data Perusahaan
+                    <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                </a> --}}
+                {{-- <div class="collapse {{ $dataPerusahaan ? 'show' : '' }}" id="collapsePerusahaan">
+                    <nav class="sidenav-menu-nested nav">
+                        <a class="nav-link {{ request()->is('admin/daftar_admin*') ? 'active' : '' }}"
+                            href="{{ route('admin.daftar_admin') }}">Admin</a>
+
+                        <a class="nav-link {{ request()->is('admin/daftar_pimpinan*') ? 'active' : '' }}"
+                            href="{{ route('admin.daftar_pimpinan') }}">Pimpinan</a>
+
+                        <a class="nav-link {{ request()->is('admin/daftar_karyawan*') ? 'active' : '' }}"
+                            href="{{ route('admin.daftar_karyawan') }}">Karyawan</a>
+
+                        <a class="nav-link {{ request()->is('admin/jabatan*') ? 'active' : '' }}"
+                            href="{{ route('admin.jabatan') }}">Jabatan</a>
+                    </nav>
+                </div> --}}
 
                 <a class="nav-link {{ $absensi ? '' : 'collapsed' }}" href="#" data-bs-toggle="collapse"
                     data-bs-target="#collapseAbsensi">
