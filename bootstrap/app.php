@@ -23,9 +23,7 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
         $middleware->append(HandleCors::class);
     })
-    ->withSchedule(function (Schedule $schedule) {
-        // $schedule->command('absensi:mark-alpha')->dailyAt('21:00')->withoutOverlapping();
-    })
+    ->withSchedule(function (Schedule $schedule) {})
     ->withExceptions(function (Exceptions $exceptions): void {
         //
     })->create();
