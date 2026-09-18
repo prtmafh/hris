@@ -36,7 +36,7 @@ class SlipGajiController extends Controller
         /** @var Karyawan $user */
         $karyawan = Auth::user();
         // $karyawan   = $user->karyawan()->firstOrFail();
-        $penggajian = Penggajian::with(['details', 'karyawan.jabatan'])
+        $penggajian = Penggajian::with(['details', 'karyawan.jabatan', 'perusahaan'])
             ->where('karyawan_id', $karyawan->id)
             ->findOrFail($id);
 
@@ -48,7 +48,7 @@ class SlipGajiController extends Controller
         /** @var Karyawan $user */
         $karyawan = Auth::user();
         // $karyawan   = $user->karyawan()->firstOrFail();
-        $penggajian = Penggajian::with(['details', 'karyawan.jabatan'])
+        $penggajian = Penggajian::with(['details', 'karyawan.jabatan', 'perusahaan'])
             ->where('karyawan_id', $karyawan->id)
             ->findOrFail($id);
 

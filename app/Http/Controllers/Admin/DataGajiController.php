@@ -9,6 +9,7 @@ use App\Models\KomponenGajiKaryawan;
 use App\Models\Lembur;
 use App\Models\Pengaturan;
 use App\Models\Penggajian;
+use App\Models\Perusahaan;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -18,7 +19,7 @@ class DataGajiController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Penggajian::with('karyawan');
+        $query = Penggajian::with(['karyawan', 'perusahaan']);
         $tahun = (int) $request->input('tahun', now()->year);
 
         if ($request->filled('bulan')) {
@@ -32,6 +33,7 @@ class DataGajiController extends Controller
         if ($request->filled('karyawan_id')) {
             $query->where('karyawan_id', $request->karyawan_id);
         }
+        if ($request->filled('perusahaan_id')) $query->where('perusahaan_id', $request->perusahaan_id);
 
         if ($request->filled('status')) {
             $query->where('status', $request->status);
@@ -43,6 +45,7 @@ class DataGajiController extends Controller
 
         $penggajian = $query->latest()->get();
         $karyawanList = Karyawan::orderBy('nama')->get();
+        $perusahaanList = Perusahaan::orderBy('nama_perusahaan')->get();
         $daftarTahun = range(Carbon::now()->year, Carbon::now()->year - 3);
 
         $hasFilter = $request->filled('bulan')
@@ -50,13 +53,15 @@ class DataGajiController extends Controller
             || $request->filled('karyawan_id')
             || $request->filled('status')
             || $request->filled('jenis_gaji');
+        $hasFilter = $hasFilter || $request->filled('perusahaan_id');
 
         return view('admin.penggajian.data_gaji', compact(
             'penggajian',
             'karyawanList',
             'hasFilter',
             'daftarTahun',
-            'tahun'
+            'tahun',
+            'perusahaanList'
         ));
     }
 
@@ -94,6 +99,7 @@ class DataGajiController extends Controller
 
         $karyawanList = Karyawan::where('status', 'aktif')
             ->where('status_gaji', $jenisGaji)
+            ->with('perusahaan')
             ->get();
 
         $generated = 0;
@@ -207,6 +213,8 @@ class DataGajiController extends Controller
                 ) {
                     $penggajian = Penggajian::create([
                         'karyawan_id' => $karyawan->id,
+                        'perusahaan_id' => $karyawan->perusahaan_id,
+                        'perusahaan_snapshot' => $karyawan->perusahaan ? $this->perusahaanSnapshot($karyawan->perusahaan) : null,
                         'periode_bulan' => $bulan,
                         'periode_tahun' => $tahun,
                         'tanggal_mulai' => $karyawan->status_gaji === 'harian' ? $tanggalMulai?->toDateString() : null,
@@ -439,9 +447,15 @@ class DataGajiController extends Controller
 
     public function show(int $id)
     {
-        $penggajian = Penggajian::with(['karyawan.jabatan', 'details'])->findOrFail($id);
+        $penggajian = Penggajian::with(['karyawan.jabatan', 'perusahaan', 'details'])->findOrFail($id);
 
         return view('admin.penggajian.show', compact('penggajian'));
+    }
+
+    private function perusahaanSnapshot(?Perusahaan $perusahaan): ?array
+    {
+        if (! $perusahaan) return null;
+        return $perusahaan->only(['nama_perusahaan', 'nama_singkat', 'logo', 'nib', 'npwp', 'alamat', 'no_telepon', 'email', 'website']);
     }
 
     public function markBayar(int $id)

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Jabatan;
 use App\Models\Karyawan;
 use App\Models\Role;
+use App\Models\Perusahaan;
 use App\Models\User;
 
 use Illuminate\Http\Request;
@@ -15,21 +16,23 @@ use Illuminate\Support\Facades\Storage;
 
 class DaftarKaryawanController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $jabatan = Jabatan::all();
         $user = Auth::user();
 
-        $karyawan = Karyawan::with(['jabatan', 'role'])
+        $perusahaanList = Perusahaan::orderBy('nama_perusahaan')->get();
+        $karyawan = Karyawan::with(['jabatan', 'role', 'perusahaan'])
             ->whereHas('role', function ($query) {
                 $query->whereIn('nama_role', ['karyawan', 'admin_kecil']);
             })
+            ->when($request->filled('perusahaan_id'), fn ($query) => $query->where('perusahaan_id', $request->perusahaan_id))
             ->latest('tgl_masuk')
             ->get();
 
         return view(
             'admin.data_karyawan.daftar_karyawan.index',
-            compact('jabatan', 'karyawan', 'user')
+            compact('jabatan', 'karyawan', 'user', 'perusahaanList')
         );
     }
 
@@ -42,6 +45,7 @@ class DaftarKaryawanController extends Controller
             'tgl_masuk' => 'required|date',
             // 'role_id' => 'required|exists:role,id',
             'jabatan_id' => 'required|exists:jabatan,id',
+            'perusahaan_id' => 'required|exists:perusahaan,id,status,aktif',
             'status_gaji' => 'required|in:harian,bulanan',
             'gaji_pokok' => 'nullable|integer',
             'gaji_per_hari' => 'nullable|integer',
@@ -60,6 +64,7 @@ class DaftarKaryawanController extends Controller
         Karyawan::create([
             'role_id'        => $roleKaryawan->id,
             'jabatan_id'     => $request->jabatan_id,
+            'perusahaan_id'  => $request->perusahaan_id,
             'nama'           => $request->nama,
             'nik'            => $request->nik,
             'password'       => Hash::make($request->tgl_lahir),
@@ -81,22 +86,30 @@ class DaftarKaryawanController extends Controller
     public function storeView()
     {
         $jabatan = Jabatan::all();
+        $perusahaanList = Perusahaan::where('status', 'aktif')->orderBy('nama_perusahaan')->get();
         // $jenis_gaji = JenisGaji::all();
-        return view('admin.data_karyawan.daftar_karyawan.tambah', compact('jabatan'));
+        return view('admin.data_karyawan.daftar_karyawan.tambah', compact('jabatan', 'perusahaanList'));
     }
 
     public function detail($id)
     {
-        $karyawan = Karyawan::with(['jabatan'])->findOrFail($id);
+        $karyawan = Karyawan::with(['jabatan', 'perusahaan'])->findOrFail($id);
         $jabatan  = Jabatan::all();
         return view('admin.data_karyawan.daftar_karyawan.detail', compact('karyawan', 'jabatan'));
     }
 
     public function updateView($id)
     {
-        $karyawan = Karyawan::with(['jabatan'])->findOrFail($id);
+        $karyawan = Karyawan::with(['jabatan', 'perusahaan'])->findOrFail($id);
         $jabatan  = Jabatan::all();
-        return view('admin.data_karyawan.daftar_karyawan.edit', compact('karyawan', 'jabatan'));
+        $perusahaanList = Perusahaan::where(function ($query) use ($karyawan) {
+            $query->where('status', 'aktif');
+
+            if ($karyawan->perusahaan_id) {
+                $query->orWhere('id', $karyawan->perusahaan_id);
+            }
+        })->orderBy('nama_perusahaan')->get();
+        return view('admin.data_karyawan.daftar_karyawan.edit', compact('karyawan', 'jabatan', 'perusahaanList'));
     }
 
     public function update(Request $request, $id)
@@ -111,6 +124,7 @@ class DaftarKaryawanController extends Controller
             'alamat'         => 'nullable|string',
             'no_hp'          => 'nullable|string|max:20',
             'jabatan_id'     => 'required|exists:jabatan,id',
+            'perusahaan_id'  => 'required|exists:perusahaan,id,status,aktif',
             'status_gaji'    => 'required|in:bulanan,harian',
             'gaji_pokok'     => 'nullable|numeric',
             'gaji_per_hari'  => 'nullable|numeric',
@@ -126,6 +140,7 @@ class DaftarKaryawanController extends Controller
             'alamat',
             'no_hp',
             'jabatan_id',
+            'perusahaan_id',
             'status_gaji',
             'gaji_pokok',
             'gaji_per_hari',

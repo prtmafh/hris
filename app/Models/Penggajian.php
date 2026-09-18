@@ -13,6 +13,8 @@ class Penggajian extends Model
 
     protected $fillable = [
         'karyawan_id',
+        'perusahaan_id',
+        'perusahaan_snapshot',
         'periode_bulan',
         'periode_tahun',
         'tanggal_mulai',
@@ -26,6 +28,7 @@ class Penggajian extends Model
     ];
 
     protected $casts = [
+        'perusahaan_snapshot' => 'array',
         'tanggal_mulai' => 'date',
         'tanggal_selesai' => 'date',
         'tgl_dibayar' => 'date',
@@ -34,6 +37,11 @@ class Penggajian extends Model
     public function karyawan()
     {
         return $this->belongsTo(Karyawan::class);
+    }
+
+    public function perusahaan()
+    {
+        return $this->belongsTo(Perusahaan::class);
     }
 
     public function details()

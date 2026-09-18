@@ -127,6 +127,15 @@
                                 @enderror
                             </div>
                             <div class="mb-3">
+                                <label class="small mb-1">Perusahaan</label>
+                                <select name="perusahaan_id" class="form-select @error('perusahaan_id') is-invalid @enderror" required>
+                                    @foreach($perusahaanList as $perusahaan)
+                                        <option value="{{ $perusahaan->id }}" @selected(old('perusahaan_id', $karyawan->perusahaan_id) == $perusahaan->id)>{{ $perusahaan->nama_perusahaan }}</option>
+                                    @endforeach
+                                </select>
+                                @error('perusahaan_id')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                            </div>
+                            <div class="mb-3">
                                 <label class="small mb-1">Jenis Gaji</label>
                                 <select name="status_gaji" id="status_gaji" class="form-control">
                                     <option value="bulanan" {{ old('status_gaji', $karyawan->status_gaji) == 'bulanan' ?

@@ -205,18 +205,32 @@
         $totalPotongan = $potongan->sum('jumlah');
         $jumlahBaris = max($pemasukan->count(), $potongan->count(), 1);
         $k = $penggajian->karyawan;
+        $perusahaanAktif = $penggajian->perusahaan?->only(['nama_perusahaan', 'nama_singkat', 'logo', 'nib', 'npwp', 'alamat']) ?? [];
+        $perusahaanSnapshot = $penggajian->perusahaan_snapshot ?? [];
+        // Snapshot tetap diprioritaskan. Data perusahaan aktif hanya melengkapi field
+        // snapshot yang dahulu kosong, seperti alamat yang belum diisi saat payroll dibuat.
+        $perusahaan = array_replace($perusahaanAktif, array_filter($perusahaanSnapshot, fn ($nilai) => $nilai !== null && $nilai !== ''));
+        // Disk public pada project ini menyimpan upload di public/storage.
+        // Data URI memastikan DomPDF dapat membaca logo tanpa bergantung pada URL/symlink.
+        $logoPath = !empty($perusahaan['logo'])
+            ? public_path('storage/'.$perusahaan['logo'])
+            : public_path('assets/img/logotsi.png');
+        $logoSrc = is_file($logoPath)
+            ? 'data:'.mime_content_type($logoPath).';base64,'.base64_encode(file_get_contents($logoPath))
+            : null;
     @endphp
 
     <div class="slip">
         <table class="header">
             <tr>
                 <td style="width:45px;">
-                    <img src="{{ public_path('assets/img/logotsi.png') }}" class="header-logo" alt="TSI Group">
+                    @if($logoSrc)<img src="{{ $logoSrc }}" class="header-logo" alt="Logo perusahaan">@endif
                 </td>
                 <td class="company">
-                    <div class="company-name">PT. TIDARJAYA SOLIDINDO</div>
+                    <div class="company-name">{{ $perusahaan['nama_perusahaan'] ?? 'Perusahaan belum ditentukan' }}</div>
                     <div class="company-info">
-                        Jl. Abdul Ghani No. 105, Mustikajaya, Kota Bekasi<br>
+                        {{ $perusahaan['alamat'] ?? '-' }}<br>
+                        @if(!empty($perusahaan['nib']))NIB: {{ $perusahaan['nib'] }}@endif
                         {{-- Slip gaji karyawan --}}
                     </div>
                 </td>
@@ -314,7 +328,7 @@
 
         <table class="signature">
             <tr>
-                <td>Dibuat oleh,<br>PT. Tidarjaya Solidindo</td>
+                <td>Dibuat oleh,<br>{{ $perusahaan['nama_perusahaan'] ?? 'Perusahaan' }}</td>
                 <td>Disetujui oleh,</td>
             </tr>
             <tr>

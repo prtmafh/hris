@@ -17,6 +17,7 @@ use App\Http\Controllers\Admin\LemburController;
 use App\Http\Controllers\Admin\LowonganController;
 use App\Http\Controllers\Admin\PelamarController;
 use App\Http\Controllers\Admin\PengaturanController;
+use App\Http\Controllers\Admin\PerusahaanController;
 use App\Http\Controllers\Admin\ReimbursementController as AdminReimbursementController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Karyawan\AbsensiController as KaryawanAbsensiController;
@@ -84,6 +85,9 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::post('/admin/karyawan/{id}/toggle-status', [DaftarKaryawanController::class, 'toggleStatus'])->name('admin.karyawan.toggleStatus');
     Route::post('/admin/karyawan/{id}/toggle-karyawan-status', [DaftarKaryawanController::class, 'toggleKaryawanStatus'])->name('admin.karyawan.toggleKaryawanStatus');
     Route::post('/admin/karyawan/{id}/reset-password', [DaftarKaryawanController::class, 'resetPassword'])->name('admin.karyawan.resetPassword');
+
+    Route::resource('/admin/perusahaan', PerusahaanController::class)->except(['create', 'edit'])->names('admin.perusahaan');
+    Route::post('/admin/perusahaan/{perusahaan}/karyawan', [PerusahaanController::class, 'assignKaryawan'])->name('admin.perusahaan.karyawan.assign');
 
     Route::get('/admin/absensi', [DataAbsensiController::class, 'index'])->name('data_absen');
     Route::get('/admin/absensi/export', [DataAbsensiController::class, 'export'])->name('admin.absensi.export');

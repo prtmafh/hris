@@ -25,6 +25,10 @@
         $totalPotongan = $potongan->sum('jumlah');
         $jumlahBaris = max($pemasukan->count(), $potongan->count(), 1);
         $k = $penggajian->karyawan;
+        $perusahaanAktif = $penggajian->perusahaan?->only(['nama_perusahaan', 'nama_singkat', 'logo', 'nib', 'npwp', 'alamat']) ?? [];
+        $perusahaanSnapshot = $penggajian->perusahaan_snapshot ?? [];
+        // Snapshot tetap diprioritaskan; data aktif hanya menjadi fallback untuk field kosong.
+        $perusahaan = array_replace($perusahaanAktif, array_filter($perusahaanSnapshot, fn ($nilai) => $nilai !== null && $nilai !== ''));
     @endphp
 
     <main>
@@ -56,11 +60,12 @@
             <div class="card shadow-sm mx-auto" style="max-width: 980px;">
                 <div class="card-body p-4 p-md-5">
                     <div class="d-flex flex-column flex-md-row align-items-md-center border-bottom border-dark pb-3 mb-4">
-                        <img src="{{ asset('assets/img/logotsi.png') }}" alt="TSI Group" style="width:50px;height:auto;"
+                        <img src="{{ !empty($perusahaan['logo']) ? asset('storage/'.$perusahaan['logo']) : asset('assets/img/logotsi.png') }}" alt="Logo perusahaan" style="width:50px;height:auto;"
                             class="me-md-4 mb-3 mb-md-0">
                         <div>
-                            <h2 class="fw-bold mb-1">PT. TIDARJAYA SOLIDINDO</h2>
-                            <div class="small text-muted">Jl. Abdul Ghani No. 105, Mustikajaya, Kota Bekasi</div>
+                            <h2 class="fw-bold mb-1">{{ $perusahaan['nama_perusahaan'] ?? 'Perusahaan belum ditentukan' }}</h2>
+                            <div class="small text-muted">{{ $perusahaan['alamat'] ?? '-' }}</div>
+                            @if(!empty($perusahaan['nib']))<div class="small text-muted">NIB: {{ $perusahaan['nib'] }}</div>@endif
                             <div class="small text-muted">Slip Gaji Karyawan</div>
                         </div>
                         <div class="ms-md-auto text-md-end mt-3 mt-md-0">

@@ -5,7 +5,7 @@
         'admin/daftar_pimpinan*',
         'admin/jabatan*',
     ]);
-    $dataPerusahaan = request()->is(['admin/daftar_perusahaan*']);
+    $dataPerusahaan = request()->is(['admin/perusahaan*']);
     $absensi = request()->is(['admin/absensi*', 'admin/rekap-tahunan*']);
     $pengajuan = request()->is(['admin/lembur*', 'admin/izin*']);
     $gaji = request()->is(['admin/penggajian*', 'admin/komponen-gaji*']);
@@ -59,6 +59,10 @@
                     </nav>
                 </div>
 
+                <a class="nav-link {{ $dataPerusahaan ? 'active' : '' }}" href="{{ route('admin.perusahaan.index') }}">
+                    <div class="nav-link-icon"><i data-feather="briefcase"></i></div>
+                    Data Perusahaan
+                </a>
                 {{-- <a class="nav-link {{ $dataPerusahaan ? '' : 'collapsed' }}" href="#" data-bs-toggle="collapse"
                     data-bs-target="#collapsePerusahaan">
                     <div class="nav-link-icon"><i data-feather="building"></i></div>

@@ -152,6 +152,7 @@
                                 <tr>
                                     <th>No</th>
                                     <th>Karyawan</th>
+                                    <th>Perusahaan</th>
                                     <th>Jenis Karyawan</th>
                                     <th>Periode</th>
                                     <th>Status</th>
@@ -190,6 +191,7 @@
 
                                             </div>
                                         </td>
+                                        <td>{{ $g->perusahaan_snapshot['nama_perusahaan'] ?? $g->perusahaan?->nama_perusahaan ?? '-' }}</td>
                                         <td>
                                             @if ($g->karyawan->status_gaji === 'harian')
                                                 <span class="badge bg-blue-soft text-blue">Harian</span>
@@ -249,7 +251,7 @@
                                 @empty
 
                                     <tr>
-                                        <td colspan="6" class="text-center text-muted py-4">
+                                        <td colspan="7" class="text-center text-muted py-4">
                                             Belum ada data penggajian
                                         </td>
                                     </tr>
@@ -350,6 +352,16 @@
                             <label class="small mb-2">Tanggal Mulai</label>
                             <input type="date" name="tanggal_mulai" class="form-control"
                                 value="{{ now()->startOfMonth()->toDateString() }}">
+                        </div>
+
+                        <div class="col-md-2">
+                            <label class="small mb-1">Perusahaan</label>
+                            <select name="perusahaan_id" class="form-select form-select-sm">
+                                <option value="">Semua</option>
+                                @foreach ($perusahaanList as $perusahaan)
+                                    <option value="{{ $perusahaan->id }}" @selected(request('perusahaan_id') == $perusahaan->id)>{{ $perusahaan->nama_perusahaan }}</option>
+                                @endforeach
+                            </select>
                         </div>
                         <div class="mb-3">
                             <label class="small mb-2">Tanggal Selesai</label>

@@ -30,6 +30,20 @@
     {{-- CONTENT --}}
     <div class="container-fluid px-4">
         <div class="card">
+            <div class="card-body border-bottom">
+                <form method="GET" class="row gx-2 align-items-end">
+                    <div class="col-md-4">
+                        <label class="small mb-1">Perusahaan</label>
+                        <select name="perusahaan_id" class="form-select form-select-sm">
+                            <option value="">Semua Perusahaan</option>
+                            @foreach($perusahaanList as $perusahaan)
+                                <option value="{{ $perusahaan->id }}" @selected(request('perusahaan_id') == $perusahaan->id)>{{ $perusahaan->nama_perusahaan }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-auto"><button class="btn btn-primary btn-sm">Filter</button></div>
+                </form>
+            </div>
             <div class="card-header">
                 Daftar Karyawan
             </div>
@@ -40,6 +54,7 @@
                             <tr>
                                 <th>User</th>
                                 <th>NIK</th>
+                                <th>Perusahaan</th>
                                 <th>Jabatan</th>
                                 <th>Status Gaji</th>
                                 <th>Gaji</th>
@@ -76,6 +91,7 @@
                                     </div>
                                 </td>
                                 <td>{{ $k->nik }}</td>
+                                <td>{{ $k->perusahaan?->nama_perusahaan ?? '-' }}</td>
                                 <td>
                                     <span class="badge text-capitalize bg-blue-soft text-blue">
                                         {{ optional($k->jabatan)->nama_jabatan ?? '-' }}

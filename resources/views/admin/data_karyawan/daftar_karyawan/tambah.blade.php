@@ -89,6 +89,16 @@
                                         @endforeach
                                     </select>
                                 </div>
+                                <div class="col-md-6 mt-3">
+                                    <label class="small mb-1">Perusahaan</label>
+                                    <select name="perusahaan_id" class="form-select @error('perusahaan_id') is-invalid @enderror" required>
+                                        <option value="">-- Pilih Perusahaan --</option>
+                                        @foreach($perusahaanList as $perusahaan)
+                                            <option value="{{ $perusahaan->id }}" @selected(old('perusahaan_id') == $perusahaan->id)>{{ $perusahaan->nama_perusahaan }}</option>
+                                        @endforeach
+                                    </select>
+                                    @error('perusahaan_id')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                                </div>
                             </div>
                             <div class="mb-3">
                                 <label class="small mb-1">Status</label>

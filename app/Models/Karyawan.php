@@ -14,6 +14,7 @@ class Karyawan extends Authenticatable
     protected $table = 'karyawan';
 
     protected $fillable = [
+        'perusahaan_id',
         'role_id',
         'jabatan_id',
         'nama',
@@ -67,6 +68,11 @@ class Karyawan extends Authenticatable
     public function jabatan()
     {
         return $this->belongsTo(Jabatan::class);
+    }
+
+    public function perusahaan()
+    {
+        return $this->belongsTo(Perusahaan::class);
     }
 
     /**
