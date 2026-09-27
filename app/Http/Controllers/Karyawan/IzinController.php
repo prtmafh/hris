@@ -3,78 +3,108 @@
 namespace App\Http\Controllers\Karyawan;
 
 use App\Http\Controllers\Controller;
+use App\Models\HariLibur;
 use App\Models\Izin;
+use App\Models\JenisIzinKhusus;
+use Carbon\Carbon;
+use Carbon\CarbonPeriod;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
 class IzinController extends Controller
 {
     public function index(Request $request)
     {
-        /** @var \App\Models\Karyawan $user */
         $karyawan = Auth::user();
+        $query = Izin::with('jenisIzinKhusus')->where('karyawan_id', $karyawan->id);
+        if (in_array($request->filter, ['cuti', 'izin_khusus'], true)) $query->where('jenis_pengajuan', $request->filter);
+        if (in_array($request->filter, ['pending', 'disetujui', 'ditolak'], true)) $query->where('status_approval', $request->filter);
 
-        $izin = Izin::where('karyawan_id', $karyawan->id)
-            ->orderByDesc('tanggal')
-            ->get();
+        $izin = $query->orderByDesc('tanggal_mulai')->orderByDesc('id')->get();
+        $kuotaIzin = (int) ($karyawan->kuota_izin ?? 12);
+        $cutiDisetujui = Izin::where('karyawan_id', $karyawan->id)
+            ->where('jenis_pengajuan', 'cuti')
+            ->where('status_approval', 'disetujui')
+            ->sum('jumlah_hari');
+        $sisaIzin = max($kuotaIzin - $cutiDisetujui, 0);
+        $jenisIzinKhusus = JenisIzinKhusus::where('aktif', true)->orderBy('nama')->get();
 
-        $izinTerpakai = Izin::where('karyawan_id', $karyawan->id)
-            ->whereIn('status_approval', ['pending', 'disetujui'])
-            ->count();
-
-        $kuotaIzin = $karyawan->kuota_izin ?? 12;
-        $sisaIzin = max($kuotaIzin - $izinTerpakai, 0);
-
-        return view('karyawan.izin-saya', compact(
-            'izin',
-            'kuotaIzin',
-            'izinTerpakai',
-            'sisaIzin'
-        ));
+        return view('karyawan.izin-saya', compact('izin', 'kuotaIzin', 'cutiDisetujui', 'sisaIzin', 'jenisIzinKhusus'));
     }
 
     public function store(Request $request)
     {
-        /** @var \App\Models\Karyawan $user */
         $karyawan = Auth::user();
-        // $karyawan = $user->karyawan()->firstOrFail();
-
-        $request->validate([
-            'tanggal'    => 'required|date',
-            'jenis_izin' => 'required|in:sakit,izin,cuti',
-            'keterangan' => 'required|string|max:500',
+        $validated = $request->validate([
+            'jenis_pengajuan' => ['required', Rule::in(['cuti', 'izin_khusus'])],
+            'jenis_izin' => ['nullable', 'string', 'max:100'],
+            'jenis_izin_khusus_id' => ['nullable', Rule::exists('jenis_izin_khusus', 'id')->where('aktif', true)],
+            'tanggal_mulai' => ['required', 'date'],
+            'tanggal_selesai' => ['required', 'date', 'after_or_equal:tanggal_mulai'],
+            'keterangan' => ['required', 'string', 'max:500'],
+            'bukti' => ['nullable', 'file', 'mimes:pdf,jpg,jpeg,png', 'max:2048'],
         ]);
 
-        $izinTerpakai = Izin::where('karyawan_id', $karyawan->id)
-            ->whereIn('status_approval', ['pending', 'disetujui'])
-            ->count();
-
-        if ($izinTerpakai >= $karyawan->kuota_izin) {
-            return back()
-                ->with('error', 'Kuota izin tahunan Anda sudah habis (12 kali).');
+        if ($validated['jenis_pengajuan'] === 'cuti' && blank($validated['jenis_izin'] ?? null)) {
+            return back()->withInput()->withErrors(['jenis_izin' => 'Pilih jenis cuti.']);
         }
-        $sudahAda = Izin::where('karyawan_id', $karyawan->id)
-            ->whereDate('tanggal', $request->tanggal)
-            ->exists();
 
-        if ($sudahAda) {
-            return back()->with(
-                'error',
-                'Pengajuan izin untuk tanggal tersebut sudah ada.'
-            );
+        if ($validated['jenis_pengajuan'] === 'izin_khusus' && !$request->filled('jenis_izin_khusus_id')) {
+            return back()->withInput()->withErrors(['jenis_izin_khusus_id' => 'Pilih jenis izin khusus.']);
+        }
+
+        $jenisKhusus = $request->filled('jenis_izin_khusus_id') ? JenisIzinKhusus::findOrFail($request->jenis_izin_khusus_id) : null;
+        if ($jenisKhusus?->wajib_bukti && !$request->hasFile('bukti')) {
+            return back()->withInput()->withErrors(['bukti' => 'Bukti wajib diunggah untuk jenis izin ini.']);
+        }
+
+        $mulai = Carbon::parse($validated['tanggal_mulai'])->startOfDay();
+        $selesai = Carbon::parse($validated['tanggal_selesai'])->startOfDay();
+        $jumlahHari = $this->hitungHariKerja($mulai, $selesai);
+
+        if ($jumlahHari < 1) {
+            return back()->withInput()->withErrors(['tanggal_mulai' => 'Rentang tanggal tidak memiliki hari kerja.']);
+        }
+
+        if ($validated['jenis_pengajuan'] === 'cuti') {
+            $kuotaSaatIni = (int) ($karyawan->kuota_izin ?? 12);
+            $cutiDisetujui = Izin::where('karyawan_id', $karyawan->id)
+                ->where('jenis_pengajuan', 'cuti')
+                ->where('status_approval', 'disetujui')
+                ->sum('jumlah_hari');
+            $sisaKuota = max($kuotaSaatIni - $cutiDisetujui, 0);
+
+            if ($jumlahHari > $sisaKuota) {
+                return back()->withInput()->with('error', 'Sisa kuota cuti tidak mencukupi.');
+            }
         }
 
         Izin::create([
-            'karyawan_id'     => $karyawan->id,
-            'tanggal'         => $request->tanggal,
-            'jenis_izin'      => $request->jenis_izin,
-            'keterangan'      => $request->keterangan,
+            'karyawan_id' => $karyawan->id,
+            'tanggal' => $mulai->toDateString(),
+            'jenis_pengajuan' => $validated['jenis_pengajuan'],
+            'jenis_izin' => $validated['jenis_pengajuan'] === 'cuti' ? $validated['jenis_izin'] : $jenisKhusus->nama,
+            'jenis_izin_khusus_id' => $jenisKhusus?->id,
+            'tanggal_mulai' => $mulai,
+            'tanggal_selesai' => $selesai,
+            'jumlah_hari' => $jumlahHari,
+            'keterangan' => $validated['keterangan'],
+            'bukti' => $request->hasFile('bukti') ? $request->file('bukti')->store('bukti_izin', 'public') : null,
             'status_approval' => 'pending',
         ]);
 
-        return back()->with(
-            'success',
-            'Pengajuan izin berhasil dikirim.'
-        );
+        return back()->with('success', 'Pengajuan berhasil dikirim dan menunggu approval.');
+    }
+
+    private function hitungHariKerja(Carbon $mulai, Carbon $selesai): int
+    {
+        $hariLibur = HariLibur::get();
+        return collect(CarbonPeriod::create($mulai, $selesai))->filter(function (Carbon $tanggal) use ($hariLibur) {
+            return $tanggal->isWeekday() && !$hariLibur->contains(function ($libur) use ($tanggal) {
+                $liburTanggal = Carbon::parse($libur->tanggal);
+                return $libur->berulang_tahunan ? ($liburTanggal->month === $tanggal->month && $liburTanggal->day === $tanggal->day) : $liburTanggal->isSameDay($tanggal);
+            });
+        })->count();
     }
 }

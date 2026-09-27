@@ -83,6 +83,16 @@ class Karyawan extends Authenticatable
         return $this->hasMany(Absensi::class);
     }
 
+    public function izin()
+    {
+        return $this->hasMany(Izin::class);
+    }
+
+    public function izinDisetujui()
+    {
+        return $this->hasMany(Izin::class, 'disetujui_oleh');
+    }
+
     public function komponenGaji()
     {
         return $this->hasMany(KomponenGajiKaryawan::class);
