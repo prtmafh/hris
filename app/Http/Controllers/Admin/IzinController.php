@@ -24,7 +24,7 @@ class IzinController extends Controller
         return view('admin.pengajuan.izin', ['izin' => $query->latest('tanggal_mulai')->get(), 'karyawanList' => Karyawan::orderBy('nama')->get()]);
     }
 
-    public function approve(Request $request, $id)
+    public function approve(Request $request, int $id)
     {
         $request->validate(['catatan_approval' => 'nullable|string|max:1000']);
 
@@ -52,7 +52,7 @@ class IzinController extends Controller
                 $izin->update([
                     'status_approval' => 'disetujui',
                     'catatan_approval' => $request->catatan_approval,
-                    'disetujui_oleh' => Auth::id(),
+                    'disetujui_oleh' => Auth::user()->id,
                     'tanggal_approval' => now(),
                 ]);
 
@@ -69,21 +69,21 @@ class IzinController extends Controller
         return back()->with('success', 'Pengajuan berhasil disetujui.');
     }
 
-    public function reject(Request $request, $id)
+    public function reject(Request $request, int $id)
     {
         $request->validate(['catatan_approval' => 'nullable|string|max:1000']);
         $izin = Izin::where('status_approval', 'pending')->findOrFail($id);
         $izin->update([
             'status_approval' => 'ditolak',
             'catatan_approval' => $request->catatan_approval,
-            'disetujui_oleh' => Auth::id(),
+            'disetujui_oleh' => Auth::user()->id,
             'tanggal_approval' => now(),
         ]);
 
         return back()->with('success', 'Pengajuan berhasil ditolak.');
     }
 
-    public function cancel($id)
+    public function cancel(int $id)
     {
         try {
             DB::transaction(function () use ($id) {
@@ -100,7 +100,7 @@ class IzinController extends Controller
                 $izin->update([
                     'status_approval' => 'ditolak',
                     'catatan_approval' => 'Approval dibatalkan oleh admin.',
-                    'disetujui_oleh' => Auth::id(),
+                    'disetujui_oleh' => Auth::user()->id,
                     'tanggal_approval' => now(),
                 ]);
             });
