@@ -9,10 +9,4 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote');
 
 // Tandai karyawan yang tidak absen sebagai alpha setiap akhir hari.
-Schedule::command('absensi:mark-alpha')->dailyAt('23:30')->withoutOverlapping();
-
-Schedule::call(function () {
-    \Illuminate\Support\Facades\Log::info(
-        'TEST SCHEDULER: ' . now('Asia/Jakarta')->toDateTimeString()
-    );
-})->everyMinute();
+Schedule::command('absensi:mark-alpha')->everyMinute()->timezone('Asia/Jakarta')->withoutOverlapping();
